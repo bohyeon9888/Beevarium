@@ -153,7 +153,8 @@ const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습
   min-height: 125px;
 }
 .stream-update {
-  margin: 20px;
+  margin-top: auto;
+  padding: 15px;
   cursor: pointer;
 }
 .update-button {

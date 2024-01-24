@@ -1,9 +1,9 @@
 @font-face {
-  font-family: "KoPubDotumBold";
-  src: url("./fonts/KoPubDotumBold.woff") format("woff");
+  font-family: "나눔스퀘어라운드R";
+  src: url("./fonts/NanumSquareRoundR.ttf");
 }
 * {
-  font-family: "KoPubDotumBold";
+  font-family: "나눔스퀘어라운드R";
   margin: 0;
   padding: 0;
   border-collapse: collapse;
