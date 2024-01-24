@@ -156,6 +156,7 @@ const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습
   margin-top: auto;
   padding: 15px;
   cursor: pointer;
+  /* ssss */
 }
 .update-button {
   display: flex;
