@@ -70,7 +70,7 @@ const toggleEditMode = () => {
 
         <hr />
 
-        <!-- 패스워드변경 -->
+        <!-- 패스워드변경1 -->
         <h3>비밀번호변경</h3>
         <form @submit.prevent="submitForm">
           <div class="form-group">
