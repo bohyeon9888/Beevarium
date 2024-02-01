@@ -19,8 +19,13 @@ const toggleDonMod = () => {
       <div class="streamer-box"></div>
       <div class="content-box user-box">
         <div class="user-tab">follow</div>
-        <DonationModal :donModActive="donModActive" @close="toggleDonMod">
-        </DonationModal>
+        <!-- <DonationModal
+          :modalActive="modalActive"
+          @close="toggleModal"
+        ></DonationModal> -->
+          <DonationModal :donModActive="donModActive" 
+          @close="toggleDonMod">
+          </DonationModal>
         <div class="user-tab" @click="toggleDonMod">dontation</div>
       </div>
       <div class="content-box" @click="store.goBanListManagement">

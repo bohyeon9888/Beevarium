@@ -5,6 +5,7 @@ export const useAuthStore = defineStore(
   "authStore",
   () => {
     const isLoggedIn = ref(false);
+    const coperation = ref("");
 
     const login = (userData) => {
       isLoggedIn.value = true;
@@ -14,7 +15,11 @@ export const useAuthStore = defineStore(
       isLoggedIn.value = false;
     };
 
-    return { isLoggedIn, login, logout };
+    const chooseCoperation = (index) => {
+      coperation.value = index;
+    }
+
+    return { isLoggedIn, coperation, login, logout, chooseCoperation };
   },
   {
     persist: {

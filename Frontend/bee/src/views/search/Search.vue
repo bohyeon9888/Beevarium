@@ -1,9 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
-import { useMoveStore } from "@/stores/move";
 
-const store = useMoveStore();
 const route = useRoute();
 const keyword = computed(() => route.params.keyword);
 const showAllChannels = ref(false);
@@ -124,7 +122,6 @@ const Clips = [
               class="search-result"
               v-for="(channel, index) in streamingChannels"
               :key="index"
-              @click="store.goLiveStream"
             >
               <div class="streaming-thumbnail"></div>
               <div class="streaming-info">
