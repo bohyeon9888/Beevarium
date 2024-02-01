@@ -1,9 +1,13 @@
 <script setup>
-import LiveStreamChat from "./components/LiveStreamChat.vue";
 import Screen from "./components/Screen.vue";
+import LiveStreamChat from "./components/LiveStreamChat.vue";
 import { ref } from "vue";
 import LanguageSelectorModal from "./components/LanguageSelectorModal.vue";
-import DonationModal from "@/views/streaming/components/DonationModal.vue";
+import { useSidebarStore } from "@/stores/sidebar";
+import { storeToRefs } from "pinia";
+
+const sidebarStore = useSidebarStore();
+const { isExpanded } = storeToRefs(sidebarStore);
 
 // 도네이션 모달 활성화
 const donModActive = ref(false);
@@ -17,166 +21,381 @@ const toggleDonMod = () => {
 const toggleLanMod = () => {
   lanModActive.value = !lanModActive.value;
 };
+
+const stream = ref({
+  title: "라이브 스트리밍 방송 제목 입니다",
+  streamerName: "스트리머1",
+  liveWatcher: "626",
+  tags: ["한국어", "게임", "수다"],
+});
 </script>
 
 <template>
-  <div class="livestream-container">
-    <div class="livestream-box">
-      <div class="screen-container">
-        <Screen />
+  <div
+    id="livestream-container"
+    class="livestream-container"
+    :class="{ expanded: !isExpanded }"
+  >
+    <div
+      id="stream-container"
+      class="stream-container"
+      :class="{ expanded: !isExpanded }"
+    >
+      <div
+        id="screen-container"
+        class="screen-container"
+        :class="{ expanded: !isExpanded }"
+      >
+        <div class="screen">
+          <Screen />
+        </div>
       </div>
-      <div class="livestream-info-container">
-        <div class="livestream-info-box">
-          <div class="stream-title">방송 제목</div>
-          <div style="display: flex; flex-direction: row">
-            <div class="streamer-logo-box">
-              <img
-                class="streamer-logo"
-                src="../../assets/img/streamer_image_1.png"
-                alt=""
-              />
+      <div
+        id="livestream-info-container"
+        class="livestream-info-container"
+        :class="{ expanded: !isExpanded }"
+      >
+        <div
+          id="livestream-info-box"
+          class="livestream-info-box"
+          :class="{ expanded: !isExpanded }"
+        >
+          <div
+            id="livestream-title"
+            class="livestream-title"
+            :class="{ expanded: !isExpanded }"
+          >
+            {{ stream.title }}
+          </div>
+          <div
+            id="streamer-info-container"
+            class="streamer-info-container"
+            :class="{ expanded: !isExpanded }"
+          >
+            <div class="streamer-logo-container">
+              <div class="streamer-logo-box">
+                <img
+                  src="../../assets/img/streamer_image_1.png"
+                  alt=""
+                  class="streamer-logo"
+                />
+              </div>
             </div>
             <div
-              style="
-                display: flex;
-                flex-direction: column;
-                width: calc(100% - 70px);
-              "
+              id="streamer-info-box"
+              class="streamer-info-box"
+              :class="{ expanded: !isExpanded }"
             >
-              <div class="streamer-name">스트리머 닉네임</div>
-              <div class="livestream-tag">태그</div>
+              <div
+                id="streamer-name"
+                class="streamer-name"
+                :class="{ expanded: !isExpanded }"
+              >
+                {{ stream.streamerName }}
+              </div>
+              <div class="watcher-tag-container">
+                <div class="watcher">
+                  <img
+                    src="../../assets/img/stream/live-watcher.png"
+                    alt=""
+                    class="live-watcher"
+                  />
+                  <div style="font-size: 16px; font-weight: 500">
+                    현재 {{ stream.liveWatcher }}명 시청 중
+                  </div>
+                </div>
+                <div
+                  style="
+                    width: 1px;
+                    height: 14px;
+                    margin: 0 10px;
+                    background: #636363;
+                  "
+                ></div>
+                <div class="tag-container">
+                  <ul class="tag-list">
+                    <li
+                      v-for="(tag, index) in stream.tags"
+                      :key="index"
+                      class="tag"
+                    >
+                      {{ tag }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="livestream-setting">
-          <div class="follow-alarm-box">
-            <div class="follow-button">팔로우</div>
-            <div class="alarm-button">알림</div>
+        <div class="livestream-setting-container">
+          <div class="translate-filter-container">
+            <div
+              style="
+                height: 24px;
+                line-height: 24px;
+                font-size: 16px;
+                font-weight: 600;
+                margin-right: 8px;
+              "
+            >
+              자막
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <div class="slider round"></div>
+            </label>
+            <div
+              style="
+                height: 24px;
+                line-height: 24px;
+                font-size: 16px;
+                font-weight: 600;
+                margin-right: 8px;
+              "
+            >
+              필터링
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <div class="slider round"></div>
+            </label>
           </div>
-          <div class="watcher-count-box">xxx명 시청중</div>
-          <div class="translate-filter-box">자막 필터링 설정</div>
+          <div class="follow-alarm-container">
+            <div class="follow-button">
+              <img
+                src="../../assets/img/stream/follow.png"
+                alt=""
+                class="follow-image"
+              />
+              <div style="font-size: 14px; font-weight: 600; color: #121212">
+                팔로우
+              </div>
+            </div>
+            <img
+              src="../../assets/img/stream/alarm.png"
+              alt=""
+              class="alarm-button"
+            />
+          </div>
         </div>
       </div>
     </div>
     <div class="chat-container">
-      <LiveStreamChat class="chat" />
+      <LiveStreamChat />
     </div>
-    <!-- <DonationModal :donModActive="donModActive" @close="toggleDonMod">
-    </DonationModal>
-    <button @click="toggleDonMod">후원 모달 팝업</button>
-    <LanguageSelectorModal :lanModActive="lanModActive">
-    </LanguageSelectorModal>
-    <button @click="toggleLanMod">언어 선택</button> -->
   </div>
 </template>
 
 <style scoped>
 .livestream-container {
   display: flex;
-  width: 100%;
-  height: calc(100vh - 80px);
+  width: 1650px;
+  height: 862px;
+  overflow-y: hidden;
 }
-.livestream-box {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  border-right: 2px solid #3455;
+#livestream-container.expanded {
+  width: 1840px;
+}
+.stream-container {
+  width: 1280px;
+  height: 862px;
+}
+#stream-container.expanded {
+  width: 1470px;
 }
 .screen-container {
-  width: 100%;
-  height: 550px;
-  background-color: #000000;
+  display: flex;
+  justify-content: center;
+  width: 1280px;
+  height: 720px;
+  background-color: black;
+}
+.screen {
+  width: 1280px;
+  height: 720px;
+}
+#screen-container.expanded {
+  width: 1470px;
 }
 .livestream-info-container {
   display: flex;
-  width: 100%;
-  height: calc(100% - 550px);
-  border-top: 2px solid #3455;
+  width: 1280px;
+  height: 142px;
+}
+#livestream-info-container.expanded {
+  width: 1470px;
 }
 .livestream-info-box {
-  width: calc(100% - 280px);
-  height: 100%;
+  width: 1000px;
+  height: 142px;
 }
-.stream-title {
-  width: 100%;
-  height: 36px;
-  padding-left: 10px;
-  font-size: 26px;
-  line-height: 36px;
+#livestream-info-box.expanded {
+  width: 1190px;
+}
+.livestream-title {
+  width: 1000px;
+  height: 48px;
+  font-size: 24px;
+  font-weight: 600;
+  padding: 16px 16px 0;
+}
+#livestream-title.expanded {
+  width: 1190px;
+}
+.streamer-info-container {
+  display: flex;
+  width: 1000px;
+  height: 86px;
+}
+#streamer-info-container.expanded {
+  width: 1190px;
+}
+.streamer-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 86px;
+  height: 86px;
+  padding: 10px;
 }
 .streamer-logo-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 70px;
-  height: 70px;
+  width: 68px;
+  height: 68px;
+  border: 2px solid #ffec3e;
+  border-radius: 10rem;
 }
 .streamer-logo {
   width: 60px;
   height: 60px;
+  border-radius: 10rem;
+}
+.streamer-info-box {
+  width: 914px;
+  height: 86px;
+}
+#streamer-info-box.expanded {
+  width: 1104px;
 }
 .streamer-name {
+  width: 914px;
+  height: 43px;
+  font-size: 20px;
+  font-weight: 600;
+  padding: 14px 0 0 8px;
+}
+#streamer-name.expanded {
+  width: 1104px;
+}
+.watcher-tag-container {
   display: flex;
   align-items: center;
-  height: 50%;
-  font-size: 17px;
 }
-.livestream-tag {
+.watcher {
   display: flex;
   align-items: center;
-  height: 50%;
-  font-size: 17px;
+  height: 43px;
+  padding-left: 8px;
 }
-.livestream-setting {
-  display: flex;
-  flex-direction: column;
-  width: 280px;
+.live-watcher {
+  width: 8px;
+  height: 8px;
+  margin-right: 4px;
 }
-.follow-alarm-box {
+.tag-list {
   display: flex;
-  justify-content: flex-end;
+}
+.tag {
+  height: 20px;
+  background-color: #434343;
+  border-radius: 10rem;
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-right: 6px;
+}
+.translate-filter-container {
+  display: flex;
   align-items: center;
-  height: 35%;
-  font-size: 17px;
+  width: 210px;
+  height: 55px;
+  margin: 16px 0 0 69px;
 }
-.follow-button,
-.alarm-button {
+.follow-alarm-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #efefef;
-  margin-right: 15px;
-  height: 30px;
-  border-radius: 15px;
+  height: 33px;
 }
 .follow-button {
-  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 87px;
+  height: 33px;
+  background-color: #ffec3e;
+  border-radius: 10rem;
+  margin: 0 6px 0 139px;
+  cursor: pointer;
+}
+.follow-image {
+  width: 14px;
+  height: 12px;
+  margin-right: 4px;
 }
 .alarm-button {
-  width: 45px;
-}
-.watcher-count-box {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 30%;
-  padding-right: 16px;
-  font-size: 17px;
-}
-.translate-filter-box {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  height: 35%;
-  padding-right: 16px;
-  font-size: 17px;
+  width: 33px;
+  height: 33px;
+  cursor: pointer;
 }
 .chat-container {
-  width: 295px;
-  color: #000000;
+  width: 370px;
+  height: 862px;
 }
-.chat {
-  width: 295px;
-  height: 100%;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+  margin-right: 8px;
+}
+.switch input {
+  display: none;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #6f6f6f;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+input:checked + .slider {
+  background-color: #e89900;
+}
+input:checked + .slider:before {
+  -webkit-transform: translateX(22px);
+  -ms-transform: translateX(22px);
+  transform: translateX(22px);
+}
+.slider.round {
+  border-radius: 10rem;
+}
+.slider.round:before {
+  border-radius: 10rem;
 }
 </style>

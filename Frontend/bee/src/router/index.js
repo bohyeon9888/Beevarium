@@ -17,6 +17,7 @@ import Replay from "../views/studio/Replay.vue";
 import ReplayDetail from "../views/studio/ReplayDetail.vue";
 import BanListManagement from "../views/studio/BanListManagement.vue";
 import StudioMain from "../views/studio/StudioMain.vue";
+import AuthCallBack from "../views/auth/AuthCallBack.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,6 +111,21 @@ const router = createRouter({
       path: "/studio/studio-main",
       name: "StudioMain",
       component: StudioMain,
+    },
+    {
+      path: "/oauth/callback/google",
+      name: "GoogleAuthCallback",
+      component: AuthCallBack,
+    },
+    {
+      path: "/oauth/callback/naver",
+      name: "NaverAuthCallback",
+      component: AuthCallBack,
+    },
+    {
+      path: "/oauth/callback/kakao",
+      name: "KakaoAuthCallback",
+      component: AuthCallBack,
     },
   ],
 });

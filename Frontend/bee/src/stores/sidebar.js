@@ -4,7 +4,7 @@ import { defineStore } from "pinia";
 export const useSidebarStore = defineStore(
   "sidebarStore",
   () => {
-    const isExpanded = ref(false);
+    const isExpanded = ref(true);
 
     const expand = () => {
       isExpanded.value = !isExpanded.value;

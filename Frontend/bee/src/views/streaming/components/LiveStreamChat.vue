@@ -1,59 +1,133 @@
-<script></script>
+<script setup>
+import { ref } from "vue";
+import DonationModal from "./DonationModal.vue";
+
+const isModalOpened = ref(false);
+const openModal = () => {
+  isModalOpened.value = true;
+};
+const closeModal = () => {
+  isModalOpened.value = false;
+};
+</script>
 
 <template>
-  <div class="chat-container">
-    <div class="chat-box">채팅이 표시될 곳</div>
-    <div class="chat-input-box">
-      <input type="text" class="chat-input" placeholder="채팅을 입력해주세요."/>
-      <div class="message-send-button-box">
-        <div class="message-send-button">채팅</div>
+  <div class="livestream-chat-container">
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px;
+        font-size: 18px;
+        font-weight: 600;
+        border-top: 1px solid #202020;
+        border-bottom: 1px solid #202020;
+      "
+    >
+      채팅
+    </div>
+    <div class="livestream-chat-box"></div>
+    <div
+      id="livestream-chat-input-container"
+      class="livestream-chat-input-container"
+      :class="{ modalOpen: isModalOpened }"
+    >
+      <div class="livestream-chat-input-box">
+        <input
+          class="livestream-chat-input"
+          type="text"
+          placeholder="채팅을 입력해주세요"
+        />
+        <img
+          src="../../../assets/img/stream/donation.png"
+          alt=""
+          class="donation-button"
+          @click="openModal"
+        />
       </div>
+      <div class="livestream-chat-button">채팅</div>
+    </div>
+    <div
+      id="donation-modal"
+      class="donation-modal"
+      :class="{ modalOpen: isModalOpened }"
+    >
+      <DonationModal @close="closeModal" />
     </div>
   </div>
 </template>
 
 <style scoped>
-.chat-container {
+.livestream-chat-container {
+  position: relative;
+  width: 370px;
+  height: 862px;
+}
+.livestream-chat-box {
+  width: 370px;
+  height: 691px;
+}
+.livestream-chat-input-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  align-items: flex-end;
+  width: 370px;
+  height: 121px;
 }
-.chat-box {
-  width: 100%;
-  height: 80%;
-  border-bottom: 2px solid #3455;
-  padding: 15px;
+#livestream-chat-input-container.modalOpen {
+  visibility: hidden;
 }
-.chat-input-box {
+.livestream-chat-input-box {
   display: flex;
-  flex-direction: column;
-  width: 90%;
-  height: 15%;
-  margin: 15px;
-}
-.chat-input {
-  width: 100%;
-  height: 50px;
-  outline: none;
-  border: 0;
+  align-items: center;
+  width: 338px;
+  height: 40px;
+  background-color: #323232;
   border-radius: 8px;
-  background-color: #efefef;
+  padding: 8px 12px;
+  margin: auto;
+  margin-top: 16px;
+}
+.livestream-chat-input {
+  width: 314px;
+  height: 20px;
   font-size: 16px;
-  padding-left: 10px;
+  font-weight: 400;
+  background-color: transparent;
+  border: 0;
+  outline: none;
 }
-.message-send-button-box {
-  display: flex;
-  justify-content: flex-end;
+.donation-button {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
 }
-.message-send-button {
+.livestream-chat-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 52px;
-  height: 39px;
-  background-color: #efefef;
+  width: 57px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 600;
+  background-color: #323232;
   border-radius: 8px;
-  margin-top: 12px;
+  color: #8a8b8f;
   cursor: pointer;
+  margin-right: 16px;
+  margin-bottom: 16px;
+}
+.donation-modal {
+  position: absolute;
+  right: 24px;
+  transform: translateY(121px);
+  z-index: 2;
+  transition: 0.3s;
+}
+#donation-modal.modalOpen {
+  transform: translateY(-460px);
+  z-index: 2;
+  transition: 0.3s;
 }
 </style>
