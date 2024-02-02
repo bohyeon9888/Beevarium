@@ -5,7 +5,9 @@ import b203.varium.jwt.JWTFilter;
 import b203.varium.jwt.JWTUtil;
 import b203.varium.jwt.LoginFilter;
 import b203.varium.oauth2.service.CustomOauth2UserService;
+import b203.varium.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,13 +26,17 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    private final UserRepository userRepository;
     private final CustomOauth2UserService customOAuth2UserService;
     private final JWTUtil jwtUtil;
     private final CustomAuthenticationSuccessHandler successHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SecurityConfig(CustomOauth2UserService customOAuth2UserService, JWTUtil jwtUtil, CustomAuthenticationSuccessHandler successHandler, AuthenticationConfiguration authenticationConfiguration) {
+    @Value("#{'${spring.security.permit-path}'.split(',')}")
+    private String[] paths;
+
+    public SecurityConfig(UserRepository userRepository, CustomOauth2UserService customOAuth2UserService, JWTUtil jwtUtil, CustomAuthenticationSuccessHandler successHandler, AuthenticationConfiguration authenticationConfiguration) {
+        this.userRepository = userRepository;
         this.customOAuth2UserService = customOAuth2UserService;
         this.jwtUtil = jwtUtil;
         this.successHandler = successHandler;
@@ -84,7 +90,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/oauth2/**", "/login/**", "/oauth/**", "/user/join").permitAll()
+                        .requestMatchers(paths).permitAll()
                         .anyRequest().authenticated());
 
         // JWT 주입
@@ -92,7 +98,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(userRepository, authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http
                 .sessionManagement((session) -> session

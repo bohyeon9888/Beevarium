@@ -136,7 +136,7 @@ public class OauthService {
 
         if (existUser != null) {
 
-            existUser.setUsername(oAuth2Response.getName());
+            existUser.setUsername(name + oAuth2Response.getProviderId().substring(0, 4));
             existUser.setProfileUrl(oAuth2Response.getProfileImg());
             int nowP = existUser.getPoint();
             existUser.setPoint(nowP + 50);
@@ -147,7 +147,7 @@ public class OauthService {
         } else {
 
             UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(name);
+            userEntity.setUsername(name + "#" + oAuth2Response.getProviderId().substring(0, 4));
             userEntity.setUserId(oAuth2Response.getProviderId());
             userEntity.setPassword(bcrypt.encode(oAuth2Response.getProvider() + "bee" + oAuth2Response.getProviderId()));
             userEntity.setEmail(email);
@@ -159,6 +159,6 @@ public class OauthService {
             userRepository.save(userEntity);
             log.debug("save UserInfo");
         }
-
     }
+
 }
