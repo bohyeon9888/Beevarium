@@ -40,9 +40,9 @@ public class OauthService {
         String redirectUri = env.getProperty("spring.security.oauth2.client.registration." + provider + ".redirect-uri");
         String tokenUri = env.getProperty("spring.security.oauth2.client.provider." + provider + ".token-uri");
 
-        System.out.println("clientSecret : " + clientSecret);
-        System.out.println("redirectUri : " + redirectUri);
-        System.out.println("tokenUri : " + tokenUri);
+//        System.out.println("clientSecret : " + clientSecret);
+//        System.out.println("redirectUri : " + redirectUri);
+//        System.out.println("tokenUri : " + tokenUri);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -91,41 +91,18 @@ public class OauthService {
 
         }
 
-        System.out.println(oAuth2Response.getName());
-        return saveUserInfo(oAuth2Response);
+        log.info(oAuth2Response.getName());
+        return getUserInfo(oAuth2Response);
     }
 
-    public Map<String, Object> saveUserInfo(OAuth2Response oAuth2Response) {
-        System.out.println("================save user info==================");
-        String email = oAuth2Response.getEmail();
-        String name = oAuth2Response.getName();
+    public Map<String, Object> getUserInfo(OAuth2Response oAuth2Response) {
+
+        System.out.println("================get user info==================");
         String role = "ROLE_USER";
-        String userCode = env.getProperty("user.provider." + oAuth2Response.getProvider() + ".code-name");
-        System.out.println(userCode);
 
-        if (userRepository.existsByEmail(email) || userRepository.existsByUsername(name)) {
-            log.error("already existing User");
-            Map<String, Object> errorResp = new HashMap<>();
-            errorResp.put("msg", "already exist User");
-            errorResp.put("status", "fail");
+        saveUser(oAuth2Response);
 
-            return errorResp;
-
-        } else {
-
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(name);
-            userEntity.setUserId(oAuth2Response.getProviderId());
-            userEntity.setPassword(bcrypt.encode(oAuth2Response.getProvider() + "bee" + oAuth2Response.getProviderId()));
-            userEntity.setEmail(email);
-            userEntity.setProfileUrl(oAuth2Response.getProfileImg());
-            userEntity.setPoint(500);
-            userEntity.setCodeName(userCode);
-            userEntity.setRole(role);
-
-            userRepository.save(userEntity);
-        }
-
+        // JWT Token 생성
         String jwtToken = jwtUtil.createJwt(oAuth2Response.getName(), role, 18000000L);
 
         // Authentication 객체 생성
@@ -146,5 +123,43 @@ public class OauthService {
         resp.put("data", data);
 
         return resp;
+    }
+
+    public void saveUser(OAuth2Response oAuth2Response) {
+
+        System.out.println("================save user info==================");
+        String email = oAuth2Response.getEmail();
+        String name = oAuth2Response.getName();
+        String role = "ROLE_USER";
+        String userCode = env.getProperty("user.provider." + oAuth2Response.getProvider() + ".code-name");
+
+        UserEntity existUser = userRepository.findAllByEmailAndCodeName(email, userCode);
+
+        if (existUser != null) {
+
+            existUser.setUsername(oAuth2Response.getName());
+            existUser.setProfileUrl(oAuth2Response.getProfileImg());
+            int nowP = existUser.getPoint();
+            existUser.setPoint(nowP + 50);
+
+            userRepository.save(existUser);
+            log.debug("update UserInfo");
+
+        } else {
+
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername(name);
+            userEntity.setUserId(oAuth2Response.getProviderId());
+            userEntity.setPassword(bcrypt.encode(oAuth2Response.getProvider() + "bee" + oAuth2Response.getProviderId()));
+            userEntity.setEmail(email);
+            userEntity.setProfileUrl(oAuth2Response.getProfileImg());
+            userEntity.setPoint(500);
+            userEntity.setCodeName(userCode);
+            userEntity.setRole(role);
+
+            userRepository.save(userEntity);
+            log.debug("save UserInfo");
+        }
+
     }
 }

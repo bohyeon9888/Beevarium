@@ -59,7 +59,7 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
             return null;
         }
         String email = oAuth2Response.getEmail();
-        UserEntity existData = userRepository.findByEmail(email);
+        UserEntity existData = userRepository.findAllByEmailAndCodeName(email, userCode);
 
         String role = "ROLE_USER";
         if (existData == null) {
@@ -78,9 +78,6 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
         } else {
 
             existData.setUsername(oAuth2Response.getName());
-            existData.setUserId(oAuth2Response.getProviderId());
-            existData.setPassword(bcrypt.encode(oAuth2Response.getProvider() + "bee" + oAuth2Response.getProviderId()));
-            existData.setEmail(email);
             existData.setProfileUrl(oAuth2Response.getProfileImg());
             int nowP = existData.getPoint();
             existData.setPoint(nowP + 50);
@@ -98,5 +95,5 @@ public class CustomOauth2UserService extends DefaultOAuth2UserService {
 
         return new CustomOAuth2User(oAuth2Response, role);
     }
-    
+
 }

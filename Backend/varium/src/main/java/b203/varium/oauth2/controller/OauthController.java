@@ -7,6 +7,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Map;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @RestController
 @RequestMapping("/oauth")
 public class OauthController {
@@ -29,11 +31,10 @@ public class OauthController {
 
     @GetMapping("/callback/{provider}")
     public ResponseEntity<Map<String, Object>> callResp(@RequestParam String code, @PathVariable String provider) {
-        System.out.println(provider + " " + code);
+        log.info(provider + " " + code);
 
-        oauthService.getAccessToken(code, provider);
         Map<String, Object> resp = oauthService.getAccessToken(code, provider);
-        System.out.println(resp);
+//        System.out.println(resp);
         return ResponseEntity.ok().body(resp);
 
     }
