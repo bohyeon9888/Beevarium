@@ -79,16 +79,15 @@ public class OauthService {
         System.out.println(respBody);
 
         OAuth2Response oAuth2Response = null;
-        if (provider.equals("google")) {
-            oAuth2Response = new GoogleResponse(respBody);
-        } else if (provider.equals("naver")) {
-            oAuth2Response = new NaverResponse(respBody);
-        } else if (provider.equals("kakao")) {
+        switch (provider) {
+            case "google" -> oAuth2Response = new GoogleResponse(respBody);
+            case "naver" -> oAuth2Response = new NaverResponse(respBody);
+            case "kakao" -> {
 
-            Map<String, Object> kakaoAccount = (Map<String, Object>) respBody.get("kakao_account");
-            Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
-            oAuth2Response = new KakaoResponse(respBody, kakaoAccount, kakaoProfile);
-
+                Map<String, Object> kakaoAccount = (Map<String, Object>) respBody.get("kakao_account");
+                Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+                oAuth2Response = new KakaoResponse(respBody, kakaoAccount, kakaoProfile);
+            }
         }
 
         log.info(oAuth2Response.getName());
