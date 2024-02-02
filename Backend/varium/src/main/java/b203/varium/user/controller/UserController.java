@@ -2,11 +2,14 @@ package b203.varium.user.controller;
 
 import b203.varium.user.dto.JoinDTO;
 import b203.varium.user.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 @ResponseBody
@@ -26,12 +29,12 @@ public class UserController {
     }
 
     @PostMapping("/join")
-    public String joinUser(JoinDTO joinDTO) {
+    public ResponseEntity<Map<String, String>> joinUser(JoinDTO joinDTO) {
 
         System.out.println(joinDTO.getUsername());
-        userService.joinUser(joinDTO);
+        Map<String, String> result = userService.joinUser(joinDTO);
 
-        return "ok";
+        return ResponseEntity.ok(result);
     }
 
 }

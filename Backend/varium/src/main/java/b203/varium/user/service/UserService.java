@@ -6,6 +6,9 @@ import b203.varium.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
@@ -19,19 +22,27 @@ public class UserService {
         this.bcryptEncoder = bcryptEncoder;
     }
 
-    public void joinUser(JoinDTO joinDTO) {
+    public Map<String, String> joinUser(JoinDTO joinDTO) {
+
+        Map<String, String> resp = new HashMap<>();
+
         String username = joinDTO.getUsername();
         String userid = joinDTO.getUserId();
         String password = joinDTO.getPassword();
         String email = joinDTO.getEmail();
 
-        Boolean existName = userRepository.existsByUsername(username);
-        Boolean existEmail = userRepository.existsByEmail(email);
-
-        if (existName || existEmail) {
-            // 에러 처리
-            log.error("existed Member");
-            return;
+        if (userRepository.existsByUsername(username)) {
+            resp.put("status", "fail");
+            resp.put("msg", "이미 존재하는 사용자 이름입니다.");
+            return resp;
+        } else if (userRepository.existsByEmail(email)) {
+            resp.put("status", "fail");
+            resp.put("msg", "이미 존재하는 사용자 이메일입니다.");
+            return resp;
+        } else if (userRepository.existsByUserId(userid)) {
+            resp.put("status", "fail");
+            resp.put("msg", "이미 존재하는 사용자 아이디입니다.");
+            return resp;
         }
 
         UserEntity data = new UserEntity();
@@ -46,5 +57,10 @@ public class UserService {
 
         userRepository.save(data);
         log.debug("join success!");
+
+        resp.put("status", "success");
+        resp.put("msg", "Join Success");
+
+        return resp;
     }
 }
