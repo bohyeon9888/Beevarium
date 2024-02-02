@@ -1,8 +1,10 @@
 package b203.varium.follow.service;
 
+import b203.varium.broadcastStation.repository.BroadcastStationRepository;
+import b203.varium.follow.dto.FollowDTO;
 import b203.varium.follow.entity.FollowRelation;
 import b203.varium.follow.respository.FollowRelationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import b203.varium.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,15 +14,23 @@ import java.util.Optional;
 public class FollowRelationService {
 
     private final FollowRelationRepository followRelationRepository;
+    private final BroadcastStationRepository broadcastStationRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public FollowRelationService(FollowRelationRepository followRelationRepository) {
+    public FollowRelationService(FollowRelationRepository followRelationRepository, BroadcastStationRepository broadcastStationRepository, UserRepository userRepository) {
         this.followRelationRepository = followRelationRepository;
+        this.broadcastStationRepository = broadcastStationRepository;
+        this.userRepository = userRepository;
     }
 
     // 새로운 FollowRelation 엔티티를 저장하거나 업데이트
-    public FollowRelation saveFollowRelation(FollowRelation followRelation) {
-        return followRelationRepository.save(followRelation);
+    public FollowRelation saveFollowRelation(FollowDTO followDTO) {
+
+        FollowRelation relation = new FollowRelation();
+        relation.setBroadcastStation(broadcastStationRepository.findById(followDTO.getStationId()));
+        relation.setFollower(userRepository.findByUserId(followDTO.getUserId()));
+
+        return followRelationRepository.save(relation);
     }
 
     // 특정 ID를 가진 FollowRelation 엔티티를 검색
