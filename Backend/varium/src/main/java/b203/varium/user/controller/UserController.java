@@ -2,6 +2,7 @@ package b203.varium.user.controller;
 
 import b203.varium.user.dto.CustomUserDetails;
 import b203.varium.user.dto.JoinDTO;
+import b203.varium.user.repository.UserRepository;
 import b203.varium.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,25 +15,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
-import static org.hibernate.query.sqm.tree.SqmNode.log;
-
 @Controller
 @ResponseBody
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
-    @GetMapping("/my")
+    @GetMapping("/mypage")
     public String userP() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 
-        log.info(customUserDetails.getUsername());
+        System.out.println();
         return "user controller";
     }
 
