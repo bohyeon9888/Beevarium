@@ -1,6 +1,5 @@
 package b203.varium;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
 
@@ -8,7 +7,6 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Record {
 
-    @Id
     private String createdDate;
     private String updatedDate;
 
