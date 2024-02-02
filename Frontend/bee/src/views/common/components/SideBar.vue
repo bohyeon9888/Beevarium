@@ -10,6 +10,10 @@ const { isLoggedIn } = storeToRefs(authStore);
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 
+const expand = () => {
+  sidebarStore.expand();
+};
+
 const follows = ref([
   {
     streamer_image: "streamer_image_1",
@@ -35,12 +39,16 @@ const getImageUrl = (index) => {
     class="sidebar-container"
     :class="{ expanded: isExpanded }"
   >
+    <div class="expand-button" @click="expand">
+      <img v-if="!isExpanded" src="../../../assets/img/common/expand-on.png" alt="">
+      <img v-if="isExpanded" src="../../../assets/img/common/expand-off.png" alt="">
+    </div>
     <div v-if="isLoggedIn" class="follow-channel">
       <div
         v-if="isExpanded"
         style="
           margin-top: 16px;
-          margin-left: 20px;
+          margin-left: 22px;
           font-size: 14px;
           font-weight: 600;
         "
@@ -51,8 +59,8 @@ const getImageUrl = (index) => {
         v-if="!isExpanded"
         style="
           margin-top: 16px;
-          margin-left: 20px;
-          width: 40px;
+          margin-left: 22px;
+          width: 37px;
           font-size: 14px;
           font-weight: 600;
         "
@@ -97,7 +105,7 @@ const getImageUrl = (index) => {
         v-if="isExpanded"
         style="
           margin-top: 16px;
-          margin-left: 20px;
+          margin-left: 22px;
           font-size: 14px;
           font-weight: 600;
         "
@@ -108,8 +116,8 @@ const getImageUrl = (index) => {
         v-if="!isExpanded"
         style="
           margin-top: 16px;
-          margin-left: 20px;
-          width: 40px;
+          margin-left: 27.5px;
+          width: 25px;
           font-size: 14px;
           font-weight: 600;
         "
@@ -126,6 +134,10 @@ const getImageUrl = (index) => {
   top: 60px;
   width: 80px;
   height: 100%;
+}
+.expand-button {
+  margin: 20px 31px 24px;
+  cursor: pointer;
 }
 .recommend-channel {
   margin-top: 16px;
@@ -159,9 +171,13 @@ const getImageUrl = (index) => {
   object-fit: cover;
 }
 .streamer-name {
-  margin: 0 49px 0 7px;
+  width: 100px;
+  margin: 0 0 0 7px;
   font-size: 14px;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .watcher {
   font-size: 12px;

@@ -3,15 +3,11 @@ import StudioInfo from "./components/StudioInfo.vue";
 </script>
 
 <template>
-  <div class="container">
-    <div class="container-box">
-      <div class="studio-main">
-        <StudioInfo />
-        <div class="studio-content">
-          <h1>ReplayDetail</h1>
-        </div>
-      </div>
+  <div class="replay-detail-container">
+    <div class="studio-info">
+      <StudioInfo />
     </div>
+    
   </div>
 </template>
 

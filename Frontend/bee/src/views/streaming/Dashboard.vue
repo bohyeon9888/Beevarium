@@ -138,7 +138,6 @@ addNewsFeedItem("아재개더", "3,000");
   width: 1920px;
   height: 862px;
   flex-direction: column;
-  margin-top: 60px;
 }
 button:hover {
   cursor: pointer;

@@ -8,7 +8,6 @@ import MypageModal from "@/views/streaming/components/MypageModal.vue";
 
 const authStore = useAuthStore();
 const { isLoggedIn } = storeToRefs(authStore);
-const sidebarStore = useSidebarStore();
 const router = useRouter();
 const searchQuery = ref("");
 const mypageModActive = ref(false);
@@ -18,10 +17,6 @@ const onSearch = (event) => {
     router.push({ path: `/search/${searchQuery.value}` });
     searchQuery.value = "";
   }
-};
-
-const expand = () => {
-  sidebarStore.expand();
 };
 
 const logout = () => {
@@ -49,13 +44,6 @@ const toggleMpMod = () => {
 <template>
   <div class="navbar-container">
     <div style="display: flex">
-      <div class="hamburger-menu-button" @click="expand">
-        <img
-          class="hamburger-menu"
-          src="../../../assets/img/navbar/hamburger-menu.png"
-          alt=""
-        />
-      </div>
       <div class="navbar-logo-box">
         <router-link :to="{ name: 'Home' }">
           <img
@@ -104,7 +92,7 @@ const toggleMpMod = () => {
           방송하기
         </div>
       </router-link>
-      <div v-if="isLoggedIn" style="width: 52px; margin-right: 30px;">
+      <div v-if="isLoggedIn" style="width: 52px; margin-right: 30px">
         <router-link
           :to="{ name: 'StudioMain' }"
           style="
@@ -137,26 +125,13 @@ const toggleMpMod = () => {
   align-items: center;
   width: 100%;
   height: 60px;
-  z-index: 2;
+  z-index: 100;
   background-color: #121212;
-}
-.hamburger-menu-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 18px;
-  height: 14px;
-  margin: 24px;
-  cursor: pointer;
-}
-.hamburger-menu {
-  width: 18px;
-  height: 14px;
 }
 .navbar-logo-box {
   width: 162px;
   height: 38px;
-  margin: 11px 0;
+  margin-left: 24px;
 }
 .searchbar-box {
   display: flex;

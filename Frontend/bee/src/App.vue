@@ -7,6 +7,8 @@ import { useSidebarStore } from "@/stores/sidebar";
 import { storeToRefs } from "pinia";
 
 const route = useRoute();
+
+// navbar가 안보여야 하는 컴포넌트
 const invisiblePaths_navbar = [
   "/user/login",
   "/user/signup",
@@ -15,7 +17,13 @@ const invisiblePaths_navbar = [
   "/admin/blacklist",
 ];
 
+// sidebar가 안보여야 하는 컴포넌트
 const invisiblePaths_sidebar = [
+  "/studio/replay-detail",
+  "/studio/replay",
+  "/studio/studio-main",
+  "/studio/clip",
+  "/studio/notice",
   "/user/login",
   "/user/signup",
   "/streaming/dashboard",
@@ -24,6 +32,7 @@ const invisiblePaths_sidebar = [
   "/admin/blacklist",
 ];
 
+// navbar, sidebar 표시 관련 함수
 const isInvisible_n = computed(() =>
   invisiblePaths_navbar.includes(route.path)
 );
@@ -31,6 +40,7 @@ const isInvisible_s = computed(() =>
   invisiblePaths_sidebar.includes(route.path)
 );
 
+// sidebar 확장 관련 함수
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 </script>
@@ -42,7 +52,11 @@ const { isExpanded } = storeToRefs(sidebarStore);
   <SideBar v-if="!isInvisible_s" />
   <div
     id="router-view"
-    :class="{ expanded: isExpanded, invisible: isInvisible_s }"
+    :class="{
+      expanded: isExpanded,
+      invisible_s: isInvisible_s,
+      invisible_n: isInvisible_n,
+    }"
   >
     <RouterView />
   </div>
@@ -58,7 +72,10 @@ const { isExpanded } = storeToRefs(sidebarStore);
 #router-view.expanded {
   padding-left: 270px;
 }
-#router-view.invisible {
-  padding: 0;
+#router-view.invisible_s {
+  padding-left: 0;
+}
+#router-view.invisible_n {
+  padding-top: 0;
 }
 </style>

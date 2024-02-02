@@ -175,13 +175,24 @@ watchEffect(() => {
   margin: 0 16px;
   height: 690px;
   max-height: 700px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  /* -ms-overflow-style: none; */
+  /* scrollbar-width: none; */
 }
 .chat-messages::-webkit-scrollbar {
+  width: 16px;
   display: none;
 }
+.chat-messages:hover::-webkit-scrollbar {
+  display: block;
+}
+.chat-messages::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  border: 4px solid #1e1e1e;
+}
 .chat-message {
+  width: 292px;
   display: flex;
   align-items: flex-start;
   margin-bottom: 8px;
