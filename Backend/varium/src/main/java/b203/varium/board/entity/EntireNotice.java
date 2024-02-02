@@ -1,6 +1,6 @@
 package b203.varium.board.entity;
 
-import com.pjt.beevarium.Record;
+import b203.varium.board.Record;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,6 +22,5 @@ public class EntireNotice extends Record {
     private String entireNoticeTitle;
 
     private String entireNoticeContent;
-
 
 }

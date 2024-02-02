@@ -1,6 +1,6 @@
 package b203.varium.board.entity;
 
-import com.pjt.beevarium.Record;
+import b203.varium.board.Record;
 import com.pjt.beevarium.broadcastStation.entity.BroadcastStation;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 public class BroadcastStationNotice extends Record {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "broadcast_station_notice_no")
     private Integer broadcastStationNoticeNo;
 

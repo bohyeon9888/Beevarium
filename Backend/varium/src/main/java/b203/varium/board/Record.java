@@ -1,6 +1,7 @@
-package com.pjt.beevarium;
+package b203.varium.board;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 
 
 //슈퍼클래스
@@ -9,7 +10,6 @@ public abstract class Record {
     @Id
     private String createdDate;
     private String updatedDate;
-
 
 
 //@Entity
