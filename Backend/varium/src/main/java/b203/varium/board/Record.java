@@ -1,4 +1,5 @@
 package b203.varium.board;
+// 폴더 경로 바꿈
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
