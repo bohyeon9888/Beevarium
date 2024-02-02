@@ -1,7 +1,7 @@
-package com.pjt.beevarium.board.service;
+package b203.varium.board.service;
 
-import com.pjt.beevarium.board.entity.EntireNotice;
-import com.pjt.beevarium.board.repository.EntireNoticeRepository;
+import b203.varium.board.repository.EntireNoticeRepository;
+import b203.varium.board.entity.EntireNotice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

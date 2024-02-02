@@ -1,7 +1,7 @@
-package com.pjt.beevarium.board.controller;
+package b203.varium.board.contoller;
 
-import com.pjt.beevarium.board.entity.EntireNotice;
-import com.pjt.beevarium.board.service.EntireNoticeService;
+import b203.varium.board.service.EntireNoticeService;
+import b203.varium.board.entity.EntireNotice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

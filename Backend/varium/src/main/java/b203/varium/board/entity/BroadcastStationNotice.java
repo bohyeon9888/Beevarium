@@ -1,4 +1,4 @@
-package com.pjt.beevarium.board.entity;
+package b203.varium.board.entity;
 
 import com.pjt.beevarium.Record;
 import com.pjt.beevarium.broadcastStation.entity.BroadcastStation;

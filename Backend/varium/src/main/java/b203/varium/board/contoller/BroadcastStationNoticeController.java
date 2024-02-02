@@ -1,7 +1,7 @@
-package com.pjt.beevarium.board.contoller;
+package b203.varium.board.contoller;
 
-import com.pjt.beevarium.board.entity.BroadcastStationNotice;
-import com.pjt.beevarium.board.service.BroadcastStationNoticeService;
+import b203.varium.board.entity.BroadcastStationNotice;
+import b203.varium.board.service.BroadcastStationNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

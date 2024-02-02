@@ -1,8 +1,8 @@
 // BroadcastStationNoticeService.java
-package com.pjt.beevarium.board.service;
+package b203.varium.board.service;
 
-import com.pjt.beevarium.board.entity.BroadcastStationNotice;
-import com.pjt.beevarium.board.repository.BroadcastStationNoticeRepository;
+import b203.varium.board.repository.BroadcastStationNoticeRepository;
+import b203.varium.board.entity.BroadcastStationNotice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
