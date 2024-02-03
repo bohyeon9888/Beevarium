@@ -1,5 +1,6 @@
 package b203.varium.oauth2.service;
 
+import b203.varium.broadcastStation.service.BroadcastStationService;
 import b203.varium.jwt.JWTUtil;
 import b203.varium.oauth2.dto.*;
 import b203.varium.user.entity.UserEntity;
@@ -16,6 +17,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,7 @@ public class OauthService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bcrypt;
     private final JWTUtil jwtUtil;
+    private final BroadcastStationService stationService;
 
     public Map<String, Object> getAccessToken(String code, String provider) {
         System.out.println("================get access token==================");
@@ -133,6 +136,7 @@ public class OauthService {
         String userCode = env.getProperty("user.provider." + oAuth2Response.getProvider() + ".code-name");
 
         UserEntity existUser = userRepository.findAllByEmailAndCodeName(email, userCode);
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
         if (existUser != null) {
 
@@ -140,6 +144,7 @@ public class OauthService {
             existUser.setProfileUrl(oAuth2Response.getProfileImg());
             int nowP = existUser.getPoint();
             existUser.setPoint(nowP + 50);
+            existUser.setUpdatedDate(nowT);
 
             userRepository.save(existUser);
             log.debug("update UserInfo");
@@ -155,6 +160,9 @@ public class OauthService {
             userEntity.setPoint(500);
             userEntity.setCodeName(userCode);
             userEntity.setRole(role);
+            userEntity.setCreatedDate(nowT);
+            userEntity.setUpdatedDate(nowT);
+            userEntity.setStation(stationService.createBroadcastStation(userEntity));
 
             userRepository.save(userEntity);
             log.debug("save UserInfo");

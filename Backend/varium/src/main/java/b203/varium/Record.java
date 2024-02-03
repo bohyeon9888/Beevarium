@@ -1,14 +1,26 @@
 package b203.varium;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.sql.Timestamp;
 
 
 //슈퍼클래스
 @MappedSuperclass
+@Getter
+@Setter
 public abstract class Record {
 
-    private String createdDate;
-    private String updatedDate;
+    @Column(name = "created_date")
+    private Timestamp createdDate;
+
+    @Column(name = "updated_date")
+    private Timestamp updatedDate;
+
+    // 기타 필드 및 메소드...
 
 
 //@Entity

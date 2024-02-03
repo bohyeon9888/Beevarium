@@ -1,10 +1,13 @@
 package b203.varium.follow.controller;
 
 import b203.varium.follow.service.FollowRelationService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/follow")
+@RestController
+@RequestMapping("/follow")
 public class FollowController {
 
     private final FollowRelationService followRelationService;
@@ -29,14 +32,16 @@ public class FollowController {
 
     @GetMapping("/regist/{stationId}")
     public void registFollow(@PathVariable int stationId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(auth.getName());
     }
 
-    @DeleteMapping("/delete/{stationId}")
+    @DeleteMapping("/deleteB/{stationId}")
     public void deleteFollow(@PathVariable int stationId) {
 
     }
 
-    @DeleteMapping("/delete/{stationId}")
+    @DeleteMapping("/deleteF/{stationId}")
     public void deleteFollower(@PathVariable int stationId, @RequestParam int userNo) {
 
     }

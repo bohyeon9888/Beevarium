@@ -24,7 +24,7 @@ public class BroadcastStation extends Record {
     @Column(name = "broadcast_station_follow_num", columnDefinition = "INT DEFAULT 0")
     private Integer broadcastStationFollowNum; // 기본값으로 0 설정
 
-    @Column(name = "broadcast_station_noti_mention", columnDefinition = "VARCHAR(255) DEFAULT '~'")
+    @Column(name = "broadcast_station_noti_mention", columnDefinition = "VARCHAR(300) DEFAULT '~'")
     private String broadcastStationNotiMention; // 기본값으로 '~' 설정
 
 
@@ -32,7 +32,7 @@ public class BroadcastStation extends Record {
 //    @JoinColumn(name = "user_no", nullable = false)
 //    private User user;
     // User와 일대일 관계
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_no", referencedColumnName = "user_no")
     private UserEntity user;
 
@@ -40,6 +40,17 @@ public class BroadcastStation extends Record {
 //    private BroadcastStationAdmin admin;
 
     // 기타 필드 및 메소드...
+    public void setUser(UserEntity user) {
+        if (this.user != null) {
+            this.user.setStation(null);
+        }
+
+        this.user = user;
+        if (user != null) {
+            user.setStation(this);
+        }
+    }
+
     public Long getUserNo() {
         return user != null ? user.getId() : null;
     }

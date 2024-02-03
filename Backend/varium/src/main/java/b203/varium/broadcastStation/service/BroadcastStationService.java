@@ -4,25 +4,23 @@ package b203.varium.broadcastStation.service;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.user.entity.UserEntity;
-import b203.varium.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.sql.Timestamp;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 
 @Service
 public class BroadcastStationService {
 
-    private final BroadcastStationRepository broadcastStationRepository;
-    private final UserRepository userRepository;
+    private final BroadcastStationRepository stationRepository;
 
     @Autowired
-    public BroadcastStationService(BroadcastStationRepository broadcastStationRepository,
-                                   UserRepository userRepository) {
-        this.broadcastStationRepository = broadcastStationRepository;
-        this.userRepository = userRepository;
+    public BroadcastStationService(BroadcastStationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public BroadcastStation getBroadcastStationWithDetails(int stationId) {
@@ -41,48 +39,28 @@ public class BroadcastStationService {
 //        station.setClipVideos(clipVideos);
 //        station.setMemberBans(bans);
 
-        return broadcastStationRepository.findById(stationId);
+        return stationRepository.findById(stationId);
     }
 
-    public BroadcastStation createOrUpdateBroadcastStation(BroadcastStation broadcastStation) {
+    @Transactional
+    public BroadcastStation createBroadcastStation(UserEntity user) {
         // User 엔티티와 연결
-        if (broadcastStation.getUserNo() != null) {
-            UserEntity user = userRepository.findById(broadcastStation.getUserNo())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            broadcastStation.setUser(user); // User 엔티티 연결
-        }
+        BroadcastStation station = new BroadcastStation();
+        String username = user.getUsername();
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
-        return broadcastStationRepository.save(broadcastStation);
+        station.setBroadcastStationTitle(username + "의 방송국입니다.");
+        station.setBroadcastStationFollowNum(0);
+        station.setBroadcastStationNotiMention(username + "이 방송을 시작했습니다!");
+        station.setCreatedDate(nowT);
+        station.setUpdatedDate(nowT);
+        station.setUser(user);
+
+        stationRepository.save(station);
+        log.debug("success creating BroadStation");
+
+        return station;
     }
 
-    // BroadcastStation 저장
-    public BroadcastStation saveBroadcastStation(BroadcastStation broadcastStation) {
-        return broadcastStationRepository.save(broadcastStation);
-    }
-
-    // BroadcastStation 조회
-    public BroadcastStation getBroadcastStationById(Integer broadcastStationNo) {
-        return broadcastStationRepository.findById(broadcastStationNo)
-                .orElseThrow(() -> new EntityNotFoundException("BroadcastStation not found with id: " + broadcastStationNo));
-    }
-
-//    public Optional<BroadcastStation> getBroadcastStationById(Integer id) {
-//        return broadcastStationRepository.findById(id);
-//    }
-
-    // 모든 BroadcastStation 조회
-    public List<BroadcastStation> getAllBroadcastStations() {
-        return broadcastStationRepository.findAll();
-    }
-
-
-    public BroadcastStation updateBroadcastStation(BroadcastStation broadcastStation) {
-        return broadcastStationRepository.save(broadcastStation);
-    }
-
-    public void deleteBroadcastStation(Integer id) {
-        broadcastStationRepository.deleteById(id);
-    }
-
-    // 추가적인 비즈니스 로직 메서드 추가 가능
 }
+

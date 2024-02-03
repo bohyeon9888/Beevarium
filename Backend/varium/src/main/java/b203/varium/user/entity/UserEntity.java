@@ -1,6 +1,8 @@
 package b203.varium.user.entity;
 
 
+import b203.varium.Record;
+import b203.varium.broadcastStation.entity.BroadcastStation;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +11,7 @@ import lombok.Setter;
 @Table(name = "user")
 @Getter
 @Setter
-public class UserEntity {
+public class UserEntity extends Record {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,4 +42,6 @@ public class UserEntity {
     @Column(name = "code_name")
     private String codeName;
 
+    @OneToOne(mappedBy = "user")
+    private BroadcastStation station;
 }
