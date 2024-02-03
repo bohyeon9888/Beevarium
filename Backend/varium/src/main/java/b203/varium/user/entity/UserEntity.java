@@ -16,7 +16,7 @@ public class UserEntity extends Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_no")
-    private Long id; // user_no를 기본 키로 사용
+    private int id; // user_no를 기본 키로 사용
 
     @Column(name = "user_id")
     private String userId;

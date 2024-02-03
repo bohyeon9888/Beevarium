@@ -1,15 +1,21 @@
 package b203.varium.follow.service;
 
+import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.follow.dto.FollowDTO;
+import b203.varium.follow.dto.FollowRespDTO;
+import b203.varium.follow.dto.FollowerRespDTO;
 import b203.varium.follow.entity.FollowRelation;
 import b203.varium.follow.respository.FollowRelationRepository;
+import b203.varium.user.entity.UserEntity;
 import b203.varium.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -48,14 +54,44 @@ public class FollowRelationService {
         return resp;
     }
 
-    // 특정 ID를 가진 FollowRelation 엔티티를 검색
-//    @Transactional(readOnly = true)
-//    public Optional<FollowRelation> getFollowRelationById(Integer id) {
-//        return followRelationRepository.findById(id);
-//    }
+    @Transactional(readOnly = true)
+    public List<FollowerRespDTO> getFollowerList(String username) {
+        List<FollowerRespDTO> result = new ArrayList<>();
+        List<FollowRelation> resp = followRelationRepository.findAllByBroadcastStation_User_Username(username);
 
-    // 모든 FollowRelation 엔티티를 조회
-//    public List<FollowRelation> getAllFollowRelations() {
+        for (FollowRelation relation : resp) {
+            UserEntity user = relation.getFollower();
+            FollowerRespDTO respDTO = new FollowerRespDTO();
+
+            respDTO.setUserNo(user.getId());
+            respDTO.setUsername(user.getUsername());
+            respDTO.setUserProfile(user.getProfileUrl());
+            result.add(respDTO);
+        }
+
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public List<FollowRespDTO> getFollowList(String username) {
+        List<FollowRespDTO> result = new ArrayList<FollowRespDTO>();
+        List<FollowRelation> resp = followRelationRepository.findAllByFollower_Username(username);
+
+        for (FollowRelation followRelation : resp) {
+            BroadcastStation station = followRelation.getBroadcastStation();
+            FollowRespDTO respDTO = new FollowRespDTO();
+
+            respDTO.setStationNo(station.getId());
+            respDTO.setStationTitle(station.getBroadcastStationTitle());
+            respDTO.setStationProfile(station.getUser().getProfileUrl());
+            result.add(respDTO);
+        }
+
+        return result;
+    }
+
+    // 방송국이 자신의 구독자 조회
+//    public List<FollowRelation> getFollowerList() {
 //        return followRelationRepository.findAll();
 //    }
 

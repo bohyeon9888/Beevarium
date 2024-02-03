@@ -1,12 +1,15 @@
 package b203.varium.follow.controller;
 
 import b203.varium.follow.dto.FollowDTO;
+import b203.varium.follow.dto.FollowRespDTO;
+import b203.varium.follow.dto.FollowerRespDTO;
 import b203.varium.follow.service.FollowRelationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -22,24 +25,27 @@ public class FollowController {
     }
 
     // 방송국이 보는 자기 팔로워들
-    @GetMapping("/view/{stationId}")
-    public void viewFollower(@PathVariable int stationId) {
+    @GetMapping("/view/follower")
+    public ResponseEntity<List<FollowerRespDTO>> viewFollower() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("station user name : " + auth.getName());
 
+        return ResponseEntity.ok(followRelationService.getFollowerList(auth.getName()));
     }
 
     // 유저가 보는 자신의 구독목록
-    @GetMapping("/view")
-    public void viewFollowing() {
+    @GetMapping("/view/station")
+    public ResponseEntity<List<FollowRespDTO>> viewFollowing() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        log.info(auth.getName());
+        log.info("user name : " + auth.getName());
 
-        
+        return ResponseEntity.ok(followRelationService.getFollowList(auth.getName()));
     }
 
-    @GetMapping("/regist/{stationId}")
+    @GetMapping("/subscribe/{stationId}")
     public ResponseEntity<Map<String, String>> registFollow(@PathVariable int stationId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        log.info(auth.getName());
+        log.info("user name : " + auth.getName());
 
         FollowDTO followDTO = new FollowDTO();
         followDTO.setStationId(stationId);

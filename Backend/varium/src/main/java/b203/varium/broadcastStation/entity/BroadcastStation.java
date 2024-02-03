@@ -51,7 +51,7 @@ public class BroadcastStation extends Record {
         }
     }
 
-    public Long getUserNo() {
-        return user != null ? user.getId() : null;
+    public int getUserNo() {
+        return user != null ? user.getId() : -1;
     }
 }
