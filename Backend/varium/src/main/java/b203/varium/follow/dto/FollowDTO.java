@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class FollowDTO {
     private int stationId;
-    private String userId;
+    private String username;
 }

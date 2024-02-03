@@ -6,9 +6,13 @@ import b203.varium.follow.entity.FollowRelation;
 import b203.varium.follow.respository.FollowRelationRepository;
 import b203.varium.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
 public class FollowRelationService {
@@ -24,29 +28,41 @@ public class FollowRelationService {
     }
 
     // 새로운 FollowRelation 엔티티를 저장하거나 업데이트
-    public FollowRelation saveFollowRelation(FollowDTO followDTO) {
+    @Transactional
+    public Map<String, String> saveFollowRelation(FollowDTO followDTO) {
+
+        Map<String, String> resp = new HashMap<>();
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
         FollowRelation relation = new FollowRelation();
         relation.setBroadcastStation(broadcastStationRepository.findById(followDTO.getStationId()));
-        relation.setFollower(userRepository.findByUserId(followDTO.getUserId()));
+        relation.setFollower(userRepository.findByUsername(followDTO.getUsername()));
+        relation.setCreatedDate(nowT);
+        relation.setUpdatedDate(nowT);
 
-        return followRelationRepository.save(relation);
+        followRelationRepository.save(relation);
+        log.debug("success saving follow relation");
+
+        resp.put("status", "success");
+        resp.put("msg", "Join Success");
+        return resp;
     }
 
     // 특정 ID를 가진 FollowRelation 엔티티를 검색
-    public Optional<FollowRelation> getFollowRelationById(Integer id) {
-        return followRelationRepository.findById(id);
-    }
+//    @Transactional(readOnly = true)
+//    public Optional<FollowRelation> getFollowRelationById(Integer id) {
+//        return followRelationRepository.findById(id);
+//    }
 
     // 모든 FollowRelation 엔티티를 조회
-    public List<FollowRelation> getAllFollowRelations() {
-        return followRelationRepository.findAll();
-    }
+//    public List<FollowRelation> getAllFollowRelations() {
+//        return followRelationRepository.findAll();
+//    }
 
     //특정 ID를 가진 FollowRelation 엔티티를 삭제
-    public void deleteFollowRelation(Integer id) {
-        followRelationRepository.deleteById(id);
-    }
+//    public void deleteFollowRelation(Integer id) {
+//        followRelationRepository.deleteById(id);
+//    }
 
     // 추가적인 비즈니스 로직 메소드들을 여기에 구현할 수 있습니다.
     // 예: 특정 사용자를 팔로우하는 모든 사용자를 찾는 메소드

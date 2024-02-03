@@ -105,7 +105,7 @@ public class OauthService {
         saveUser(oAuth2Response);
 
         // JWT Token 생성
-        String jwtToken = jwtUtil.createJwt(oAuth2Response.getName(), role, 18000000L);
+        String jwtToken = jwtUtil.createJwt(oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4), role, 18000000L);
 
         // Authentication 객체 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -140,7 +140,7 @@ public class OauthService {
 
         if (existUser != null) {
 
-            existUser.setUsername(name + oAuth2Response.getProviderId().substring(0, 4));
+            existUser.setUsername(name + "#" + oAuth2Response.getProviderId().substring(0, 4));
             existUser.setProfileUrl(oAuth2Response.getProfileImg());
             int nowP = existUser.getPoint();
             existUser.setPoint(nowP + 50);
