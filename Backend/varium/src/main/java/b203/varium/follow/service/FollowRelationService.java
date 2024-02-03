@@ -33,7 +33,7 @@ public class FollowRelationService {
         this.userRepository = userRepository;
     }
 
-    // 새로운 FollowRelation 엔티티를 저장하거나 업데이트
+    // 새로운 FollowRelation 엔티티를 저장
     @Transactional
     public Map<String, String> saveFollowRelation(FollowDTO followDTO) {
 
@@ -41,16 +41,49 @@ public class FollowRelationService {
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
         FollowRelation relation = new FollowRelation();
-        relation.setBroadcastStation(broadcastStationRepository.findById(followDTO.getStationId()));
-        relation.setFollower(userRepository.findByUsername(followDTO.getUsername()));
+        String username = followDTO.getUsername();
+        UserEntity user = userRepository.findByUsername(username);
+        BroadcastStation station = broadcastStationRepository.findById(followDTO.getStationId());
+
+        Map<String, String> errorCheckResult = checkForError(user, station);
+
+        // 중복이 있는 경우나 스스로를 구독하는 경우 검사 결과 반환
+        if (!errorCheckResult.isEmpty()) {
+            return errorCheckResult;
+        }
+
+        relation.setBroadcastStation(station);
+        relation.setFollower(user);
         relation.setCreatedDate(nowT);
         relation.setUpdatedDate(nowT);
 
         followRelationRepository.save(relation);
         log.debug("success saving follow relation");
 
+        // 구독자 수 증가
+        int nowS = station.getBroadcastStationFollowNum();
+        station.setBroadcastStationFollowNum(nowS + 1);
+        broadcastStationRepository.save(station);
+
         resp.put("status", "success");
         resp.put("msg", "Join Success");
+        return resp;
+    }
+
+    private Map<String, String> checkForError(UserEntity user, BroadcastStation station) {
+        Map<String, String> resp = new HashMap<>();
+
+        // 자기 자신 구독
+        if (user.getUsername().equals(station.getUser().getUsername())) {
+            resp.put("status", "fail");
+            resp.put("msg", "You can't subscribe yourself!");
+            log.error("subscribe yourself!");
+        } else if (followRelationRepository.existsByBroadcastStationAndFollower(station, user)) {
+            resp.put("status", "fail");
+            resp.put("msg", "You already subscribed it!");
+            log.error("already subscribed it!");
+        }
+
         return resp;
     }
 
@@ -74,7 +107,7 @@ public class FollowRelationService {
 
     @Transactional(readOnly = true)
     public List<FollowRespDTO> getFollowList(String username) {
-        List<FollowRespDTO> result = new ArrayList<FollowRespDTO>();
+        List<FollowRespDTO> result = new ArrayList<>();
         List<FollowRelation> resp = followRelationRepository.findAllByFollower_Username(username);
 
         for (FollowRelation followRelation : resp) {
@@ -90,16 +123,27 @@ public class FollowRelationService {
         return result;
     }
 
-    // 방송국이 자신의 구독자 조회
-//    public List<FollowRelation> getFollowerList() {
-//        return followRelationRepository.findAll();
-//    }
+    @Transactional
+    public HashMap<String, String> deleteFollow(String username, int stationId) {
+        HashMap<String, String> result = new HashMap<>();
+        BroadcastStation station = broadcastStationRepository.findById(stationId);
+        UserEntity user = userRepository.findByUsername(username);
 
-    //특정 ID를 가진 FollowRelation 엔티티를 삭제
-//    public void deleteFollowRelation(Integer id) {
-//        followRelationRepository.deleteById(id);
-//    }
+        if (followRelationRepository.existsByBroadcastStationAndFollower(station, user)) {
+            FollowRelation relation = followRelationRepository.findByBroadcastStation_IdAndFollower_Username(stationId, username);
+            followRelationRepository.delete(relation);
 
-    // 추가적인 비즈니스 로직 메소드들을 여기에 구현할 수 있습니다.
-    // 예: 특정 사용자를 팔로우하는 모든 사용자를 찾는 메소드
+            int nowF = station.getBroadcastStationFollowNum();
+            station.setBroadcastStationFollowNum(nowF - 1);
+            broadcastStationRepository.save(station);
+
+            result.put("status", "success");
+            result.put("msg", "Success Unsubscribe!");
+        } else {
+            result.put("status", "fail");
+            result.put("msg", "already unsubscribed!");
+        }
+
+        return result;
+    }
 }

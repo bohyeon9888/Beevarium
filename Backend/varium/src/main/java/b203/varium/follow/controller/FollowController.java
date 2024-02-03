@@ -54,13 +54,12 @@ public class FollowController {
         return ResponseEntity.ok(followRelationService.saveFollowRelation(followDTO));
     }
 
-    @DeleteMapping("/deleteB/{stationId}")
-    public void deleteFollow(@PathVariable int stationId) {
+    // 사용자 구독 취소
+    @DeleteMapping("/unsubscribe/{stationId}")
+    public ResponseEntity<Map<String, String>> deleteFollower(@PathVariable int stationId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("user name : " + auth.getName());
 
-    }
-
-    @DeleteMapping("/deleteF/{stationId}")
-    public void deleteFollower(@PathVariable int stationId, @RequestParam int userNo) {
-
+        return ResponseEntity.ok(followRelationService.deleteFollow(auth.getName(), stationId));
     }
 }
