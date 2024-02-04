@@ -1,6 +1,6 @@
 package b203.varium.board.entity;
 
-import b203.varium.board.Record;
+import b203.varium.Record;
 import com.pjt.beevarium.broadcastStation.entity.BroadcastStation;
 import jakarta.persistence.*;
 import lombok.Getter;

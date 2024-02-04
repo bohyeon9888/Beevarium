@@ -1,6 +1,6 @@
 package b203.varium.board.entity;
 
-import b203.varium.board.Record;
+import b203.varium.Record;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

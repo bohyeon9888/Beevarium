@@ -1,16 +1,16 @@
-package b203.varium.board;
-// 폴더 경로 바꿈
+package b203.varium;
 
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+// 날짜 타입 수정 (String -> LocalDateTime)
 
 //슈퍼클래스
 @MappedSuperclass
 public abstract class Record {
-    @Id
-    private String createdDate;
-    private String updatedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
+
 
 
 //@Entity
