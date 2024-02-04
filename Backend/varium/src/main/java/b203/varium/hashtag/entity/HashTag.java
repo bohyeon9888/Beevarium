@@ -3,13 +3,13 @@ package b203.varium.hashtag.entity;
 import b203.varium.Record;
 import b203.varium.broadcasting.entity.Broadcasting;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@Table(name = "hashtag")
 public class HashTag extends Record {
 
     @Id

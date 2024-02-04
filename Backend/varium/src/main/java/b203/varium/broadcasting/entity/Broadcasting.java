@@ -2,17 +2,18 @@ package b203.varium.broadcasting.entity;
 
 import b203.varium.Record;
 import b203.varium.broadcastStation.entity.BroadcastStation;
+import b203.varium.hashtag.entity.HashTag;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.List;
+
 @Getter
+@Setter
 @Entity
 @Table(name = "broadcasting")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Broadcasting extends Record {
 
     @Id
@@ -37,11 +38,6 @@ public class Broadcasting extends Record {
     @Column(name = "broadcasting_img_url")
     private String broadcastingImgUrl;
 
-    @Builder
-    public Broadcasting(BroadcastStation station, String broadcastingTitle, String broadcastingUrl, String broadcastingImgUrl) {
-        this.broadcastStation = station;
-        this.broadcastingTitle = broadcastingTitle;
-        this.broadcastingUrl = broadcastingUrl;
-        this.broadcastingImgUrl = broadcastingImgUrl;
-    }
+    @OneToMany(mappedBy = "broadcasting", cascade = CascadeType.REMOVE)
+    private List<HashTag> hashTagList;
 }

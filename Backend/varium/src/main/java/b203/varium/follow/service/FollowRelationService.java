@@ -66,7 +66,7 @@ public class FollowRelationService {
         broadcastStationRepository.save(station);
 
         resp.put("status", "success");
-        resp.put("msg", "Join Success");
+        resp.put("msg", "Follow Success");
         return resp;
     }
 

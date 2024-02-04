@@ -9,8 +9,9 @@ import java.util.List;
 @Repository
 public interface BroadcastingRepository extends JpaRepository<Broadcasting, Integer> {
 
-    List<Broadcasting> findByBroadcastStationNo(Integer broadcastStationNo);
+    Broadcasting findByBroadcastStation_Id(Integer broadcastStationNo);
 
     List<Broadcasting> findByBroadcastingTitleContaining(String title);
+
 
 }
