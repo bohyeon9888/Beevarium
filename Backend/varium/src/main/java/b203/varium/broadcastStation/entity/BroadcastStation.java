@@ -2,6 +2,7 @@ package b203.varium.broadcastStation.entity;
 
 
 import b203.varium.Record;
+import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.user.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,17 +28,13 @@ public class BroadcastStation extends Record {
     @Column(name = "broadcast_station_noti_mention", columnDefinition = "VARCHAR(300) DEFAULT '~'")
     private String broadcastStationNotiMention; // 기본값으로 '~' 설정
 
-
-    //    @ManyToOne
-//    @JoinColumn(name = "user_no", nullable = false)
-//    private User user;
     // User와 일대일 관계
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_no", referencedColumnName = "user_no")
     private UserEntity user;
 
-//    @OneToOne(mappedBy = "broadcastStation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private BroadcastStationAdmin admin;
+    @OneToOne(mappedBy = "broadcastStation")
+    private Broadcasting broadcasting;
 
     // 기타 필드 및 메소드...
     public void setUser(UserEntity user) {

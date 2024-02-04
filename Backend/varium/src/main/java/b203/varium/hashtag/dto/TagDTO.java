@@ -1,0 +1,9 @@
+package b203.varium.hashtag.dto;
+
+import lombok.Data;
+
+@Data
+public class TagDTO {
+    private int id;
+    private String tagName;
+}
