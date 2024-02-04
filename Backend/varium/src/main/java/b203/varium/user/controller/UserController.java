@@ -1,8 +1,6 @@
 package b203.varium.user.controller;
 
-import b203.varium.user.dto.CustomUserDetails;
 import b203.varium.user.dto.JoinDTO;
-import b203.varium.user.repository.UserRepository;
 import b203.varium.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,17 +15,17 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
+    // 마이페이지 조회
     @GetMapping("/mypage")
-    public String userP() {
+    public String viewMyPage() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+        String username = auth.getName();
+        // 구독 목록, 프로필 사진, 닉네임, 포인트
 
         System.out.println();
         return "user controller";
@@ -42,4 +40,5 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
+    // 탈퇴
 }
