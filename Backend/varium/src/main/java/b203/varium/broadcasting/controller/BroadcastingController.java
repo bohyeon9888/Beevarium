@@ -37,6 +37,12 @@ public class BroadcastingController {
 
     }
 
+    // 랜덤 실시간 방송 5개 조회
+
+
+    // 시청자 높은 순 방송 5개 조회
+
+
     @GetMapping("/end/{stationId}")
     public ResponseEntity<Map<String, String>> deleteBroadcasting(@PathVariable int stationId) {
 
