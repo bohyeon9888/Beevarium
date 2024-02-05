@@ -12,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -29,6 +31,7 @@ public class BroadcastStationNoticeService {
     @Transactional
     public void saveBroadcastStationNotice(BroadcastStationNoticeDto broadcastStationNoticeDto) {
         log.info("broadcastStationNoticeDto={}", broadcastStationNoticeDto);
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
         BroadcastStationNotice notice = new BroadcastStationNotice();
 
         // BroadcastStation 엔티티를 찾아옵니다.
@@ -39,6 +42,9 @@ public class BroadcastStationNoticeService {
         notice.setBroadcastStation(broadcastStation);
         notice.setBroadcastStationNoticeTitle(broadcastStationNoticeDto.getTitle());
         notice.setBroadcastStationNoticeContent(broadcastStationNoticeDto.getContent());
+
+        notice.setCreatedDate(nowT);
+        notice.setUpdatedDate(nowT);
 
         broadcastStationNoticeRepository.save(notice);
     }
@@ -60,7 +66,7 @@ public class BroadcastStationNoticeService {
                 .orElseThrow(() -> new RuntimeException("BroadcastStationNotice not found with id: " + noticeNo));
     }
 
-    public List<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
+    public Set<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
         // 이 메소드의 구현은 BroadcastStation과 BroadcastStationNotice 엔티티 간의 관계에 따라 다릅니다.
         // 예시: return broadcastStationNoticeRepository.findByBroadcastStationId(broadcastStationNo);
         return broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo); // 실제 구현 필요

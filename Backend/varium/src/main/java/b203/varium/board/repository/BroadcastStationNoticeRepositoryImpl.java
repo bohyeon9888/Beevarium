@@ -2,11 +2,13 @@
 package b203.varium.board.repository;
 
 import b203.varium.board.entity.BroadcastStationNotice;
+import b203.varium.broadcastStation.entity.BroadcastStation;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class BroadcastStationNoticeRepositoryImpl implements BroadcastStationNoticeCustomRepository {
@@ -22,9 +24,7 @@ public class BroadcastStationNoticeRepositoryImpl implements BroadcastStationNot
     }
 
     @Override
-    public List<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
-        return em.createQuery("select b from BroadcastStationNotice b where b.broadcastStationNo = :broadcastStationNo", BroadcastStationNotice.class)
-                .setParameter("broadcastStationNo", broadcastStationNo)
-                .getResultList();
+    public Set<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
+        return em.find(BroadcastStation.class, broadcastStationNo).getNotices();
     }
 }

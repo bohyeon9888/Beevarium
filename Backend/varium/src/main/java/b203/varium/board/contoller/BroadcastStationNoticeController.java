@@ -4,13 +4,15 @@ import b203.varium.board.dto.BroadcastStationNoticeDto;
 import b203.varium.board.entity.BroadcastStationNotice;
 import b203.varium.board.service.BroadcastStationNoticeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
+@Slf4j
 @RestController
 @RequestMapping("/notice/broadcasting")
 @RequiredArgsConstructor
@@ -20,8 +22,9 @@ public class BroadcastStationNoticeController {
 
     // 개인 방송국 공지 조회
     @GetMapping
-    public ResponseEntity<List<BroadcastStationNotice>> getBroadcastStationNotices(@RequestParam("broadcast_station_no") Integer broadcastStationNo) {
-        List<BroadcastStationNotice> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
+    public ResponseEntity<Set<BroadcastStationNotice>> getBroadcastStationNotices(@RequestParam("broadcast_station_no") Integer broadcastStationNo) {
+        log.info("broadcastStationNo = {}", broadcastStationNo);
+        Set<BroadcastStationNotice> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
 
         return ResponseEntity.ok().body(notices);
     }
