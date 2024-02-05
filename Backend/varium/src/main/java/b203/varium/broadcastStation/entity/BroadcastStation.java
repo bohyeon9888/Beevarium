@@ -4,10 +4,13 @@ package b203.varium.broadcastStation.entity;
 import b203.varium.Record;
 import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.user.entity.UserEntity;
+import b203.varium.video.entity.Video;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+// Video와의 연관관계 추가
 @Entity
 @Getter
 @Setter
@@ -36,6 +39,10 @@ public class BroadcastStation extends Record {
 
     @OneToOne(mappedBy = "broadcastStation")
     private Broadcasting broadcasting;
+
+    // Video와의 연관관계
+    @OneToMany(mappedBy = "broadcastStation")
+    private List<Video> videos;
 
     // 기타 필드 및 메소드...
     public void setUser(UserEntity user) {
