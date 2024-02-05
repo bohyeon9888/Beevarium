@@ -1,9 +1,9 @@
 // Spring Data JPA 사용
 package b203.varium.board.repository;
 
-import com.pjt.beevarium.broadcastStation.entity.BroadcastStation;
-import org.springframework.data.jpa.repository.JpaRepository;
 import b203.varium.board.entity.BroadcastStationNotice;
+import b203.varium.broadcastStation.entity.BroadcastStation;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
