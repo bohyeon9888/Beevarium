@@ -4,7 +4,7 @@ package b203.varium.broadcastStation.service;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.user.entity.UserEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +14,10 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 
 @Service
+@RequiredArgsConstructor
 public class BroadcastStationService {
 
     private final BroadcastStationRepository stationRepository;
-
-    @Autowired
-    public BroadcastStationService(BroadcastStationRepository stationRepository) {
-        this.stationRepository = stationRepository;
-    }
 
     public BroadcastStation getBroadcastStationWithDetails(int stationId) {
         // 여기에서 BroadcastStation을 조회하고 관련된 데이터를 모두 가져옵니다.

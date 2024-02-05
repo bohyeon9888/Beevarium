@@ -1,7 +1,10 @@
 package b203.varium.user.service;
 
 import b203.varium.broadcastStation.service.BroadcastStationService;
+import b203.varium.follow.dto.FollowRespDTO;
+import b203.varium.follow.service.FollowRelationService;
 import b203.varium.user.dto.JoinDTO;
+import b203.varium.user.dto.MyPageRespDTO;
 import b203.varium.user.entity.UserEntity;
 import b203.varium.user.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
@@ -20,11 +24,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final BroadcastStationService stationService;
+    private final FollowRelationService followService;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder, BroadcastStationService stationService) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder, BroadcastStationService stationService, FollowRelationService followService) {
         this.userRepository = userRepository;
         this.stationService = stationService;
         this.bcryptEncoder = bcryptEncoder;
+        this.followService = followService;
     }
 
     @Transactional
@@ -83,6 +89,20 @@ public class UserService {
         }
 
         return resp;
+    }
+
+    public MyPageRespDTO viewUserDetail(String username) {
+
+        UserEntity user = userRepository.findByUsername(username);
+        List<FollowRespDTO> followList = followService.getFollowList(username);
+
+        MyPageRespDTO respDTO = new MyPageRespDTO();
+        respDTO.setUsername(username);
+        respDTO.setProfileUrl(user.getProfileUrl());
+        respDTO.setPoint(user.getPoint());
+        respDTO.setSubscribeList(followList);
+
+        return respDTO;
     }
 
 }

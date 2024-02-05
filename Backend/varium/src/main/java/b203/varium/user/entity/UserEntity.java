@@ -34,7 +34,7 @@ public class UserEntity extends Record {
     private String profileUrl;
 
     @Column(name = "user_point")
-    private Integer point;
+    private int point;
 
     @Column(name = "user_role")
     private String role;
