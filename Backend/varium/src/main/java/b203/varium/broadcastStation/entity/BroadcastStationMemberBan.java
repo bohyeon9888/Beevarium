@@ -8,11 +8,17 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+<<<<<<< HEAD
 @Table(name = "broadcast_station_member_ban")
 public class BroadcastStationMemberBan extends Record {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+=======
+public class BroadcastStationMemberBan extends Record {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+>>>>>>> feature-videoApi
     @Column(name = "broadcasting_station_member_ban_no")
     private Integer broadcastStationMemberBanNo;
 
