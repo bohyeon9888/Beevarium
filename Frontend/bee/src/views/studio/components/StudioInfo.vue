@@ -1,5 +1,8 @@
 <script setup>
+import { useRouter } from "vue-router";
 import { ref } from "vue";
+
+const router = useRouter();
 
 const streamer = ref({
   logo: "studio-logo",
@@ -18,6 +21,13 @@ const studio = ref({
 });
 
 const isLive = ref(true);
+
+const moveToNoticeWrite = () => {
+  router.push({ name: "NoticeWrite" });
+}
+const moveToStudioSetting = () => {
+  router.push({ name: "StudioSetting" });
+;}
 
 const getStudioUrl = (name) => {
   return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
@@ -62,7 +72,8 @@ const getStudioUrl = (name) => {
         </div>
       </div>
       <div class="follower-count">팔로워 {{ streamer.follower }}명</div>
-      <div class="write-button">글쓰기</div>
+      <div class="write-button" @click="moveToNoticeWrite">글쓰기</div>
+      <div class="studio-setting-button" @click="moveToStudioSetting">방송국 설정</div>
       <div class="stream-live-thumbnail-box">
         <router-link :to="{ name: 'LiveStream' }">
           <img
@@ -208,6 +219,20 @@ const getStudioUrl = (name) => {
   font-size: 16px;
   font-weight: 700;
   background-color: #ffec3e;
+  border-radius: 8px;
+  color: #121212;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+.studio-setting-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 272px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #ffcf40;
   border-radius: 8px;
   color: #121212;
   margin-bottom: 16px;

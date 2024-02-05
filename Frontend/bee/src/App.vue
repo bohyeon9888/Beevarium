@@ -27,6 +27,8 @@ const invisiblePaths_sidebar = [
   "/studio/clip-detail",
   "/studio/notice",
   "/studio/notice-detail",
+  "/studio/notice-write",
+  "/studio/setting",
   "/user/login",
   "/user/signup",
   "/streaming/dashboard",
