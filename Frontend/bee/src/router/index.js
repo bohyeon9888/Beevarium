@@ -8,7 +8,9 @@ import LiveStream from "../views/streaming/LiveStream.vue";
 import Monitoring from "../views/admin/Monitoring.vue";
 import WarningUser from "../views/admin/WarningUser.vue";
 import BlackList from "../views/admin/BlackList.vue";
-import Account from "../views/account/Account.vue";
+import MyPage from "../views/account/MyPage.vue";
+import Profile from "../views/account/components/Profile.vue";
+import Privacy from "../views/account/components/Privacy.vue";
 import Clip from "../views/studio/Clip.vue";
 import ClipDetail from "../views/studio/ClipDetail.vue";
 import Notice from "../views/studio/Notice.vue";
@@ -17,6 +19,7 @@ import Replay from "../views/studio/Replay.vue";
 import ReplayDetail from "../views/studio/ReplayDetail.vue";
 import BanListManagement from "../views/studio/BanListManagement.vue";
 import StudioMain from "../views/studio/StudioMain.vue";
+import AuthCallBack from "../views/auth/AuthCallBack.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -67,9 +70,22 @@ const router = createRouter({
       component: BlackList,
     },
     {
-      path: "/account",
-      name: "Account",
-      component: Account,
+      path: "/mypage",
+      name: "MyPage",
+      component: MyPage,
+      redirect: { name: "Profile" },
+      children: [
+        {
+          path: "profile",
+          name: "Profile",
+          component: Profile,
+        },
+        {
+          path: "privacy",
+          name: "Privacy",
+          component: Privacy
+        }
+      ]
     },
     {
       path: "/studio/clip",
@@ -110,6 +126,21 @@ const router = createRouter({
       path: "/studio/studio-main",
       name: "StudioMain",
       component: StudioMain,
+    },
+    {
+      path: "/oauth/callback/google",
+      name: "GoogleAuthCallback",
+      component: AuthCallBack,
+    },
+    {
+      path: "/oauth/callback/naver",
+      name: "NaverAuthCallback",
+      component: AuthCallBack,
+    },
+    {
+      path: "/oauth/callback/kakao",
+      name: "KakaoAuthCallback",
+      component: AuthCallBack,
     },
   ],
 });
