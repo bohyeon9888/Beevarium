@@ -1,6 +1,7 @@
 package b203.varium.user.controller;
 
 import b203.varium.user.dto.JoinDTO;
+import b203.varium.user.dto.MyPageRespDTO;
 import b203.varium.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,16 +23,15 @@ public class UserController {
 
     // 마이페이지 조회
     @GetMapping("/mypage")
-    public String viewMyPage() {
+    public ResponseEntity<MyPageRespDTO> viewMyPage() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         // 구독 목록, 프로필 사진, 닉네임, 포인트
 
-        System.out.println();
-        return "user controller";
+        return ResponseEntity.ok(userService.viewUserDetail(username));
     }
 
-    @PostMapping("/join")
+    @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> joinUser(JoinDTO joinDTO) {
 
         System.out.println(joinDTO.getUsername());
