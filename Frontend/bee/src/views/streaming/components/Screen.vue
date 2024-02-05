@@ -1,8 +1,16 @@
 <script setup></script>
 
 <template>
-  <h2>Screen</h2>
-  <div></div>
+  <img
+    class="stream-display"
+    src="../../../assets/img/stream/stream-display.png"
+    alt=""
+  />
 </template>
 
-<style scoped></style>
+<style scoped>
+.stream-display {
+  width: 100%;
+  height: 100%;
+}
+</style>
