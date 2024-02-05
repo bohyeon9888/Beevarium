@@ -7,6 +7,7 @@ import b203.varium.hashtag.repository.HashTagRepository;
 import b203.varium.hashtag.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,10 +21,12 @@ public class TagService {
     private final HashTagRepository hashTagRepository;
     private final BroadcastingRepository broadcastingRepository;
 
+    @Transactional
     public int insertTag(String text) {
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
-        TagEntity tag = new TagEntity(text);
+        TagEntity tag = new TagEntity();
+        tag.setTagText(text);
         tag.setCreatedDate(nowT);
         tag.setUpdatedDate(nowT);
 
@@ -32,6 +35,7 @@ public class TagService {
         return tag.getId();
     }
 
+    @Transactional
     public List<HashTag> insertHashTag(int broadcastingId, List<String> tagList) {
         List<HashTag> result = new ArrayList<>();
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
@@ -42,6 +46,8 @@ public class TagService {
 
             if (newTag == null) {
                 tagId = insertTag(tag);
+            } else {
+                tagId = newTag.getId();
             }
 
             HashTag hashtag = new HashTag();

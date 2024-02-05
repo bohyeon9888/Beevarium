@@ -32,9 +32,6 @@ public class Broadcasting extends Record {
     @ColumnDefault("0")
     private int broadcastingViewers;
 
-    @Column(name = "broadcasting_url")
-    private String broadcastingUrl;
-
     @Column(name = "broadcasting_img_url")
     private String broadcastingImgUrl;
 

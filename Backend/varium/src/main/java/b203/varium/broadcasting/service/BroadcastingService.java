@@ -1,5 +1,6 @@
 package b203.varium.broadcasting.service;
 
+import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.broadcasting.repository.BroadcastingRepository;
@@ -16,6 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BroadcastingService {
 
     private final BroadcastingRepository broadcastingRepository;
@@ -23,14 +25,14 @@ public class BroadcastingService {
     private final TagService tagService;
 
     @Transactional
-    public Map<String, String> startBroadcasting(int stationId, String title, String url, String thumbnail, List<String> tagList) {
+    public Map<String, String> startBroadcasting(String username, String title, String thumbnail, List<String> tagList) {
         Map<String, String> resp = new HashMap<>();
         Broadcasting data = new Broadcasting();
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
+        BroadcastStation station = broadcastStationRepository.findByUser_Username(username);
 
-        data.setBroadcastStation(broadcastStationRepository.findById(stationId));
+        data.setBroadcastStation(station);
         data.setBroadcastingTitle(title);
-        data.setBroadcastingUrl(url);
         data.setBroadcastingImgUrl(thumbnail);
         data.setCreatedDate(nowT);
         data.setUpdatedDate(nowT);
@@ -51,9 +53,10 @@ public class BroadcastingService {
     }
 
     @Transactional
-    public Map<String, String> endBroadcasting(int stationId) {
+    public Map<String, String> endBroadcasting(String username) {
         Map<String, String> resp = new HashMap<>();
 
+        int stationId = broadcastStationRepository.findByUser_Username(username).getId();
         Broadcasting live = broadcastingRepository.findByBroadcastStation_Id(stationId);
         broadcastingRepository.delete(live);
 

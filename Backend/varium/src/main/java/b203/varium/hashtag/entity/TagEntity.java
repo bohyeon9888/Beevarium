@@ -2,7 +2,6 @@ package b203.varium.hashtag.entity;
 
 import b203.varium.Record;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,9 +23,5 @@ public class TagEntity extends Record {
     @OneToMany(mappedBy = "tag", cascade = CascadeType.REMOVE)
     private List<HashTag> hashTagList;
 
-    @Builder
-    public TagEntity(String tagText) {
-        this.tagText = tagText;
-    }
 
 }
