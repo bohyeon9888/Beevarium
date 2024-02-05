@@ -1,8 +1,9 @@
 package b203.varium.openvidu.service;
 
-import b203.varium.openvidu.domain.request.ConnectionPropertiesDto;
-import b203.varium.openvidu.domain.request.SessionPropertiesDto;
-import b203.varium.openvidu.domain.response.ConnectionResponseDto;
+import b203.varium.openvidu.domain.ConnectionPropertiesDto;
+import b203.varium.openvidu.domain.SessionPropertiesDto;
+import b203.varium.openvidu.dto.ConnectionResponseDto;
+import com.google.gson.Gson;
 import io.openvidu.java.client.*;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,7 @@ public class OpenViduService {
         return new ResponseEntity<>(sessionId, HttpStatus.OK);
     }
 
-    public ResponseEntity<ConnectionResponseDto> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
         ConnectionType connectionType = Optional.ofNullable(connectionPropertiesDto.getType())
                 .map(String::toUpperCase)
                 .map(ConnectionType::valueOf)
@@ -106,7 +107,9 @@ public class OpenViduService {
         connectionResponseDto.setConnectionId(connection.getConnectionId());
         connectionResponseDto.setConnectionToken(connection.getToken());
         log.info("connectionResponseDto = {}", connectionResponseDto);
-        return new ResponseEntity<>(connectionResponseDto, HttpStatus.OK);
+        Gson gson = new Gson();
+        String json = gson.toJson(connectionResponseDto);
+        return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
     public ResponseEntity<String> connectionDeleteSession(String sessionId, String connectionId) throws OpenViduJavaClientException, OpenViduHttpException {
@@ -126,4 +129,20 @@ public class OpenViduService {
     }
 
 
+    public ResponseEntity<String> patchSessions(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
+        boolean success = openvidu.getActiveSession(sessionId).fetch();
+        return new ResponseEntity<>(Boolean.toString(success), HttpStatus.OK);
+    }
+
+    public ResponseEntity<Boolean> getRecorded(String sessionId) {
+        boolean recorded = openvidu.getActiveSession(sessionId).isBeingRecorded();
+        return new ResponseEntity<>(recorded, HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> startRecordings(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
+        Recording recording = openvidu.startRecording(sessionId);
+        Gson gson = new Gson();
+        String json = gson.toJson(recording);
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
 }

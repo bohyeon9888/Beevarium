@@ -1,4 +1,4 @@
-package b203.varium.openvidu.domain.request;
+package b203.varium.openvidu.domain;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package b203.varium.openvidu.domain.response;
+package b203.varium.openvidu.dto;
 
 import lombok.Data;
 

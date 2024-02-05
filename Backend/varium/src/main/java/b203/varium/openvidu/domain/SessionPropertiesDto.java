@@ -1,4 +1,4 @@
-package b203.varium.openvidu.domain.request;
+package b203.varium.openvidu.domain;
 
 import io.openvidu.java.client.MediaMode;
 import io.openvidu.java.client.RecordingMode;
