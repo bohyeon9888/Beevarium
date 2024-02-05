@@ -15,10 +15,12 @@ import Clip from "../views/studio/Clip.vue";
 import ClipDetail from "../views/studio/ClipDetail.vue";
 import Notice from "../views/studio/Notice.vue";
 import NoticeDetail from "../views/studio/NoticeDetail.vue";
+import NoticeWrite from "../views/studio/NoticeWrite.vue";
 import Replay from "../views/studio/Replay.vue";
 import ReplayDetail from "../views/studio/ReplayDetail.vue";
 import BanListManagement from "../views/studio/BanListManagement.vue";
 import StudioMain from "../views/studio/StudioMain.vue";
+import StudioSetting from "../views/studio/StudioSetting.vue";
 import AuthCallBack from "../views/auth/AuthCallBack.vue";
 
 const router = createRouter({
@@ -108,6 +110,11 @@ const router = createRouter({
       component: NoticeDetail,
     },
     {
+      path: "/studio/notice-write",
+      name: "NoticeWrite",
+      component: NoticeWrite,
+    },
+    {
       path: "/studio/replay",
       name: "Replay",
       component: Replay,
@@ -126,6 +133,11 @@ const router = createRouter({
       path: "/studio/studio-main",
       name: "StudioMain",
       component: StudioMain,
+    },
+    {
+      path: "/studio/setting",
+      name: "StudioSetting",
+      component: StudioSetting,
     },
     {
       path: "/oauth/callback/google",

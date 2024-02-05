@@ -1,16 +1,13 @@
 <script setup>
 import DashboardChat from "./components/DashboardChat.vue";
 import Screen from "./components/Screen.vue";
-import UserChatModal from "./components/UserChatModal.vue";
 
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const { isLoggedIn } = storeToRefs(authStore);
-const router = useRouter();
 const streamerId = ref("김싸피");
 const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습니다.");
 const tagInput = ref("");
