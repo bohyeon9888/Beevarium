@@ -1,249 +1,473 @@
 <script setup>
 import { ref, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+
+const router = useRouter();
 
 const route = useRoute();
 const keyword = computed(() => route.params.keyword);
-const showAllChannels = ref(false);
-const loadMoreChannels = () => {
-  showAllChannels.value = true;
+
+const moveToLiveStream = () => {
+  router.push({ name: "LiveStream" });
 };
-const showAllClips = ref(false);
-const loadMoreClips = () => {
-  showAllClips.value = true;
+const moveToVOD = () => {
+  router.push({ name: "ReplayDetail" });
 };
-const channels = [
-  { name: "닉네임1", followers: 12354 },
-  { name: "닉네임2", followers: 12354 },
-  { name: "닉네임3", followers: 12354 },
-  { name: "닉네임4", followers: 12354 },
-  { name: "닉네임5", followers: 12354 },
-  { name: "닉네임6", followers: 12354 },
-];
-const streamingChannels = [
+
+const livestreams = [
   {
+    thumbnail: "search-livestream1",
+    logo: "search-streamer-logo1",
     name: "스트리머1",
-    category: "카테고리1",
-    viewers: 1000,
-    title: "방송 제목1",
+    watcher: 1579,
+    title: "치지직) 직접 만든 서버에서 플레이",
+    tags: ["마인크래프트", "한국어", "게임", "한국어", "게임", "마인크래프트"],
   },
   {
+    thumbnail: "search-livestream2",
+    logo: "search-streamer-logo2",
     name: "스트리머2",
-    category: "카테고리2",
-    viewers: 2000,
-    title: "방송 제목2",
+    watcher: 1579,
+    title: "15시간 노방종 끝이 보인다...",
+    tags: ["마인크래프트", "한국어", "게임"],
   },
   {
+    thumbnail: "search-livestream3",
+    logo: "search-streamer-logo3",
     name: "스트리머3",
-    category: "카테고리3",
-    viewers: 3000,
-    title: "방송 제목3",
+    watcher: 1579,
+    title: "[치치직 동시 송출] 마크로 내집마련!",
+    tags: ["마인크래프트", "한국어", "게임"],
+  },
+];
+const VODs = [
+  {
+    thumbnail: "search-vod1",
+    title: "사업 시작과 동시에 망합니다",
+    views: 626,
+    logo: "search-streamer-logo1",
+    name: "스트리머1",
+    tags: ["한국어", "마인크래프트", "게임"],
   },
   {
+    thumbnail: "search-vod2",
+    title: "사업 시작과 동시에 망합니다",
+    views: 626,
+    logo: "search-streamer-logo2",
+    name: "스트리머2",
+    tags: ["한국어", "마인크래프트", "게임"],
+  },
+  {
+    thumbnail: "search-vod3",
+    title: "사업 시작과 동시에 망합니다",
+    views: 626,
+    logo: "search-streamer-logo3",
+    name: "스트리머3",
+    tags: ["한국어", "마인크래프트", "게임"],
+  },
+  {
+    thumbnail: "search-vod4",
+    title: "사업 시작과 동시에 망합니다",
+    views: 626,
+    logo: "search-streamer-logo1",
     name: "스트리머4",
-    category: "카테고리4",
-    viewers: 4000,
-    title: "방송 제목4",
+    tags: ["한국어", "마인크래프트", "게임"],
+  },
+  {
+    thumbnail: "search-vod5",
+    title: "사업 시작과 동시에 망합니다",
+    views: 626,
+    logo: "search-streamer-logo2",
+    name: "스트리머5",
+    tags: ["한국어", "마인크래프트", "게임"],
+  },
+  {
+    thumbnail: "search-vod6",
+    title: "사업 시작과 동시에 망합니다",
+    views: 626,
+    logo: "search-streamer-logo3",
+    name: "스트리머6",
+    tags: ["한국어", "마인크래프트", "게임"],
   },
 ];
-const Clips = [
-  {
-    title: "클립 제목1",
-    viewers: 1500,
-    likes: 100,
-    name: "유저1",
-  },
-  {
-    title: "클립 제목2",
-    viewers: 2500,
-    likes: 230,
-    name: "유저2",
-  },
-  {
-    title: "클립 제목3",
-    viewers: 3500,
-    likes: 330,
-    name: "유저3",
-  },
-  {
-    title: "클립 제목4",
-    viewers: 4500,
-    likes: 400,
-    name: "유저4",
-  },
-  {
-    title: "클립 제목5",
-    viewers: 5500,
-    likes: 520,
-    name: "유저5",
-  },
-];
+
+const getStreamerLogoUrl = (name) => {
+  return new URL(`/src/assets/img/search/${name}.png`, import.meta.url).href;
+};
+const getThumbnailUrl = (name) => {
+  return new URL(`/src/assets/img/search/${name}.png`, import.meta.url).href;
+};
 </script>
 
 <template>
-  <div class="container">
-    <div class="container-box">
-      <div class="search-header">
-        <h1>'{{ keyword }}' 의 검색 결과입니다.</h1>
-      </div>
-      <div class="search-content">
-        <div class="search-channel">
-          <h2>채널</h2>
-          <div class="channel-list">
-            <div class="search-channel-list">
-              <div
-                class="channel-detail"
-                v-for="(channel, index) in showAllChannels
-                  ? channels
-                  : channels.slice(0, 2)"
-                :key="index"
-              >
-                <div class="channel-img"></div>
-                <div class="name-follow">
-                  <p>{{ channel.name }}</p>
-                  <p>팔로워: {{ channel.followers }}</p>
-                </div>
-                <div class="follow-button">
-                  <button>팔로우</button>
-                </div>
-              </div>
-            </div>
-            <div v-if="!showAllChannels" class="more-container">
-              <button class="more-button" @click="loadMoreChannels">
-                더 보기
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="search-streaming">
-          <h2>생방송 중인 채널</h2>
-          <div class="streaming-list">
+  <div class="search-container">
+    <div class="search-keyword-box">
+      <div class="search-keyword">{{ keyword }}</div>
+      <div style="font-size: 20px; font-weight: 600">태그가 붙은 생방송 채널</div>
+    </div>
+    <ul class="search-livestream-list">
+      <li
+        v-for="(livestream, index) in livestreams"
+        class="search-livestream"
+        @click="moveToLiveStream"
+      >
+        <div class="search-livestream-thumbnail-box">
+          <div class="live-watcher-box">
             <div
-              class="search-result"
-              v-for="(channel, index) in streamingChannels"
-              :key="index"
+              style="
+                width: 50px;
+                height: 26px;
+                padding: 5px 11px;
+                font-size: 14px;
+                font-weight: 700;
+                background-color: red;
+                border-radius: 8px;
+              "
             >
-              <div class="streaming-thumbnail"></div>
-              <div class="streaming-info">
-                <h3>{{ channel.name }}</h3>
-                <p>{{ channel.category }}</p>
-                <p>시청자: {{ channel.viewers }} 명</p>
-                <p>{{ channel.title }}</p>
-                <div class="tag-button">
-                  <button>tag</button>
-                  <button>tag</button>
-                  <button>tag</button>
-                </div>
-              </div>
+              LIVE
             </div>
-          </div>
-        </div>
-        <div class="search-clip">
-          <h2>유저 클립</h2>
-          <div class="clip-list">
             <div
-              class="clip-item"
-              v-for="(clip, index) in showAllClips ? Clips : Clips.slice(0, 2)"
-              :key="index"
+              style="
+                height: 26px;
+                padding: 5px 11px;
+                font-size: 14px;
+                font-weight: 700;
+                background-color: rgba(0, 0, 0, 0.6);
+                border-radius: 8px;
+                margin-left: 8px;
+              "
             >
-              <div class="clip-thumbnail"></div>
-              <div class="clip-info">
-                <h3>{{ clip.title }}</h3>
-                <p>조회수: {{ clip.viewers }} 회</p>
-                <p>{{ clip.likes }} 좋아요</p>
-                <p>작성자: {{ clip.name }}</p>
-              </div>
-            </div>
-            <div v-if="!showAllClips" class="more-container">
-              <button class="more-button" @click="loadMoreClips">
-                더 보기
-              </button>
+              {{ livestream.watcher }}명 시청
             </div>
           </div>
+          <img
+            :src="getThumbnailUrl(livestream.thumbnail)"
+            alt=""
+            class="search-livestream-thumbnail"
+          />
         </div>
+        <div class="search-livestream-info-container">
+          <div class="search-livestream-info-box">
+            <div class="search-livestream-streamer-box">
+              <div class="streamer-logo-box">
+                <img :src="getStreamerLogoUrl(livestream.logo)" alt="" class="streamer-logo" />
+              </div>
+              <div class="search-livestream-streamer-name">{{ livestream.name }}</div>
+            </div>
+            <div class="search-livestream-watcher">시청자 {{ livestream.watcher }}명</div>
+            <div class="search-livestream-title">{{ livestream.title }}</div>
+            <ul class="search-livestream-tags">
+              <li v-for="(tag, index) in livestream.tags" class="search-livestream-tag">
+                {{ tag }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="more-button-container">
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
+      <div class="more-button-box">
+        <div
+          style="
+            width: 32px;
+            height: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 6px;
+            color: #dcdcdc;
+          "
+        >
+          더보기
+        </div>
+        <img src="../../assets/img/search/more-button.png" alt="" />
       </div>
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
+    </div>
+    <div class="search-keyword-box">
+      <div class="search-keyword">#{{ keyword }}</div>
+      <div style="font-size: 20px; font-weight: 600">동영상</div>
+    </div>
+    <ul class="search-vod-list">
+      <li v-for="(VOD, index) in VODs" class="search-vod" @click="moveToVOD">
+        <div class="search-vod-thumbnail-box">
+          <img :src="getThumbnailUrl(VOD.thumbnail)" alt="" class="search-vod-thumbnail" />
+        </div>
+        <div class="search-vod-info-container">
+          <div class="search-vod-info-box">
+            <div class="search-vod-title">{{ VOD.title }}</div>
+            <div class="search-vod-streamer-box">
+              <div class="streamer-logo-box">
+                <img :src="getStreamerLogoUrl(VOD.logo)" alt="" class="streamer-logo" />
+              </div>
+              <div class="search-vod-streamer-name">{{ VOD.name }}</div>
+            </div>
+            <div class="search-vod-views">조회수 {{ VOD.views }}회</div>
+            <ul class="search-vod-tags">
+              <li v-for="(tag, index) in VOD.tags" class="search-vod-tag">
+                {{ tag }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <div class="more-button-container">
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
+      <div class="more-button-box">
+        <div
+          style="
+            width: 32px;
+            height: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 6px;
+            color: #dcdcdc;
+          "
+        >
+          더보기
+        </div>
+        <img src="../../assets/img/search/more-button.png" alt="" />
+      </div>
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.search-header {
-  margin: 20px 0;
+.search-container {
+  width: 1620px;
+  min-height: 1076px;
 }
-.search-content {
-  display: grid;
-  gap: 20px;
-  border: 2px solid black;
-  padding: 10px;
-}
-.search-channel,
-.search-streaming,
-.search-clip {
-  margin-bottom: 20px;
-}
-.search-channel-list,
-.streaming-list,
-.clip-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 10px;
-}
-.channel-list,
-.streaming-list,
-.clip-list {
-  border: 2px solid black;
-  padding: 10px;
-}
-.channel-detail,
-.search-result,
-.clip-item {
-  display: grid;
-  grid-template-columns: 3fr 7fr 2fr;
-  gap: 10px;
-  border: 2px solid black;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-.channel-img,
-.streaming-thumbnail,
-.clip-thumbnail {
-  border: 2px dotted black;
-  width: 100%;
-  height: 0;
-  padding-bottom: 100%;
-  position: relative;
-}
-.name-follow,
-.streaming-info,
-.clip-info {
-  padding: 10px;
-}
-.follow-button {
+.search-keyword-box {
   display: flex;
-  align-items: center;
+  width: 1620px;
+  height: 24px;
+  margin-bottom: 24px;
 }
-.more-container {
+.search-keyword {
+  height: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffcf40;
+  margin-right: 6px;
+}
+.search-livestream-list {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  grid-column: 1 / -1;
+  flex-direction: column;
+  width: 526px;
+  min-height: 496px;
 }
-.more-container::before,
-.more-container::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: black;
-  margin: 0 20px;
-}
-.more-button {
-  padding: 5px 10px;
-  border: none;
-  background-color: #f0f0f0;
+.search-livestream {
+  display: flex;
+  width: 526px;
+  height: 152px;
+  margin: 10px 0;
   cursor: pointer;
 }
-h2 {
-  margin-bottom: 10px;
+.search-livestream:first-child {
+  margin-top: 0;
+}
+.search-livestream:last-child {
+  margin-bottom: 0;
+}
+.search-livestream-thumbnail-box {
+  position: relative;
+  width: 270px;
+  height: 152px;
+  margin-right: 16px;
+}
+.live-watcher-box {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 373px;
+  height: 25px;
+  display: flex;
+}
+.search-livestream-thumbnail {
+  width: 270px;
+  height: 152px;
+  border-radius: 16px;
+}
+.search-livestream-info-container {
+  width: 240px;
+  height: 152px;
+}
+.search-livestream-info-box {
+  width: 240px;
+  min-height: 102px;
+  margin-top: 14px;
+}
+.search-livestream-streamer-box {
+  display: flex;
+  align-items: center;
+  width: 240px;
+  height: 24px;
+  margin-bottom: 8px;
+}
+.streamer-logo-box {
+  width: 24px;
+  height: 24px;
+  margin-right: 4px;
+}
+.streamer-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 10rem;
+}
+.search-livestream-streamer-name {
+  width: 212px;
+  height: 21px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 18px;
+  font-weight: 600;
+}
+.search-livestream-watcher {
+  width: 240px;
+  height: 19px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #dcdcdc;
+  margin-bottom: 4px;
+}
+.search-livestream-title {
+  width: 240px;
+  height: 19px;
+  font-size: 15px;
+  font-weight: 400;
+  color: #dcdcdc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+.search-livestream-tags {
+  display: flex;
+  width: 240px;
+  min-height: 20px;
+  flex-wrap: wrap;
+}
+.search-livestream-tag {
+  height: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 10rem;
+  background-color: #434343;
+  margin-right: 6px;
+  margin-bottom: 6px;
+}
+.more-button-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 1620px;
+  height: 30px;
+  margin: 30px 0;
+}
+.more-button-box {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 8px 16px;
+  color: #dcdcdc;
+  border: 1px solid #a0a0a0;
+  border-radius: 10rem;
+  cursor: pointer;
+}
+.search-vod-list {
+  display: flex;
+  flex-wrap: wrap;
+  width: 1620px;
+  min-height: 334px;
+}
+.search-vod {
+  display: flex;
+  width: 526px;
+  height: 152px;
+  margin: 0 10px 30px;
+  cursor: pointer;
+}
+.search-vod:nth-child(3n) {
+  margin-right: 0;
+}
+.search-vod:nth-child(3n + 1) {
+  margin-left: 0;
+}
+.search-vod:nth-last-child(-n + 3) {
+  margin-bottom: 0;
+}
+.search-vod-thumbnail-box {
+  width: 270px;
+  height: 152px;
+  margin-right: 16px;
+}
+.search-vod-thumbnail {
+  width: 270px;
+  height: 152px;
+  border-radius: 16px;
+}
+.search-vod-info-container {
+  width: 240px;
+  height: 152px;
+}
+.search-vod-info-box {
+  width: 240px;
+  min-height: 102px;
+  margin-top: 11px;
+}
+.search-vod-title {
+  width: 240px;
+  height: 19px;
+  font-size: 16px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 8px;
+}
+.search-vod-streamer-box {
+  display: flex;
+  align-items: center;
+  width: 240px;
+  height: 24px;
+  margin-bottom: 8px;
+}
+.search-vod-streamer-name {
+  width: 212px;
+  height: 17px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  color: #b6b6b6;
+}
+.search-vod-views {
+  width: 240px;
+  height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #b6b6b6;
+  margin-bottom: 8px;
+}
+.search-vod-tags {
+  display: flex;
+  width: 240px;
+  min-height: 20px;
+  flex-wrap: wrap;
+}
+.search-vod-tag {
+  height: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 10rem;
+  background-color: #434343;
+  margin-right: 6px;
+  margin-bottom: 6px;
 }
 </style>

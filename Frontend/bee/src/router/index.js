@@ -8,7 +8,9 @@ import LiveStream from "../views/streaming/LiveStream.vue";
 import Monitoring from "../views/admin/Monitoring.vue";
 import WarningUser from "../views/admin/WarningUser.vue";
 import BlackList from "../views/admin/BlackList.vue";
-import Account from "../views/account/Account.vue";
+import MyPage from "../views/account/MyPage.vue";
+import Profile from "../views/account/components/Profile.vue";
+import Privacy from "../views/account/components/Privacy.vue";
 import Clip from "../views/studio/Clip.vue";
 import ClipDetail from "../views/studio/ClipDetail.vue";
 import Notice from "../views/studio/Notice.vue";
@@ -68,9 +70,22 @@ const router = createRouter({
       component: BlackList,
     },
     {
-      path: "/account",
-      name: "Account",
-      component: Account,
+      path: "/mypage",
+      name: "MyPage",
+      component: MyPage,
+      redirect: { name: "Profile" },
+      children: [
+        {
+          path: "profile",
+          name: "Profile",
+          component: Profile,
+        },
+        {
+          path: "privacy",
+          name: "Privacy",
+          component: Privacy
+        }
+      ]
     },
     {
       path: "/studio/clip",

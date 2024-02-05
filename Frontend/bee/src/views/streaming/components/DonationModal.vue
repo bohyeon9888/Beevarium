@@ -98,7 +98,7 @@ watch(
               margin-right: 6px;
             "
           >
-            {{ myHoney }}
+            {{ myHoney.toLocaleString('ko-KR') }}
           </div>
           <img
             src="../../../assets/img/donation/reset.png"

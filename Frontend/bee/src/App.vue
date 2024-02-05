@@ -19,11 +19,14 @@ const invisiblePaths_navbar = [
 
 // sidebar가 안보여야 하는 컴포넌트
 const invisiblePaths_sidebar = [
+  "/studio/banlist-management",
   "/studio/replay-detail",
   "/studio/replay",
   "/studio/studio-main",
   "/studio/clip",
+  "/studio/clip-detail",
   "/studio/notice",
+  "/studio/notice-detail",
   "/user/login",
   "/user/signup",
   "/streaming/dashboard",
@@ -33,12 +36,8 @@ const invisiblePaths_sidebar = [
 ];
 
 // navbar, sidebar 표시 관련 함수
-const isInvisible_n = computed(() =>
-  invisiblePaths_navbar.includes(route.path)
-);
-const isInvisible_s = computed(() =>
-  invisiblePaths_sidebar.includes(route.path)
-);
+const isInvisible_n = computed(() => invisiblePaths_navbar.includes(route.path));
+const isInvisible_s = computed(() => invisiblePaths_sidebar.includes(route.path));
 
 // sidebar 확장 관련 함수
 const sidebarStore = useSidebarStore();

@@ -139,11 +139,9 @@ const getStudioUrl = (name) => {
   display: flex;
   justify-content: center;
   width: 320px;
-  height: 1020px;
 }
 .studio-info-box {
   width: 272px;
-  height: 1020px;
 }
 .streamer-logo-container {
   display: flex;

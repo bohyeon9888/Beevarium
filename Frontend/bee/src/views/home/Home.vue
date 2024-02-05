@@ -8,7 +8,6 @@ import CardCarousel from "./CardCarousel.vue";
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 
-const images = ref(["HomeCarousel1", "HomeCarousel2", "HomeCarousel3"]);
 const livestreams = ref([
   {
     thumbnail: "hotlive1",

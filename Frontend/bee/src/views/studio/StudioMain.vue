@@ -84,10 +84,12 @@ const getReplayUrl = (name) => {
         </div>
         <div class="studio-notice-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            공지사항
+            <router-link :to="{ name: 'Notice' }">공지사항</router-link>
           </div>
           <div class="notice-container">
-            <div class="notice-content-box"></div>
+            <router-link :to="{ name: 'NoticeDetail' }">
+              <div class="notice-content-box"></div>
+            </router-link>
             <div class="notice-banner-box">
               <img
                 src="../../assets/img/studio/notice-banner.png"
@@ -99,11 +101,11 @@ const getReplayUrl = (name) => {
         </div>
         <div class="studio-replay-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            다시보기
+            <router-link :to="{ name: 'Replay' }">다시보기</router-link>
           </div>
           <div class="replay-container">
             <ul>
-              <router-link :to="{ name: 'ReplayDetail' }"  class="replay-list">
+              <router-link :to="{ name: 'ReplayDetail' }" class="replay-list">
                 <li
                   v-for="(replay, index) in replays"
                   :key="index"
@@ -143,10 +145,10 @@ const getReplayUrl = (name) => {
         </div>
         <div class="studio-clip-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            유저 클립
+            <router-link :to="{ name: 'Clip' }">유저 클립</router-link>
           </div>
           <div class="clip-container">
-            <ul >
+            <ul>
               <router-link :to="{ name: 'ClipDetail' }" class="clip-list">
                 <li v-for="(clip, index) in clips" :key="index" class="clip">
                   <div class="clip-thumbnail-box">
@@ -286,7 +288,6 @@ const getReplayUrl = (name) => {
 .studio-clip-container {
   width: 1540px;
   height: 310px;
-  
 }
 .clip-container {
   width: 1540px;
