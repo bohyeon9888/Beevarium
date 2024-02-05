@@ -24,7 +24,7 @@ public class OauthController {
 //        System.out.println(provider);
 //        System.out.println("code " + code);
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl("http://localhost:8080/api/oauth2/authorization/" + provider);
+        redirectView.setUrl("http://localhost:8080/oauth2/authorization/" + provider);
 
         return redirectView;
     }
