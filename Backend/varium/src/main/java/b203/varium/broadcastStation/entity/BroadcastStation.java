@@ -2,14 +2,18 @@ package b203.varium.broadcastStation.entity;
 
 
 import b203.varium.Record;
+import b203.varium.board.entity.BroadcastStationNotice;
 import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.user.entity.UserEntity;
 import b203.varium.video.entity.Video;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
+
 // Video와의 연관관계 추가
 @Entity
 @Getter
@@ -32,17 +36,23 @@ public class BroadcastStation extends Record {
     @Column(name = "broadcast_station_noti_mention", columnDefinition = "VARCHAR(300) DEFAULT '~'")
     private String broadcastStationNotiMention; // 기본값으로 '~' 설정
 
+    @OneToMany(mappedBy = "broadcastStation", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<BroadcastStationNotice> notices;
+
     // User와 일대일 관계
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_no", referencedColumnName = "user_no")
     private UserEntity user;
-
     @OneToOne(mappedBy = "broadcastStation")
     private Broadcasting broadcasting;
-
     // Video와의 연관관계
     @OneToMany(mappedBy = "broadcastStation")
     private List<Video> videos;
+
+    public void addBroadcastStations(BroadcastStationNotice broadcastStationNotice) {
+        this.notices.add(broadcastStationNotice);
+    }
 
     // 기타 필드 및 메소드...
     public void setUser(UserEntity user) {

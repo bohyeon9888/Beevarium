@@ -1,25 +1,52 @@
 // BroadcastStationNoticeService.java
 package b203.varium.board.service;
 
-import b203.varium.board.repository.BroadcastStationNoticeRepository;
+import b203.varium.board.dto.BroadcastStationNoticeDto;
 import b203.varium.board.entity.BroadcastStationNotice;
-import org.springframework.beans.factory.annotation.Autowired;
+import b203.varium.board.repository.BroadcastStationNoticeCustomRepository;
+import b203.varium.board.repository.BroadcastStationNoticeRepository;
+import b203.varium.broadcastStation.entity.BroadcastStation;
+import b203.varium.broadcastStation.repository.BroadcastStationRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BroadcastStationNoticeService {
 
+    // BroadcastStationRepository를 주입받아야 합니다.
+    private final BroadcastStationRepository broadcastStationRepository;
     private final BroadcastStationNoticeRepository broadcastStationNoticeRepository;
+    private final BroadcastStationNoticeCustomRepository broadcastStationNoticeCustomRepository;
 
-    @Autowired
-    public BroadcastStationNoticeService(BroadcastStationNoticeRepository broadcastStationNoticeRepository) {
-        this.broadcastStationNoticeRepository = broadcastStationNoticeRepository;
-    }
+    @Transactional
+    public void saveBroadcastStationNotice(BroadcastStationNoticeDto broadcastStationNoticeDto) {
+        log.info("broadcastStationNoticeDto={}", broadcastStationNoticeDto);
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
+        BroadcastStationNotice notice = new BroadcastStationNotice();
 
-    public BroadcastStationNotice saveBroadcastStationNotice(Integer stationNo, BroadcastStationNotice notice) {
-        return broadcastStationNoticeRepository.save(notice);
+        // BroadcastStation 엔티티를 찾아옵니다.
+        BroadcastStation broadcastStation = broadcastStationRepository.findById(broadcastStationNoticeDto.getBroadcastStationNo())
+                .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + broadcastStationNoticeDto.getBroadcastStationNo()));
+
+        // BroadcastStation 엔티티를 BroadcastStationNotice에 설정합니다.
+        notice.setBroadcastStation(broadcastStation);
+        notice.setBroadcastStationNoticeTitle(broadcastStationNoticeDto.getTitle());
+        notice.setBroadcastStationNoticeContent(broadcastStationNoticeDto.getContent());
+
+        notice.setCreatedDate(nowT);
+        notice.setUpdatedDate(nowT);
+
+        broadcastStationNoticeRepository.save(notice);
     }
 
     public Optional<BroadcastStationNotice> getBroadcastStationNoticeById(Integer id) {
@@ -39,10 +66,10 @@ public class BroadcastStationNoticeService {
                 .orElseThrow(() -> new RuntimeException("BroadcastStationNotice not found with id: " + noticeNo));
     }
 
-    public List<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
+    public Set<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
         // 이 메소드의 구현은 BroadcastStation과 BroadcastStationNotice 엔티티 간의 관계에 따라 다릅니다.
         // 예시: return broadcastStationNoticeRepository.findByBroadcastStationId(broadcastStationNo);
-        return null; // 실제 구현 필요
+        return broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo); // 실제 구현 필요
     }
 
     public BroadcastStationNotice updateBroadcastStationNotice(Integer noticeNo, BroadcastStationNotice broadcastStationNotice) {
