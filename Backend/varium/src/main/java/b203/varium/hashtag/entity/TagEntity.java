@@ -2,16 +2,15 @@ package b203.varium.hashtag.entity;
 
 import b203.varium.Record;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
 @Table(name = "tag")
 public class TagEntity extends Record {
     @Id

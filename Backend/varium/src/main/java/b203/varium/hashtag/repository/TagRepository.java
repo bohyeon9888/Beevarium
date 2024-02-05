@@ -10,4 +10,6 @@ public interface TagRepository extends JpaRepository<TagEntity, Integer> {
     boolean existsByTagText(String text);
 
     TagEntity findByTagText(String text);
+
+    TagEntity findById(int id);
 }

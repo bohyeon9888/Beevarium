@@ -1,45 +1,55 @@
 package b203.varium.hashtag.service;
 
-import b203.varium.broadcasting.entity.Broadcasting;
+import b203.varium.broadcasting.repository.BroadcastingRepository;
 import b203.varium.hashtag.entity.HashTag;
 import b203.varium.hashtag.entity.TagEntity;
 import b203.varium.hashtag.repository.HashTagRepository;
 import b203.varium.hashtag.repository.TagRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TagService {
 
     private final TagRepository tagRepository;
     private final HashTagRepository hashTagRepository;
+    private final BroadcastingRepository broadcastingRepository;
 
-    public TagService(TagRepository tagRepository, HashTagRepository hashTagRepository) {
-        this.tagRepository = tagRepository;
-        this.hashTagRepository = hashTagRepository;
-    }
-
-    public void insertTag(String text) {
+    public int insertTag(String text) {
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
         TagEntity tag = new TagEntity(text);
+        tag.setCreatedDate(nowT);
+        tag.setUpdatedDate(nowT);
+
         tagRepository.save(tag);
+
+        return tag.getId();
     }
 
-    public List<HashTag> insertHashTag(Broadcasting broadcasting, List<String> tagList) {
+    public List<HashTag> insertHashTag(int broadcastingId, List<String> tagList) {
         List<HashTag> result = new ArrayList<>();
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
         for (String tag : tagList) {
             TagEntity newTag = tagRepository.findByTagText(tag);
+            int tagId = -1;
 
             if (newTag == null) {
-                insertTag(tag);
+                tagId = insertTag(tag);
             }
 
             HashTag hashtag = new HashTag();
-            hashtag.setBroadcasting(broadcasting);
-            hashtag.setTag(newTag);
+            hashtag.setBroadcasting(broadcastingRepository.findById(broadcastingId));
+            hashtag.setTag(tagRepository.findById(tagId));
+            hashtag.setCreatedDate(nowT);
+            hashtag.setUpdatedDate(nowT);
+
             hashTagRepository.save(hashtag);
             result.add(hashtag);
         }

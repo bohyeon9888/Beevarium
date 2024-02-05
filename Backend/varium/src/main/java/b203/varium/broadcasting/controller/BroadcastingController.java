@@ -2,6 +2,7 @@ package b203.varium.broadcasting.controller;
 
 import b203.varium.broadcasting.dto.ReqDTO;
 import b203.varium.broadcasting.service.BroadcastingService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,13 +14,10 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @RestController
 @RequestMapping("/live")
+@RequiredArgsConstructor
 public class BroadcastingController {
 
     private final BroadcastingService broadcastingService;
-
-    public BroadcastingController(BroadcastingService broadcastingService) {
-        this.broadcastingService = broadcastingService;
-    }
 
     @PostMapping("/start")
     public ResponseEntity<Map<String, String>> createBroadcasting(ReqDTO reqDTO) {
@@ -38,7 +36,7 @@ public class BroadcastingController {
     }
 
     // 랜덤 실시간 방송 5개 조회
-
+    
 
     // 시청자 높은 순 방송 5개 조회
 
