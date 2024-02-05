@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -40,8 +41,8 @@ public class BroadcastStationNoticeService {
 
         // BroadcastStation 엔티티를 BroadcastStationNotice에 설정합니다.
         notice.setBroadcastStation(broadcastStation);
-        notice.setBroadcastStationNoticeTitle(broadcastStationNoticeDto.getTitle());
-        notice.setBroadcastStationNoticeContent(broadcastStationNoticeDto.getContent());
+        notice.setBroadcastStationNoticeTitle(broadcastStationNoticeDto.getBroadcastStationNoticeTitle());
+        notice.setBroadcastStationNoticeContent(broadcastStationNoticeDto.getBroadcastStationNoticeContent());
 
         notice.setCreatedDate(nowT);
         notice.setUpdatedDate(nowT);
@@ -61,25 +62,52 @@ public class BroadcastStationNoticeService {
         broadcastStationNoticeRepository.deleteById(id);
     }
 
-    public BroadcastStationNotice findBroadcastStationNoticeById(Integer noticeNo) {
-        return broadcastStationNoticeRepository.findById(noticeNo)
+    public BroadcastStationNoticeDto findBroadcastStationNoticeById(Integer noticeNo) {
+        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(noticeNo)
                 .orElseThrow(() -> new RuntimeException("BroadcastStationNotice not found with id: " + noticeNo));
+
+        return new BroadcastStationNoticeDto(
+                broadcastStationNotice.getBroadcastStationNoticeNo(),
+                broadcastStationNotice.getBroadcastStation().getId(),
+                broadcastStationNotice.getBroadcastStationNoticeTitle(),
+                broadcastStationNotice.getBroadcastStationNoticeContent(),
+                broadcastStationNotice.getCreatedDate(),
+                broadcastStationNotice.getUpdatedDate());
     }
 
-    public Set<BroadcastStationNotice> findNoticesByStationId(Integer broadcastStationNo) {
+    public List<BroadcastStationNoticeDto> findNoticesByStationId(Integer broadcastStationNo) {
         // 이 메소드의 구현은 BroadcastStation과 BroadcastStationNotice 엔티티 간의 관계에 따라 다릅니다.
         // 예시: return broadcastStationNoticeRepository.findByBroadcastStationId(broadcastStationNo);
-        return broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo); // 실제 구현 필요
+        Set<BroadcastStationNotice> notices = broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo);
+        List<BroadcastStationNoticeDto> broadcastStationNoticeDtos = new ArrayList<>();
+        for (BroadcastStationNotice notice : notices) {
+            BroadcastStationNoticeDto broadcastStationNoticeDto = new BroadcastStationNoticeDto(
+                    notice.getBroadcastStationNoticeNo(),
+                    notice.getBroadcastStation().getId(),
+                    notice.getBroadcastStationNoticeTitle(),
+                    notice.getBroadcastStationNoticeContent(),
+                    notice.getCreatedDate(),
+                    notice.getUpdatedDate());
+
+            broadcastStationNoticeDtos.add(broadcastStationNoticeDto);
+        }
+        return broadcastStationNoticeDtos;
     }
 
-    public BroadcastStationNotice updateBroadcastStationNotice(Integer noticeNo, BroadcastStationNotice broadcastStationNotice) {
-        BroadcastStationNotice existingNotice = findBroadcastStationNoticeById(noticeNo);
-        // 여기에서 existingNotice의 속성을 broadcastStationNotice의 속성으로 업데이트합니다.
-        // 예시: existingNotice.setTitle(broadcastStationNotice.getTitle());
-        // 예시: existingNotice.setContent(broadcastStationNotice.getContent());
-        // 실제 구현 필요
+    @Transactional
+    public void updateBroadcastStationNotice(BroadcastStationNoticeDto broadcastStationNoticeDto) {
+        log.info("broadcastStationNoticeDto={}", broadcastStationNoticeDto);
+        //optional null 값 체크
+        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(broadcastStationNoticeDto.getBroadcastStationNoticeNo())
+                .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + broadcastStationNoticeDto.getBroadcastStationNo()));
+        log.info("broadcastStationNotice = {}", broadcastStationNotice);
 
-        return broadcastStationNoticeRepository.save(existingNotice);
+        broadcastStationNotice.setBroadcastStationNoticeTitle(broadcastStationNoticeDto.getBroadcastStationNoticeTitle());
+        broadcastStationNotice.setBroadcastStationNoticeContent(broadcastStationNoticeDto.getBroadcastStationNoticeContent());
+
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
+
+        broadcastStationNotice.setUpdatedDate(nowT);
     }
 
     // 필요한 경우, BroadcastStationNoticeCustomRepository의 메소드를 사용하여 추가적인 비즈니스 로직 구현
