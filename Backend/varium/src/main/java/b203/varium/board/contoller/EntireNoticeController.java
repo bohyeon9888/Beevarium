@@ -31,7 +31,7 @@ public class EntireNoticeController {
     @PostMapping
     public ResponseEntity<EntireNotice> addEntireNotice(@RequestBody EntireNotice entireNotice) {
         EntireNotice savedNotice = entireNoticeService.saveEntireNotice(entireNotice);
-        return new ResponseEntity<>(savedNotice, HttpStatus.CREATED);
+        return ResponseEntity.ok().body(savedNotice);
     }
 
     // 전체 공지사항 게시글 조회
