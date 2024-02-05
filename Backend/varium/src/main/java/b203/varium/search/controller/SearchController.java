@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
     // 실시간 방송 검색
-
+    
 
     // 스트리머 검색
 

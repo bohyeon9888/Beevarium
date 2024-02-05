@@ -21,7 +21,7 @@ public class Broadcasting extends Record {
     @Column(name = "broadcasting_no")
     private int id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_station_no", referencedColumnName = "broadcast_station_no")
     private BroadcastStation broadcastStation;
 
@@ -31,9 +31,6 @@ public class Broadcasting extends Record {
     @Column(name = "broadcasting_viewers")
     @ColumnDefault("0")
     private int broadcastingViewers;
-
-    @Column(name = "broadcasting_url")
-    private String broadcastingUrl;
 
     @Column(name = "broadcasting_img_url")
     private String broadcastingImgUrl;
