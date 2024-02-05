@@ -3,7 +3,8 @@ import { ref } from "vue";
 
 const honeyPoint = ref(5000);
 const getProfileImageUrl = () => {
-  return new URL("/src/assets/img/mypage/profile-image.png", import.meta.url).href;
+  return new URL("/src/assets/img/mypage/profile-image.png", import.meta.url)
+    .href;
 };
 
 const getFollowLogoUrl = (name) => {
@@ -91,22 +92,32 @@ const follows = ref([
             <img :src="previewImage" class="profile-image" />
           </div>
           <div class="profile-image-input-box">
-            <label
-              for="chooseProfileImage"
-              style="display: inline-block; width: 132px; height: 33px; margin-bottom: 16px"
-            >
-              <div class="profile-image-input-button">프로필 사진 추가</div>
-              <input
-                id="chooseProfileImage"
-                name="chooseProfileImage"
-                type="file"
-                accept="image/*"
-                @change="changeImage"
-                multiple
-              />
-            </label>
+            <div class="profile-image-input">
+              <label
+                for="chooseProfileImage"
+                style="display: inline-block; width: 132px; height: 33px"
+              >
+                <div class="profile-image-input-button">프로필 사진 선택</div>
+                <input
+                  id="chooseProfileImage"
+                  name="chooseProfileImage"
+                  type="file"
+                  accept="image/*"
+                  @change="changeImage"
+                  multiple
+                />
+              </label>
+              <div class="profile-image-save-button">변경</div>
+              <div class="profile-image-reset-button">초기화</div>
+            </div>
             <div
-              style="width: 284px; height: 17px; font-size: 14px; font-weight: 400; color: #e6e5ea"
+              style="
+                width: 284px;
+                height: 17px;
+                font-size: 14px;
+                font-weight: 400;
+                color: #e6e5ea;
+              "
             >
               10MB 이내의 JPEG, PNG, GIF 형식이어야 합니다.
             </div>
@@ -117,14 +128,26 @@ const follows = ref([
         <div style="font-size: 20px; font-weight: 600">나의 포인트</div>
         <div class="profile-point-box">
           <div class="point-image-box">
-            <img src="../../../assets/img/mypage/point-image.png" alt="" class="point-image" />
+            <img
+              src="../../../assets/img/mypage/point-image.png"
+              alt=""
+              class="point-image"
+            />
           </div>
           <div
-            style="width: 98px; height: 21px; font-size: 18px; font-weight: 700; margin-right: 12px"
+            style="
+              width: 98px;
+              height: 21px;
+              font-size: 18px;
+              font-weight: 700;
+              margin-right: 12px;
+            "
           >
             보유중인 허니
           </div>
-          <div class="point-amount">{{ honeyPoint.toLocaleString("ko-KR") }}개</div>
+          <div class="point-amount">
+            {{ honeyPoint.toLocaleString("ko-KR") }}개
+          </div>
         </div>
       </div>
     </div>
@@ -132,13 +155,21 @@ const follows = ref([
       <div style="font-size: 20px; font-weight: 600">팔로우 채널</div>
       <div class="follow-channel-box">
         <ul class="follow-channel-list">
-          <li v-for="(follow, index) in follows" :key="index" class="follow-channel">
+          <li
+            v-for="(follow, index) in follows"
+            :key="index"
+            class="follow-channel"
+          >
             <div
               id="follow-channel-logo-box"
               class="follow-channel-logo-box"
               :class="{ isLive: follow.isLive }"
             >
-              <img :src="getFollowLogoUrl(follow.logo)" alt="" class="follow-channel-logo" />
+              <img
+                :src="getFollowLogoUrl(follow.logo)"
+                alt=""
+                class="follow-channel-logo"
+              />
               <div
                 v-if="follow.isLive"
                 style="
@@ -162,7 +193,12 @@ const follows = ref([
         </ul>
         <div class="more-button-container">
           <div
-            style="width: 717px; height: 1px; borer-radius: 8px; background-color: #323232"
+            style="
+              width: 717px;
+              height: 1px;
+              borer-radius: 8px;
+              background-color: #323232;
+            "
           ></div>
           <div class="more-button-box">
             <div
@@ -180,7 +216,12 @@ const follows = ref([
             <img src="../../../assets/img/search/more-button.png" alt="" />
           </div>
           <div
-            style="width: 717px; height: 1px; borer-radius: 8px; background-color: #323232"
+            style="
+              width: 717px;
+              height: 1px;
+              borer-radius: 8px;
+              background-color: #323232;
+            "
           ></div>
         </div>
       </div>
@@ -229,9 +270,14 @@ const follows = ref([
   object-fit: scale-down;
 }
 .profile-image-input-box {
-  width: 284px;
+  width: 300px;
   height: 66px;
   margin: 84px 0 50px;
+}
+.profile-image-input {
+  display: flex;
+  height: 33px;
+  margin-bottom: 16px;
 }
 .profile-image-input-button {
   display: flex;
@@ -244,6 +290,28 @@ const follows = ref([
   border-radius: 8px;
   background-color: #ffec3e;
   color: #121212;
+  cursor: pointer;
+}
+.profile-image-save-button {
+  height: 33px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: #ffcf40;
+  color: #121212;
+  cursor: pointer;
+  margin: 0 8px;
+}
+.profile-image-reset-button {
+  height: 33px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #e6e5ea;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #e6e5ea;
   cursor: pointer;
 }
 #chooseProfileImage {

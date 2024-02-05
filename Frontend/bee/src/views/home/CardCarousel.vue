@@ -56,7 +56,7 @@ const recommendChannels = ref([
 </script>
 
 <template>
-  <div style="width: 1620px; height: 336px">
+  <div style="width: 1400px; height: 336px">
     <input type="radio" name="slider" id="item-1" checked />
     <input type="radio" name="slider" id="item-2" />
     <input type="radio" name="slider" id="item-3" />

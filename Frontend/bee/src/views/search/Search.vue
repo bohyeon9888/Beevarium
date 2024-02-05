@@ -350,11 +350,6 @@ const getThumbnailUrl = (name) => {
               <div class="search-vod-streamer-name">{{ VOD.name }}</div>
             </div>
             <div class="search-vod-views">조회수 {{ VOD.views }}회</div>
-            <ul class="search-vod-tags">
-              <li v-for="(tag, index) in VOD.tags" class="search-vod-tag">
-                {{ tag }}
-              </li>
-            </ul>
           </div>
         </div>
       </li>
@@ -578,7 +573,7 @@ const getThumbnailUrl = (name) => {
 .search-vod-info-box {
   width: 240px;
   min-height: 102px;
-  margin-top: 11px;
+  margin-top: 14px;
 }
 .search-vod-title {
   width: 240px;

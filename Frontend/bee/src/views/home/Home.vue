@@ -207,7 +207,7 @@ const getThumbnailUrl = (name) => {
   width: 1790px;
 }
 .carousel-container {
-  width: 1620px;
+  width: 1400px;
   height: 336px;
   margin-bottom: 30px;
 }
