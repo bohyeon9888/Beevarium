@@ -63,7 +63,7 @@ public class EntireNoticeService {
 
             response.put("status", "success");
             response.put("data", new EntireNoticeDto(
-                    entireNotice.getEntireNoticeNo(),
+                    entireNotice.getId(),
                     entireNotice.getEntireNoticeTitle(),
                     entireNotice.getEntireNoticeContent(),
                     entireNotice.getCreatedDate(),
@@ -105,19 +105,25 @@ public class EntireNoticeService {
         return response;
     }
 
-    public Map<String, Object> deleteEntireNotice(Integer id) {
+    @Transactional
+    public Map<String, Object> deleteEntireNotice(int id) {
         Map<String, Object> response = new HashMap<>();
+        Map<String, String> msg = new HashMap<>();
 
-        try {
-            // 데이터베이스에서 주어진 ID에 해당하는 EntireNotice 엔티티를 삭제합니다.
-            entireNoticeRepository.deleteById(id);
+        EntireNotice noti = entireNoticeRepository.findById(id);
+        log.info(String.valueOf(noti.getId()));
+        entireNoticeRepository.delete(noti);
+
+        if (entireNoticeRepository.existsById(id)) {
+            response.put("status", "fail");
+            msg.put("msg", "make error");
+            response.put("data", msg);
+
+        } else {
             response.put("status", "success");
             response.put("data", "EntireNotice deleted successfully");
-        } catch (Exception e) {
-            response.put("status", "error");
-            response.put("error", e.getMessage());
-        }
 
+        }
         return response;
     }
     // 추가적인 비즈니스 로직이 필요한 경우 여기에 구현
