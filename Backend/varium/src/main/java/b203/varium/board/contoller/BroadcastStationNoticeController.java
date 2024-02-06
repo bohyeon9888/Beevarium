@@ -39,7 +39,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 게시글 조회
-    @GetMapping("/{broadcasting_station_notice_no}")
+    @GetMapping("/{broadcasting_station_notice_no} ")
     public ResponseEntity<BroadcastStationNoticeDto> getBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
         BroadcastStationNoticeDto notice = broadcastStationNoticeService.findBroadcastStationNoticeById(noticeNo);
         return ResponseEntity.ok().body(notice);

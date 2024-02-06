@@ -27,7 +27,7 @@ public class EntireNoticeController {
         return ResponseEntity.ok().body(notices);
     }
 
-    // 전체공지 게시글 삽입
+    // 전체 공지사항 게시글 삽입
     @PostMapping
     public ResponseEntity<String> createEntireNotice(
             @Validated

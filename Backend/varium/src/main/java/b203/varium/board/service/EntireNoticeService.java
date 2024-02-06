@@ -37,23 +37,6 @@ public class EntireNoticeService {
         entireNoticeRepository.save(notice);
     }
 
-//    @Transactional
-//    public void saveEntireStationNotice(EntireNoticeDto entireNoticeDto) {
-//        log.info("entireNoticeDto={}", entireNoticeDto);
-//        Timestamp nowT = new Timestamp(System.currentTimeMillis());
-//        EntireNotice notice = new EntireNotice();
-//
-//
-//        notice.setEntireNoticeTitle(entireNoticeDto.getEntireNoticeTitle());
-//        notice.setEntireNoticeContent(entireNoticeDto.getEntireNoticeContent());
-//
-//        notice.setCreatedDate(nowT);
-//        notice.setUpdatedDate(nowT);
-//
-//        entireNoticeRepository.save(notice);
-
-//    }
-
 
     public List<EntireNotice> findAllEntireNotices() {
         return entireNoticeRepository.findAll();
@@ -70,10 +53,6 @@ public class EntireNoticeService {
                 entireNotice.getCreatedDate(),
                 entireNotice.getUpdatedDate());
     }
-
-//    public EntireNotice saveEntireNotice(EntireNotice entireNotice) {
-//        return entireNoticeRepository.save(entireNotice);
-//    }
 
     // 수정
     @Transactional

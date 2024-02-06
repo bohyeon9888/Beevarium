@@ -3,32 +3,35 @@ package b203.varium.video.service;
 
 import b203.varium.video.entity.Video;
 import b203.varium.video.repository.VideoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class VideoService {
 
     private final VideoRepository videoRepository;
 
-    @Autowired
-    public VideoService(VideoRepository videoRepository) {
-        this.videoRepository = videoRepository;
-    }
+    // 저장
+//    public Video saveVideo(Video video) {
+//        return videoRepository.save(video);
+//    }
 
-    public Video saveVideo(Video video) {
-        return videoRepository.save(video);
-    }
-
-    public Optional<Video> getVideoById(Integer id) {
-        return videoRepository.findById(id);
-    }
-
+    //전체 비디요 조회
     public List<Video> getAllVideos() {
         return videoRepository.findAll();
+    }
+
+    // 방송국 아이디로 비디오 조회
+    public Optional<Video> getVideoById(Integer id) {
+        return videoRepository.findById(id);
     }
 
     public void deleteVideo(Integer id) {
