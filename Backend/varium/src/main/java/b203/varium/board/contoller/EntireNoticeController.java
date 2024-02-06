@@ -10,7 +10,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -22,46 +24,56 @@ public class EntireNoticeController {
 
     // 전체 공지 조회
     @GetMapping
-    public ResponseEntity<List<EntireNotice>> getAllEntireNotices() {
+    public ResponseEntity<Map<String, Object>> getAllEntireNotices() {
         List<EntireNotice> notices = entireNoticeService.findAllEntireNotices();
-        return ResponseEntity.ok().body(notices);
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("data", notices);
+        return ResponseEntity.ok().body(response);
     }
 
     // 전체 공지사항 게시글 삽입
     @PostMapping
-    public ResponseEntity<String> createEntireNotice(
-            @Validated
-            @RequestBody EntireNoticeDto entireNoticeDto, BindingResult result) {
-        if (result.hasErrors())
-            return ResponseEntity.ok().body(result.getNestedPath());
+    public ResponseEntity<Map<String, Object>> createEntireNotice(
+            @Validated @RequestBody EntireNoticeDto entireNoticeDto, BindingResult result) {
+        Map<String, Object> response = new HashMap<>();
+        if (result.hasErrors()) {
+            response.put("status", "error");
+            response.put("error", result.getNestedPath());
+            return ResponseEntity.ok().body(response);
+        }
 
-        entireNoticeService.saveEntireNotice(entireNoticeDto);
-        return ResponseEntity.ok().body("success");
+        response = entireNoticeService.saveEntireNotice(entireNoticeDto);
+        return ResponseEntity.ok().body(response);
     }
 
     // 전체 공지사항 게시글 조회
     @GetMapping("/{no}")
-    public ResponseEntity<EntireNoticeDto> getEntireNotice(@PathVariable("no") Integer id) {
-        EntireNoticeDto notice = entireNoticeService.findEntireNoticeById(id);
-        return ResponseEntity.ok().body(notice);
+    public ResponseEntity<Map<String, Object>> getEntireNotice(@PathVariable("no") Integer id) {
+        Map<String, Object> response = entireNoticeService.findEntireNoticeById(id);
+        return ResponseEntity.ok().body(response);
     }
 
     // 전체 공지사항 수정
     @PutMapping
-    public ResponseEntity<String> updateEntireNotice(
-            @Validated
-            @RequestBody EntireNoticeDto entireNoticeDto, BindingResult result) {
-        if (result.hasErrors())
-            return ResponseEntity.ok().body(result.getNestedPath());
+    public ResponseEntity<Map<String, Object>> updateEntireNotice(
+            @Validated @RequestBody EntireNoticeDto entireNoticeDto, BindingResult result) {
+        Map<String, Object> response = new HashMap<>();
+        if (result.hasErrors()) {
+            response.put("status", "error");
+            response.put("error", result.getNestedPath());
+            return ResponseEntity.ok().body(response);
+        }
+
         log.info("entireNoticeDto= {}", entireNoticeDto);
-        entireNoticeService.updateEntireNotice(entireNoticeDto);
-        return ResponseEntity.ok().body("success");
+        response = entireNoticeService.updateEntireNotice(entireNoticeDto);
+        return ResponseEntity.ok().body(response);
     }
 
     // 전체 공지사항 삭제
     @DeleteMapping("/{no}")
-    public ResponseEntity<String> deleteEntireNotice(@PathVariable("no") Integer id) {
-        entireNoticeService.deleteEntireNotice(id);
-        return ResponseEntity.ok().body("success");
+    public ResponseEntity<Map<String, Object>> deleteEntireNotice(@PathVariable("no") Integer id) {
+        Map<String, Object> response = entireNoticeService.deleteEntireNotice(id);
+        return ResponseEntity.ok().body(response);
     }
 }

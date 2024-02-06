@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -19,62 +21,104 @@ public class EntireNoticeService {
 
     private final EntireNoticeRepository entireNoticeRepository;
 
-
     // 저장
     @Transactional
-    public void saveEntireNotice(EntireNoticeDto entireNoticeDto) {
-        log.info("entireNoticeDto={}", entireNoticeDto);
-        Timestamp nowT = new Timestamp(System.currentTimeMillis());
-        EntireNotice notice = new EntireNotice();
+    public Map<String, Object> saveEntireNotice(EntireNoticeDto entireNoticeDto) {
+        Map<String, Object> response = new HashMap<>();
 
-//        notice.setEntireNoticeNo(entireNoticeDto.getEntireNoticeNo());
-        notice.setEntireNoticeTitle(entireNoticeDto.getEntireNoticeTitle());
-        notice.setEntireNoticeContent(entireNoticeDto.getEntireNoticeContent());
+        try {
+            log.info("entireNoticeDto={}", entireNoticeDto);
+            Timestamp nowT = new Timestamp(System.currentTimeMillis());
+            EntireNotice notice = new EntireNotice();
 
-        notice.setCreatedDate(nowT);
-        notice.setUpdatedDate(nowT);
+//            notice.setEntireNoticeNo(entireNoticeDto.getEntireNoticeNo());
+            notice.setEntireNoticeTitle(entireNoticeDto.getEntireNoticeTitle());
+            notice.setEntireNoticeContent(entireNoticeDto.getEntireNoticeContent());
 
-        entireNoticeRepository.save(notice);
+            notice.setCreatedDate(nowT);
+            notice.setUpdatedDate(nowT);
+
+            entireNoticeRepository.save(notice);
+
+            response.put("status", "success");
+            response.put("data", "EntireNotice saved successfully");
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("error", e.getMessage());
+        }
+
+        return response;
     }
-
 
     public List<EntireNotice> findAllEntireNotices() {
         return entireNoticeRepository.findAll();
     }
 
-    public EntireNoticeDto findEntireNoticeById(Integer id) {
-        EntireNotice entireNotice = entireNoticeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("EntireNotice not found with id: " + id));
+    public Map<String, Object> findEntireNoticeById(Integer id) {
+        Map<String, Object> response = new HashMap<>();
 
-        return new EntireNoticeDto(
-                entireNotice.getEntireNoticeNo(),
-                entireNotice.getEntireNoticeTitle(),
-                entireNotice.getEntireNoticeContent(),
-                entireNotice.getCreatedDate(),
-                entireNotice.getUpdatedDate());
+        try {
+            EntireNotice entireNotice = entireNoticeRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("EntireNotice not found with id: " + id));
+
+            response.put("status", "success");
+            response.put("data", new EntireNoticeDto(
+                    entireNotice.getEntireNoticeNo(),
+                    entireNotice.getEntireNoticeTitle(),
+                    entireNotice.getEntireNoticeContent(),
+                    entireNotice.getCreatedDate(),
+                    entireNotice.getUpdatedDate()));
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("error", e.getMessage());
+        }
+
+        return response;
     }
 
     // 수정
     @Transactional
-    public void updateEntireNotice(EntireNoticeDto entireNoticeDto) {
-        log.info("entireNoticeDto={}", entireNoticeDto);
-        //optional null 값 체크
-        EntireNotice entireNotice = entireNoticeRepository.findById(entireNoticeDto.getEntireNoticeNo())
-                .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + entireNoticeDto.getEntireNoticeNo()));
-        log.info("entireNotice = {}", entireNotice);
+    public Map<String, Object> updateEntireNotice(EntireNoticeDto entireNoticeDto) {
+        Map<String, Object> response = new HashMap<>();
 
-        entireNotice.setEntireNoticeTitle(entireNoticeDto.getEntireNoticeTitle());
-        entireNotice.setEntireNoticeContent(entireNoticeDto.getEntireNoticeContent());
+        try {
+            log.info("entireNoticeDto={}", entireNoticeDto);
+            //optional null 값 체크
+            EntireNotice entireNotice = entireNoticeRepository.findById(entireNoticeDto.getEntireNoticeNo())
+                    .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + entireNoticeDto.getEntireNoticeNo()));
+            log.info("entireNotice = {}", entireNotice);
 
-        Timestamp nowT = new Timestamp(System.currentTimeMillis());
+            entireNotice.setEntireNoticeTitle(entireNoticeDto.getEntireNoticeTitle());
+            entireNotice.setEntireNoticeContent(entireNoticeDto.getEntireNoticeContent());
 
-        entireNotice.setUpdatedDate(nowT);
+            Timestamp nowT = new Timestamp(System.currentTimeMillis());
+
+            entireNotice.setUpdatedDate(nowT);
+
+            response.put("status", "success");
+            response.put("data", "EntireNotice updated successfully");
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("error", e.getMessage());
+        }
+
+        return response;
     }
 
+    public Map<String, Object> deleteEntireNotice(Integer id) {
+        Map<String, Object> response = new HashMap<>();
 
-    public void deleteEntireNotice(Integer id) {
-        // 데이터베이스에서 주어진 ID에 해당하는 EntireNotice 엔티티를 삭제합니다.
-        entireNoticeRepository.deleteById(id);
+        try {
+            // 데이터베이스에서 주어진 ID에 해당하는 EntireNotice 엔티티를 삭제합니다.
+            entireNoticeRepository.deleteById(id);
+            response.put("status", "success");
+            response.put("data", "EntireNotice deleted successfully");
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("error", e.getMessage());
+        }
+
+        return response;
     }
     // 추가적인 비즈니스 로직이 필요한 경우 여기에 구현
 }
