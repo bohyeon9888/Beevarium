@@ -2,6 +2,8 @@ package b203.varium.user.controller;
 
 import b203.varium.user.dto.JoinDTO;
 import b203.varium.user.dto.MyPageRespDTO;
+import b203.varium.user.dto.NameReqDTO;
+import b203.varium.user.dto.PwReqDTO;
 import b203.varium.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -50,8 +52,18 @@ public class UserController {
     }
 
     // 닉네임, 비밀번호 수정 api
-    @PostMapping("/update/userinfo")
-    public void updateUserinfo() {
+    @PostMapping("/update/nickname")
+    public ResponseEntity<Map<String, Object>> updateUsername(NameReqDTO nameReqDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        return ResponseEntity.ok(userService.updateName(auth.getName(), nameReqDTO.getNickname()));
     }
-        
+
+    @PostMapping("/update/pw")
+    public ResponseEntity<Map<String, Object>> updatePassword(PwReqDTO pwReqDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        return ResponseEntity.ok(userService.updatePassword(auth.getName(), pwReqDTO.getPassword()));
+    }
+
 }
