@@ -87,7 +87,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     //로그인 실패시 실행하는 메소드
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        Map<String, String> data = new HashMap<>();
+        data.put("status", "fail");
+        data.put("msg", "아이디나 비밀번호가 잘못되었습니다.");
+
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(data));
     }
 }
