@@ -10,6 +10,8 @@ public class CorsMvcConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry corsRegistry) {
 
         corsRegistry.addMapping("/**")
+                .allowedMethods("GET", "PATCH", "PUT", "POST", "DELETE")
+                .allowedHeaders("*")
                 .allowedOrigins("*");
     }
 }
