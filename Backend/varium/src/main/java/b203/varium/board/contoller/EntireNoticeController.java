@@ -49,7 +49,7 @@ public class EntireNoticeController {
 
     // 전체 공지사항 게시글 조회
     @GetMapping("/{no}")
-    public ResponseEntity<Map<String, Object>> getEntireNotice(@PathVariable("no") Integer id) {
+    public ResponseEntity<Map<String, Object>> getEntireNotice(@PathVariable("no") int id) {
         Map<String, Object> response = entireNoticeService.findEntireNoticeById(id);
         return ResponseEntity.ok().body(response);
     }
@@ -72,7 +72,9 @@ public class EntireNoticeController {
 
     // 전체 공지사항 삭제
     @DeleteMapping("/{no}")
-    public ResponseEntity<Map<String, Object>> deleteEntireNotice(@PathVariable("no") Integer id) {
+    public ResponseEntity<Map<String, Object>> deleteEntireNotice(@PathVariable("no") int id) {
+//        System.out.println(id);
+
         Map<String, Object> response = entireNoticeService.deleteEntireNotice(id);
         return ResponseEntity.ok().body(response);
     }

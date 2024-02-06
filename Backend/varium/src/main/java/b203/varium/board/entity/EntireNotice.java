@@ -13,8 +13,8 @@ public class EntireNotice extends Record {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "entire_notice_no") // db "entire_notice" -> "entire_notice_no"로 수정해야 함
-    private Integer entireNoticeNo;
+    @Column(name = "entire_notice_no")
+    private int id;
 
     @Column(name = "entire_notice_title")
     private String entireNoticeTitle;

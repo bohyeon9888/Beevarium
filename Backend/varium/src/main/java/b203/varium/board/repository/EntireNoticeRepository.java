@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EntireNoticeRepository extends JpaRepository<EntireNotice, Integer> {
-//    List<EntireNotice> findByEntireNoticeTitleContaining(String title);
+    //    List<EntireNotice> findByEntireNoticeTitleContaining(String title);
+    boolean existsById(int id);
 
+    EntireNotice findById(int id);
 //    List<EntireNotice> findByEntireNoticeContentContaining(String content);
 }
