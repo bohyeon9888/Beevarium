@@ -16,7 +16,7 @@ public abstract class Video extends Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "video_no")
-    private Integer id;
+    private int id;
 
     // fk인 broadcast_station_no
     // 방송국 엔티티와의 관계를 정의
@@ -28,13 +28,16 @@ public abstract class Video extends Record {
     private String videoTitle;
 
     @Column(name = "video_viewers")
-    private Integer videoViewers = 0;
+    private int videoViewers = 0;
 
     @Column(name = "video_url")
     private String videoUrl;
 
     @Column(name = "video_img_url")
     private String videoImgUrl;
+
+    @OneToOne(mappedBy = "video")
+    private FileEntity file;
 
     // Constructors, getters and setters
 }

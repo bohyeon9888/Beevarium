@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class FileInfoDTO {
-    private int videoNo;
-    private String fileName;
+    private String filepath;
+    private String originFileName;
+    private String saveFileName;
 }

@@ -12,4 +12,6 @@ public interface BroadcastStationRepository extends JpaRepository<BroadcastStati
     BroadcastStation findById(int id);
 
     BroadcastStation findByUser_Username(String username);
+
+    BroadcastStation findByUser_UserId(String userid);
 }
