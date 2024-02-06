@@ -16,8 +16,8 @@ public class VideoController {
     private final AmazonS3 amazonS3;
 
     @PostMapping("/upload/clip")
-    public void uploadClip(@RequestParam(value = "upfile", required = false) MultipartFile file) {
-        
+    public void uploadClip(@RequestParam(value = "file", required = false) MultipartFile file) {
+
     }
 
 
