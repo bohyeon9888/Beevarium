@@ -4,7 +4,6 @@ import b203.varium.video.dto.VideoDTO;
 import b203.varium.video.entity.ClipVideo;
 import b203.varium.video.entity.ReplayVideo;
 import b203.varium.video.entity.Video;
-import b203.varium.video.service.ClipVideoService;
 import b203.varium.video.service.ReplayVideoService;
 import b203.varium.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
