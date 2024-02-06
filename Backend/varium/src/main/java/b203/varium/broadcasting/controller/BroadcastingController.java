@@ -52,4 +52,6 @@ public class BroadcastingController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return ResponseEntity.ok(broadcastingService.endBroadcasting(auth.getName()));
     }
+
+    // 생방송 화면 들어갈 때 팔로우 여부, 스트리머정보
 }

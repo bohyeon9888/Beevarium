@@ -105,4 +105,23 @@ public class UserService {
         return respDTO;
     }
 
+    public Map<String, String> existUsername(String nowName, String newName) {
+        Map<String, String> result = new HashMap<>();
+
+        if (nowName.equals(newName)) {
+            result.put("status", "fail");
+            result.put("msg", "같은 이름입니다.");
+            return result;
+        }
+
+        if (userRepository.existsByUsername(newName)) {
+            result.put("status", "fail");
+            result.put("msg", "이미 존재하는 이름입니다.");
+        } else {
+            result.put("status", "success");
+            result.put("msg", "변경 가능한 이름입니다.");
+        }
+
+        return result;
+    }
 }

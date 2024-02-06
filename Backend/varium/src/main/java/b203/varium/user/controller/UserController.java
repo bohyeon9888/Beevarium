@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -40,5 +37,21 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
-    // 탈퇴
+    // 프로필사진 변경 api
+
+
+    // 닉네임 중복확인 api
+    @GetMapping("/check/{newName}")
+    public ResponseEntity<Map<String, String>> checkUsername(@PathVariable String newName) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+        return ResponseEntity.ok(userService.existUsername(username, newName));
+    }
+
+    // 닉네임, 비밀번호 수정 api
+    @PostMapping("/update/userinfo")
+    public void updateUserinfo() {
+    }
+        
 }
