@@ -1,24 +1,24 @@
 package b203.varium.board.contoller;
 
-import b203.varium.board.service.EntireNoticeService;
+import b203.varium.board.dto.EntireNoticeDto;
 import b203.varium.board.entity.EntireNotice;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import b203.varium.board.service.EntireNoticeService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/notice/entire")
+@RequiredArgsConstructor
 public class EntireNoticeController {
 
     private final EntireNoticeService entireNoticeService;
-
-    @Autowired
-    public EntireNoticeController(EntireNoticeService entireNoticeService) {
-        this.entireNoticeService = entireNoticeService;
-    }
 
     // 전체 공지 조회
     @GetMapping
@@ -29,30 +29,39 @@ public class EntireNoticeController {
 
     // 전체공지 게시글 삽입
     @PostMapping
-    public ResponseEntity<EntireNotice> addEntireNotice(@RequestBody EntireNotice entireNotice) {
-        EntireNotice savedNotice = entireNoticeService.saveEntireNotice(entireNotice);
-        return ResponseEntity.ok().body(savedNotice);
+    public ResponseEntity<String> createEntireNotice(
+            @Validated
+            @RequestBody EntireNoticeDto entireNoticeDto, BindingResult result) {
+        if (result.hasErrors())
+            return ResponseEntity.ok().body(result.getNestedPath());
+
+        entireNoticeService.saveEntireNotice(entireNoticeDto);
+        return ResponseEntity.ok().body("success");
     }
 
     // 전체 공지사항 게시글 조회
     @GetMapping("/{no}")
-    public ResponseEntity<EntireNotice> getEntireNoticeById(@PathVariable("no") Integer id) {
-        EntireNotice notice = entireNoticeService.findEntireNoticeById(id);
+    public ResponseEntity<EntireNoticeDto> getEntireNotice(@PathVariable("no") Integer id) {
+        EntireNoticeDto notice = entireNoticeService.findEntireNoticeById(id);
         return ResponseEntity.ok().body(notice);
     }
 
     // 전체 공지사항 수정
-    @PutMapping("/{no}")
-    public ResponseEntity<EntireNotice> updateEntireNotice(@PathVariable("no") Integer id, @RequestBody EntireNotice entireNotice) {
-        entireNotice.setEntireNoticeNo(id); // URL의 ID를 엔티티에 설정
-        EntireNotice updatedNotice = entireNoticeService.saveEntireNotice(entireNotice);
-        return ResponseEntity.ok().body(updatedNotice);
+    @PutMapping
+    public ResponseEntity<String> updateEntireNotice(
+            @Validated
+            @RequestBody EntireNoticeDto entireNoticeDto, BindingResult result) {
+        if (result.hasErrors())
+            return ResponseEntity.ok().body(result.getNestedPath());
+        log.info("entireNoticeDto= {}", entireNoticeDto);
+        entireNoticeService.updateEntireNotice(entireNoticeDto);
+        return ResponseEntity.ok().body("success");
     }
 
     // 전체 공지사항 삭제
     @DeleteMapping("/{no}")
-    public ResponseEntity<Void> deleteEntireNotice(@PathVariable("no") Integer id) {
+    public ResponseEntity<String> deleteEntireNotice(@PathVariable("no") Integer id) {
         entireNoticeService.deleteEntireNotice(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("success");
     }
 }

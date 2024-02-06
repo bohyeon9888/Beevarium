@@ -59,8 +59,9 @@ public class BroadcastStationNoticeController {
 
     // 방송국 공지사항 삭제
     @DeleteMapping("/{broadcasting_station_notice_no}")
-    public ResponseEntity<Void> deleteBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer broadcastStationNoticeNo) {
-        broadcastStationNoticeService.deleteBroadcastStationNotice(broadcastStationNoticeNo);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deleteBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
+
+        broadcastStationNoticeService.deleteBroadcastStationNotice(noticeNo);
+        return ResponseEntity.ok().body("success");
     }
 }

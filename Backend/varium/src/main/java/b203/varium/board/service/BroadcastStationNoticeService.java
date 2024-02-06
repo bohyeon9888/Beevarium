@@ -58,6 +58,7 @@ public class BroadcastStationNoticeService {
         return broadcastStationNoticeRepository.findAll();
     }
 
+    @Transactional
     public void deleteBroadcastStationNotice(Integer id) {
         broadcastStationNoticeRepository.deleteById(id);
     }
@@ -94,6 +95,7 @@ public class BroadcastStationNoticeService {
         return broadcastStationNoticeDtos;
     }
 
+    // 수정
     @Transactional
     public void updateBroadcastStationNotice(BroadcastStationNoticeDto broadcastStationNoticeDto) {
         log.info("broadcastStationNoticeDto={}", broadcastStationNoticeDto);
@@ -109,6 +111,7 @@ public class BroadcastStationNoticeService {
 
         broadcastStationNotice.setUpdatedDate(nowT);
     }
+
 
     // 필요한 경우, BroadcastStationNoticeCustomRepository의 메소드를 사용하여 추가적인 비즈니스 로직 구현
 }
