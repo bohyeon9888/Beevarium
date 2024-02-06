@@ -7,6 +7,7 @@ import b203.varium.user.dto.JoinDTO;
 import b203.varium.user.dto.MyPageRespDTO;
 import b203.varium.user.entity.UserEntity;
 import b203.varium.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +20,13 @@ import java.util.Map;
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final BroadcastStationService stationService;
     private final FollowRelationService followService;
-
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder bcryptEncoder, BroadcastStationService stationService, FollowRelationService followService) {
-        this.userRepository = userRepository;
-        this.stationService = stationService;
-        this.bcryptEncoder = bcryptEncoder;
-        this.followService = followService;
-    }
 
     @Transactional
     public Map<String, String> joinUser(JoinDTO joinDTO) {
@@ -122,6 +117,39 @@ public class UserService {
             result.put("msg", "변경 가능한 이름입니다.");
         }
 
+        return result;
+    }
+
+    public Map<String, Object> updateName(String username, String newName) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, String> msg = new HashMap<>();
+        UserEntity user = userRepository.findByUsername(username);
+        user.setUsername(newName);
+
+        userRepository.save(user);
+        if (userRepository.existsByUsername(newName)) {
+            msg.put("msg", "닉네임이 변경되었습니다!");
+            result.put("status", "success");
+        } else {
+            msg.put("msg", "fail updating");
+            result.put("status", "fail");
+        }
+
+        result.put("data", msg);
+        return result;
+    }
+
+    public Map<String, Object> updatePassword(String username, String password) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, String> msg = new HashMap<>();
+        UserEntity user = userRepository.findByUsername(username);
+        user.setPassword(bcryptEncoder.encode(password));
+
+        userRepository.save(user);
+        msg.put("msg", "비밀번호가 변경되었습니다!");
+        result.put("status", "success");
+
+        result.put("data", msg);
         return result;
     }
 }
