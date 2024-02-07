@@ -20,20 +20,6 @@ public class BroadcastStationService {
     private final BroadcastStationRepository stationRepository;
 
     public BroadcastStation getBroadcastStationWithDetails(int stationId) {
-        // 여기에서 BroadcastStation을 조회하고 관련된 데이터를 모두 가져옵니다.
-        //        BroadcastStation station = broadcastStationRepository.findById(stationId).orElseThrow(() -> new RuntimeException("Station not found"));
-//
-//        // 연관된 데이터 조회
-//        List<BroadcastStationNotice> notices = noticeRepository.findByBroadcastStation(station);
-//        List<ReplayVideo> replayVideos = replayVideoRepository.findByBroadcastStation(station);
-//        List<ClipVideo> clipVideos = clipVideoRepository.findByBroadcastStation(station);
-//        List<BroadcastStationMemberBan> bans = memberBanRepository.findByBroadcastStation(station);
-//
-//        // 관련 데이터를 BroadcastStation 객체에 추가
-//        station.setNotices(notices);
-//        station.setReplayVideos(replayVideos);
-//        station.setClipVideos(clipVideos);
-//        station.setMemberBans(bans);
 
         return stationRepository.findById(stationId);
     }
