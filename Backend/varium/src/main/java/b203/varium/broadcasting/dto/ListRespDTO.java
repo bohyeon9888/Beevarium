@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class ListRespDTO {
     private String streamerName;
+    private String streamerId;
     private String liveTitle;
     private String profileUrl;
     private String thumbnailUrl;

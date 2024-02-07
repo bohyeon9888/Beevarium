@@ -53,7 +53,7 @@ public class BroadcastingService {
         return resp;
     }
 
-    public List<ListRespDTO> subscribeListBroadcasting(String username) {
+    public Map<String, Object> subscribeListBroadcasting(String username) {
         List<ListRespDTO> result = new ArrayList<>();
         List<FollowRespDTO> followList = followService.getFollowList(username);
 
@@ -62,10 +62,14 @@ public class BroadcastingService {
             ListRespDTO data = new ListRespDTO();
 
             data.setStreamerName(station.getUser().getUsername());
+            data.setStreamerId(station.getUser().getUserId());
             data.setProfileUrl(station.getUser().getProfileUrl());
 
             int stationId = station.getId();
             Broadcasting live = broadcastingRepository.findByBroadcastStation_Id(stationId);
+            if (live == null) {
+                break;
+            }
             data.setLiveTitle(live.getBroadcastingTitle());
             data.setThumbnailUrl(live.getBroadcastingImgUrl());
             data.setViewer(live.getBroadcastingViewers());
@@ -73,7 +77,20 @@ public class BroadcastingService {
             result.add(data);
         }
 
-        return result;
+        Map<String, Object> resp = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+
+        if (result.size() <= 0) {
+            data.put("msg", "데이터가 없습니다.");
+            resp.put("status", "fail");
+            resp.put("data", data);
+        } else {
+            data.put("subscribeList", result);
+            resp.put("status", "success");
+            resp.put("data", data);
+        }
+
+        return resp;
     }
 
     @Transactional

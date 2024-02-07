@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class BroadcastingController {
 
     // 사용자가 구독중인 스트리머 실시간 방송 목록
     @GetMapping("/subscribe")
-    public ResponseEntity<List<ListRespDTO>> viewBroadcastingList() {
+    public ResponseEntity<Map<String, Object>> viewBroadcastingList() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("user name : " + auth.getName());
 
