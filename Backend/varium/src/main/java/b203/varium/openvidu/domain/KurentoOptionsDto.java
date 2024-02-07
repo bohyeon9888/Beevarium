@@ -2,11 +2,15 @@ package b203.varium.openvidu.domain;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class KurentoOptionsDto {
     @NotNull(message = "videoMaxRecvBandwidth 값이 없습니다")
     @Min(value = 0, message = "videoMaxRecvBandwidth값은 0 보다 커야됩니다")

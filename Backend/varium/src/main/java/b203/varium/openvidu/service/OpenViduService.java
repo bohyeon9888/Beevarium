@@ -1,6 +1,7 @@
 package b203.varium.openvidu.service;
 
 import b203.varium.openvidu.domain.ConnectionPropertiesDto;
+import b203.varium.openvidu.domain.RecordingPropertiesDto;
 import b203.varium.openvidu.domain.SessionPropertiesDto;
 import b203.varium.openvidu.dto.ConnectionResponseDto;
 import com.google.gson.Gson;
@@ -103,9 +104,9 @@ public class OpenViduService {
 
         Connection connection = openvidu.getActiveSession(sessionId).createConnection(connectionProperties);
 
-        ConnectionResponseDto connectionResponseDto = new ConnectionResponseDto();
-        connectionResponseDto.setConnectionId(connection.getConnectionId());
-        connectionResponseDto.setConnectionToken(connection.getToken());
+        ConnectionResponseDto connectionResponseDto = new ConnectionResponseDto(
+                connection.getConnectionId(),
+                connection.getToken());
         log.info("connectionResponseDto = {}", connectionResponseDto);
         Gson gson = new Gson();
         String json = gson.toJson(connectionResponseDto);
@@ -139,10 +140,28 @@ public class OpenViduService {
         return new ResponseEntity<>(recorded, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> startRecordings(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
-        Recording recording = openvidu.startRecording(sessionId);
+    public ResponseEntity<String> startRecordings(String sessionId, RecordingPropertiesDto recordingPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
+        RecordingProperties recordingProperties = new RecordingProperties.Builder()
+                .name(recordingPropertiesDto.getName())
+                .hasAudio(recordingPropertiesDto.getHasAudio())
+                .hasVideo(recordingPropertiesDto.getHasVideo())
+                .outputMode(recordingPropertiesDto.getOutputMode())
+                .recordingLayout(recordingPropertiesDto.getRecordingLayout())
+                .customLayout(recordingPropertiesDto.getCustomLayout())
+                .resolution(recordingPropertiesDto.getResolution())
+                .frameRate(recordingPropertiesDto.getFrameRate())
+                .shmSize(recordingPropertiesDto.getShmSize())
+                .ignoreFailedStreams(recordingPropertiesDto.getIgnoreFailedStreams())
+                .mediaNode(recordingPropertiesDto.getMediaNode())
+                .build();
+
+        log.info("여기까지 되");
+
+        Recording recording = openvidu.startRecording(sessionId, recordingProperties);
         Gson gson = new Gson();
         String json = gson.toJson(recording);
+
+        log.info("json = {}", json);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 }
