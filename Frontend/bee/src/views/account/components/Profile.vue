@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { getMyPage } from "@/api/mypage";
@@ -7,10 +7,15 @@ import { getMyPage } from "@/api/mypage";
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 
-const honeyPoint = ref(5000);
+// 마이페이지 정보 prop
+const prop = defineProps(["myPageData"]);
+const honeyPoint = computed(() => {
+  return prop.myPageData.point;
+});
+
 const getProfileImageUrl = () => {
   return new URL("/src/assets/img/mypage/profile-image.png", import.meta.url)
-    .href;
+  .href;
 };
 
 const getFollowLogoUrl = (name) => {
@@ -87,8 +92,6 @@ const follows = ref([
   },
 ]);
 
-// 마이페이지 정보 prop
-const prop = defineProps(["myPageData"]);
 
 </script>
 
@@ -156,7 +159,7 @@ const prop = defineProps(["myPageData"]);
             보유중인 허니
           </div>
           <div class="point-amount">
-            {{ honeyPoint.toLocaleString("ko-KR") }}개
+            {{ honeyPoint }}개
           </div>
         </div>
       </div>
