@@ -23,7 +23,7 @@ public class BroadcastStationNoticeController {
 
     // 개인 방송국 공지 조회
     @GetMapping("/{broadcast_station_no}")
-    public ResponseEntity<Map<String, Object>> getBroadcastStationNotices(@RequestParam("broadcast_station_no") Integer broadcastStationNo) {
+    public ResponseEntity<Map<String, Object>> getBroadcastStationNotices(@PathVariable("broadcast_station_no") Integer broadcastStationNo) {
         log.info("broadcastStationNo = {}", broadcastStationNo);
         List<BroadcastStationNoticeDto> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
         Map<String, Object> response = new HashMap<>();

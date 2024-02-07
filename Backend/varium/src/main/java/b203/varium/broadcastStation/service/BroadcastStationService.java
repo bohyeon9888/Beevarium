@@ -1,6 +1,7 @@
 package b203.varium.broadcastStation.service;
 
 
+import b203.varium.board.service.BroadcastStationNoticeService;
 import b203.varium.broadcastStation.dto.MyStationRespDTO;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
@@ -22,6 +23,7 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class BroadcastStationService {
 
     private final BroadcastStationRepository stationRepository;
+    private final BroadcastStationNoticeService stationNoticeService;
 
     public BroadcastStation getBroadcastStationWithDetails(int stationId) {
 
@@ -64,7 +66,8 @@ public class BroadcastStationService {
             respDTO.setStationTitle(station.getBroadcastStationTitle());
             respDTO.setUserId(stationId);
             respDTO.setIsMine(username.equals(stationId));
-//            respDTO.set
+            respDTO.setStationImg("none");
+//            respDTO.setNoticeList();
         }
     }
 
