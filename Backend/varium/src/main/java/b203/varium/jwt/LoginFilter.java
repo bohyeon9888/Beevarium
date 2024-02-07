@@ -76,6 +76,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         resp.put("status", "success");
         Map<String, String> data = new HashMap<>();
         data.put("token", "Bearer " + token); // 예시 토큰 값, 실제로는 생성된 토큰 사용
+        data.put("nickname", username);
         data.put("profile_img_url", customUserDetails.getPicture());
 
         resp.put("data", data);
