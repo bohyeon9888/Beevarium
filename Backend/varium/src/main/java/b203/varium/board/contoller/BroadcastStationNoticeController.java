@@ -22,7 +22,7 @@ public class BroadcastStationNoticeController {
     private final BroadcastStationNoticeService broadcastStationNoticeService;
 
     // 개인 방송국 공지 조회
-    @GetMapping
+    @GetMapping("/{broadcast_station_no}")
     public ResponseEntity<Map<String, Object>> getBroadcastStationNotices(@RequestParam("broadcast_station_no") Integer broadcastStationNo) {
         log.info("broadcastStationNo = {}", broadcastStationNo);
         List<BroadcastStationNoticeDto> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
@@ -33,7 +33,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 게시글 삽입
-    @PostMapping
+    @PostMapping("/board/create")
     public ResponseEntity<Map<String, String>> createBroadcastStationNotice(
             @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -51,7 +51,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 게시글 조회
-    @GetMapping("/{broadcasting_station_notice_no}")
+    @GetMapping("/board/{broadcasting_station_notice_no}")
     public ResponseEntity<Map<String, Object>> getBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
         BroadcastStationNoticeDto notice = broadcastStationNoticeService.findBroadcastStationNoticeById(noticeNo);
         Map<String, Object> response = new HashMap<>();
@@ -61,7 +61,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 수정
-    @PutMapping
+    @PutMapping("/board/update/{broadcasting_station_notice_no}")
     public ResponseEntity<Map<String, String>> updateBroadcastStationNotice(
             @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -79,7 +79,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 삭제
-    @DeleteMapping("/{broadcasting_station_notice_no}")
+    @DeleteMapping("/board/delete/{broadcasting_station_notice_no}")
     public ResponseEntity<Map<String, String>> deleteBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
         broadcastStationNoticeService.deleteBroadcastStationNotice(noticeNo);
         Map<String, String> successResponse = new HashMap<>();
