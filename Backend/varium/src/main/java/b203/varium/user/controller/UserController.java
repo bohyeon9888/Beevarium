@@ -1,7 +1,6 @@
 package b203.varium.user.controller;
 
 import b203.varium.user.dto.JoinDTO;
-import b203.varium.user.dto.MyPageRespDTO;
 import b203.varium.user.dto.NameReqDTO;
 import b203.varium.user.dto.PwReqDTO;
 import b203.varium.user.service.UserService;
@@ -11,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,12 +22,23 @@ public class UserController {
 
     // 마이페이지 조회
     @GetMapping("/mypage")
-    public ResponseEntity<MyPageRespDTO> viewMyPage() {
+    public ResponseEntity<Map<String, Object>> viewMyPage() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         // 구독 목록, 프로필 사진, 닉네임, 포인트
 
-        return ResponseEntity.ok(userService.viewUserDetail(username));
+        Map<String, Object> result = new HashMap<>();
+        if (userService.viewUserDetail(username) != null) {
+            result.put("status", "success");
+            result.put("data", userService.viewUserDetail(username));
+        } else {
+            result.put("status", "fail");
+            Map<String, String> msg = new HashMap<>();
+            msg.put("msg", "유저 정보가 없습니다.");
+            result.put("data", msg);
+        }
+
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/signup")
