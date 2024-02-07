@@ -1,13 +1,13 @@
 <script setup>
-import DashboardChat from "./components/DashboardChat.vue";
-import Screen from "./components/Screen.vue";
-
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import DashboardChat from "./components/DashboardChat.vue";
+import Screen from "./components/Screen.vue";
+import { streamingStart, streamingEnd } from "@/api/live.js";
 
 const authStore = useAuthStore();
-const { isLoggedIn } = storeToRefs(authStore);
+const { isLoggedIn, accessToken } = storeToRefs(authStore);
 const streamerId = ref("김싸피");
 const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습니다.");
 const tagInput = ref("");
@@ -35,11 +35,34 @@ const addNewsFeedItem = (user, action) => {
   newsFeed.value.unshift(item);
 };
 
-const getActionClass = (action) => {
-  return {
-    "follow-action": action === "팔로우",
-    "donation-action": action != "팔로우",
-  };
+const streamData = ref({
+  broadcastingTitle: "",
+  broadcastingImgUrl: "",
+  tagList: "",
+});
+const doStreamingStart = () => {
+  console.dir(streamData.value);
+  streamingStart(
+    accessToken.value,
+    streamData.value,
+    ({ data }) => {
+      console.log(data.msg);
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+};
+const doStreamingEnd = () => {
+  streamingEnd(
+    accessToken.value,
+    ({ data }) => {
+      console.log(data.msg);
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
 };
 
 // 테스트
@@ -100,7 +123,12 @@ addNewsFeedItem("아재개더", "3,000");
           <Screen />
         </div>
         <div class="streaming-option">
-          <button class="streaming-start-btn">방송 시작</button>
+          <button class="streaming-start-btn" @click="doStreamingStart">
+            방송 시작
+          </button>
+          <button class="streaming-end-btn" @click="doStreamingEnd">
+            방송 종료
+          </button>
         </div>
         <div class="stream-setting"></div>
       </div>
@@ -319,6 +347,21 @@ button:hover {
   gap: 4px;
   border-radius: 8px;
   background: #eb3a3a;
+  border: none;
+  font-size: 15px;
+  line-height: normal;
+  margin-right: 15px;
+}
+.streaming-end-btn {
+  width: 91px;
+  height: 35px;
+  display: inline-flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: #434343;
   border: none;
   font-size: 15px;
   line-height: normal;

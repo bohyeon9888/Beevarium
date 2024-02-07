@@ -1,14 +1,44 @@
 <script setup>
+import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import router from "@/router";
+import { useRouter } from "vue-router";
+import { login } from "@/api/user";
 
+const router = useRouter();
 const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 
-const login = () => {
-  authStore.login();
+const loginData = ref({
+  username: "",
+  password: "",
+});
+
+const moveToHome = () => {
   router.push({ name: "Home" });
+}
+const forceLogin = () => {
+  authStore.login();
+  accessToken.value = 1;
+  moveToHome();
+}
+const doLogin = () => {
+  console.log(loginData.value);
+  router.push({ name: "Home" });
+  login(
+    loginData.value,
+    ({ data }) => {
+      if (data.status == "success") {
+        authStore.login(data.data, loginData.value.username);
+        moveToHome();
+      }
+    },
+    (error) => {
+      console.log(error.data.msg);
+      alert(error.data.msg);
+    }
+  );
 };
 
 const changeCoper = (value) => {
@@ -27,16 +57,22 @@ const changeCoper = (value) => {
           </router-link>
         </div>
         <div class="id-input-box">
-          <input class="id-input" type="text" placeholder="아이디" />
+          <input
+            class="id-input"
+            type="text"
+            placeholder="아이디"
+            v-model="loginData.username"
+          />
         </div>
         <div class="password-input-box">
           <input
             class="password-input"
             type="password"
             placeholder="비밀번호"
+            v-model="loginData.password"
           />
         </div>
-        <div class="login-button" @click="login">로그인</div>
+        <div class="login-button" @click="[doLogin(), forceLogin()]">로그인</div>
         <div class="user-function-box">
           <router-link :to="{ name: 'Signup' }">회원가입</router-link>
           <div
@@ -82,7 +118,7 @@ const changeCoper = (value) => {
         <div class="social-login-box">
           <a
             class="social-login-button"
-            href="http://localhost:8080/oauth/redirect/google"
+            href="https://api.beevarium.site/oauth/redirect/google"
           >
             <img
               class="google-login"
@@ -92,7 +128,7 @@ const changeCoper = (value) => {
           </a>
           <a
             class="social-login-button"
-            href="http://localhost:8080/oauth/redirect/naver"
+            href="https://api.beevarium.site/oauth/redirect/naver"
             style="margin: 0 24px"
           >
             <img
@@ -103,7 +139,7 @@ const changeCoper = (value) => {
           </a>
           <a
             class="social-login-button"
-            href="http://localhost:8080/oauth/redirect/kakao"
+            href="https://api.beevarium.site/oauth/redirect/kakao"
           >
             <img
               class="kakao-login"

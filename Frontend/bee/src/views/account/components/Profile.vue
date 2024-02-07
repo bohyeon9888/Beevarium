@@ -1,5 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+import { getMyPage } from "@/api/mypage";
+
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 
 const honeyPoint = ref(5000);
 const getProfileImageUrl = () => {
@@ -80,6 +86,10 @@ const follows = ref([
     name: "스폰지3",
   },
 ]);
+
+// 마이페이지 정보 prop
+const prop = defineProps(["myPageData"]);
+
 </script>
 
 <template>
@@ -398,6 +408,8 @@ const follows = ref([
 .follow-channel-logo {
   width: 90px;
   height: 90px;
+  border-radius: 10rem;
+  object-fit: scale-down;
 }
 .follow-channel-name {
   display: flex;

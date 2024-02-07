@@ -5,9 +5,10 @@ import Login from "../views/auth/Login.vue";
 import Signup from "../views/auth/Signup.vue";
 import Dashboard from "../views/streaming/Dashboard.vue";
 import LiveStream from "../views/streaming/LiveStream.vue";
-import Monitoring from "../views/admin/Monitoring.vue";
-import WarningUser from "../views/admin/WarningUser.vue";
-import BlackList from "../views/admin/BlackList.vue";
+import Admin from "../views/admin/Admin.vue";
+import Monitoring from "../views/admin/components/Monitoring.vue";
+import WarningUser from "../views/admin/components/WarningUser.vue";
+import BlackList from "../views/admin/components/BlackList.vue";
 import MyPage from "../views/account/MyPage.vue";
 import Profile from "../views/account/components/Profile.vue";
 import Privacy from "../views/account/components/Privacy.vue";
@@ -22,6 +23,11 @@ import BanListManagement from "../views/studio/BanListManagement.vue";
 import StudioMain from "../views/studio/StudioMain.vue";
 import StudioSetting from "../views/studio/StudioSetting.vue";
 import AuthCallBack from "../views/auth/AuthCallBack.vue";
+import OpenVIdutest from "@/views/openvidu/OpenVIdutest.vue";
+import Openviduopen from "@/views/openvidu/Openviduopen.vue";
+import OpenviduView from "@/views/openvidu/OpenviduView.vue";
+import OpenViduLogic1 from "@/views/openvidu/OpenViduLogic1.vue";
+import Openviduchat from "@/views/openvidu/Openviduchat.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,19 +63,27 @@ const router = createRouter({
       component: LiveStream,
     },
     {
-      path: "/admin/monitoring",
-      name: "Monitoring",
-      component: Monitoring,
-    },
-    {
-      path: "/admin/warning-user",
-      name: "WarningUser",
-      component: WarningUser,
-    },
-    {
-      path: "/admin/blacklist",
-      name: "BlackList",
-      component: BlackList,
+      path: "/admin",
+      name: "Admin",
+      component: Admin,
+      redirect: { name: "Monitoring" },
+      children: [
+        {
+          path: "monitoring",
+          name: "Monitoring",
+          component: Monitoring,
+        },
+        {
+          path: "warning-user",
+          name: "WarningUser",
+          component: WarningUser,
+        },
+        {
+          path: "blacklist",
+          name: "BlackList",
+          component: BlackList,
+        },
+      ],
     },
     {
       path: "/mypage",
@@ -85,9 +99,9 @@ const router = createRouter({
         {
           path: "privacy",
           name: "Privacy",
-          component: Privacy
-        }
-      ]
+          component: Privacy,
+        },
+      ],
     },
     {
       path: "/studio/clip",
@@ -153,6 +167,31 @@ const router = createRouter({
       path: "/oauth/callback/kakao",
       name: "KakaoAuthCallback",
       component: AuthCallBack,
+    },
+    {
+      path: "/openvidutest",
+      name: "OpenviduTest",
+      component: OpenVIdutest,
+    },
+    {
+      path: "/openvidutestview",
+      name: "OpenviduView",
+      component: OpenviduView,
+    },
+    {
+      path: "/openvidutestopen",
+      name: "Openviduopen",
+      component: Openviduopen,
+    },
+    {
+      path: "/openviduchat",
+      name: "Openviduchat",
+      component: Openviduchat,
+    },
+    {
+      path: "/logic1",
+      name: "OpenviduLogic1",
+      component: OpenViduLogic1,
     },
   ],
 });

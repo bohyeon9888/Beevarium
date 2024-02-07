@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, reactive } from "vue";
 import { RouterLink } from "vue-router";
 import { signUp } from "@/api/user.js";
 
@@ -7,9 +7,8 @@ const moveLogin = () => {
   router.push({ name: "Login" });
 };
 
-//비밀번호 확인 변수
-const passwordCheck = ref("");
-const registerData = ref({
+// 회원가입 입력 정보
+const inputData = ref({
   userId: "",
   userPassword: "",
   userEmailId: "",
@@ -17,27 +16,36 @@ const registerData = ref({
   userName: "",
 });
 
-// 비밀번호 확인 함수
+// 회원가입 axios request 정보
+const registerData = computed(() => ({
+  userId: inputData.value.userId,
+  password: inputData.value.userPassword,
+  email: inputData.value.userEmailId + "@" + inputData.value.userEmailDomain,
+  username: inputData.value.userName,
+}));
+
+// 비밀번호 확인
+const passwordCheck = ref("");
 const isPasswordSame = computed(() => {
   if (
-    registerData.value.userPassword != "" &&
+    inputData.value.userPassword != "" &&
     passwordCheck.value != "" &&
-    registerData.value.userPassword === passwordCheck.value
+    inputData.value.userPassword === passwordCheck.value
   ) {
     return 1;
   }
   if (
-    registerData.value.userPassword != "" &&
+    inputData.value.userPassword != "" &&
     passwordCheck.value != "" &&
-    registerData.value.userPassword != passwordCheck.value
+    inputData.value.userPassword != passwordCheck.value
   ) {
     return 2;
   }
 });
 watch(
-  () => registerData.value.userPassword,
+  () => inputData.value.userPassword,
   (newValue, oldValue) => {
-    registerData.value.userPassword = newValue;
+    inputData.value.userPassword = newValue;
   }
 );
 watch(
@@ -53,7 +61,7 @@ const doSignUp = () => {
   signUp(
     registerData.value,
     ({ data }) => {
-      if (data.status === "success") moveLogin();
+      if (data.status == "success") moveLogin();
     },
     (error) => {
       console.log(error);
@@ -75,22 +83,18 @@ const doSignUp = () => {
         </div>
         <div class="id-input-container">
           <div style="font-size: 14px; font-weight: 600">아이디</div>
-          <input type="text" class="id-input" v-model="registerData.userId" />
+          <input type="text" class="id-input" v-model="inputData.userId" />
         </div>
         <div class="name-input-container">
           <div style="font-size: 14px; font-weight: 600">닉네임</div>
-          <input
-            type="text"
-            class="name-input"
-            v-model="registerData.userName"
-          />
+          <input type="text" class="name-input" v-model="inputData.userName" />
         </div>
         <div class="password-input-container">
           <div style="font-size: 14px; font-weight: 600">비밀번호</div>
           <input
             type="password"
             class="password-input"
-            v-model="registerData.userPassword"
+            v-model="inputData.userPassword"
           />
         </div>
         <div class="password-check-input-container">
@@ -131,7 +135,7 @@ const doSignUp = () => {
             <input
               type="text"
               class="email-id-input"
-              v-model="registerData.userEmailId"
+              v-model="inputData.userEmailId"
             />
             <div
               style="
@@ -146,7 +150,7 @@ const doSignUp = () => {
             <input
               type="text"
               class="email-domain-input"
-              v-model="registerData.userEmailDomain"
+              v-model="inputData.userEmailDomain"
             />
           </div>
         </div>

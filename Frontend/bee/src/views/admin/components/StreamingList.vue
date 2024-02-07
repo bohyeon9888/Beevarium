@@ -1,27 +1,37 @@
 <script setup>
+import { defineProps } from "vue";
+
 defineProps({
-  title: String,
+  stream: Object,
 });
 </script>
 
 <template>
   <div class="streaming-list-box">
-    <h2>{{ title }}</h2>
+    <div class="name">{{ stream.name }}</div>
+    <div class="viewers">
+      <img class="live" src="../../../assets/img/live.png" alt="" />
+      {{ stream.viewers }}
+    </div>
   </div>
 </template>
 
 <style scoped>
 .streaming-list-box {
-  width: 100%;
-  background-color: #fff;
-  border-radius: 5px;
-  padding: 20px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 600;
 }
-
-h2 {
-  font-size: 18px;
-  margin-top: 0;
+.name {
+  color: #fff;
+  margin-bottom: 20px;
+}
+.viewers {
+  color: #fff;
+  margin-bottom: 20px;
+}
+.live {
+  padding-bottom: 2px;
 }
 </style>

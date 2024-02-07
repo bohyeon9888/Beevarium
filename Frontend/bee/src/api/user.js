@@ -9,7 +9,7 @@ const login = async (loginData, success, fail) => {
 
 // 회원가입
 const signUp = async (registerData, success, fail) => {
-  await local.post(`/user/join`, registerData).then(success).catch(fail);
+  await local.post(`/user/signup`, registerData).then(success).catch(fail);
 };
 // 소셜 로그인
 const socialLogin = async (coperation, code, success, fail) => {
