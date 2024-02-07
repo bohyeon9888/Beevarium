@@ -31,6 +31,7 @@ const myPage = () => {
   getMyPage(
     accessToken.value,
     ({ data }) => {
+      console.log(data);
       myPageData.value = data.data;
     },
     (error) => {
