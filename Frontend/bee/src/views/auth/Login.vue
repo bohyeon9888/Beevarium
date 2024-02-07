@@ -7,30 +7,31 @@ import { login } from "@/api/user";
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-const loginData = ref({
-  username: "",
-  password: "",
-});
+const username = ref("");
+const password = ref("");
 
 const moveToHome = () => {
   router.push({ name: "Home" });
-}
+};
 
 const doLogin = () => {
-  console.log(loginData.value);
-  router.push({ name: "Home" });
+  console.log("username : ", username.value);
+  console.log("password : ", password.value);
+  let loginData = new FormData();
+
+  loginData.append("username", username.value);
+  loginData.append("password", password.value);
+
   login(
-    loginData.value,
+    loginData,
     ({ data }) => {
       if (data.status == "success") {
-        authStore.login(data.data, loginData.value.username);
+        authStore.login(data.data, loginData.get("username"));
         moveToHome();
       }
     },
     (error) => {
-      console.log(error.data.msg);
-      alert(error.data.msg);
+  
     }
   );
 };
@@ -55,7 +56,7 @@ const changeCoper = (value) => {
             class="id-input"
             type="text"
             placeholder="아이디"
-            v-model="loginData.username"
+            v-model="username"
           />
         </div>
         <div class="password-input-box">
@@ -63,7 +64,7 @@ const changeCoper = (value) => {
             class="password-input"
             type="password"
             placeholder="비밀번호"
-            v-model="loginData.password"
+            v-model="password"
           />
         </div>
         <div class="login-button" @click="[doLogin()]">로그인</div>
