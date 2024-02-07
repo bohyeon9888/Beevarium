@@ -4,15 +4,14 @@ import b203.varium.openvidu.domain.ConnectionPropertiesDto;
 import b203.varium.openvidu.domain.RecordingPropertiesDto;
 import b203.varium.openvidu.domain.SessionPropertiesDto;
 import b203.varium.openvidu.service.OpenViduService;
-import io.openvidu.java.client.*;
-import jakarta.annotation.PostConstruct;
-import jakarta.validation.Valid;
+import io.openvidu.java.client.Connection;
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -110,13 +109,13 @@ public class OpenViduController {
 
         log.info("시작은 되?");
         log.info("sessionId = {}", sessionId);
-        log.info("recordingProperties = {}",recordingPropertiesDto);
+        log.info("recordingProperties = {}", recordingPropertiesDto);
         return openViduService.startRecordings(sessionId, recordingPropertiesDto);
     }
 
     @PostMapping("/maphook")
-    public ResponseEntity<String> mapHook(@RequestBody String payload){
+    public ResponseEntity<String> mapHook(@RequestBody String payload) {
         log.info("payload = {}", payload);
-        return new ResponseEntity<>(payload,HttpStatus.OK);
+        return new ResponseEntity<>(payload, HttpStatus.OK);
     }
 }
