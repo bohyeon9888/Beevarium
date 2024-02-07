@@ -5,11 +5,14 @@ import io.openvidu.java.client.RecordingLayout;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class RecordingPropertiesDto {
-    @NotBlank(message = "이름은 비어 있을 수 없습니다")
+
     private String name;
 
     @NotNull(message = "오디오 유무를 설정해야 합니다")

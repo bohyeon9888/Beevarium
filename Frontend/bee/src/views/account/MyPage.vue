@@ -1,23 +1,49 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useRouter, RouterView } from "vue-router";
-import { useEffectStore } from "@/stores/mypage";
+import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-
-const effectStore = useEffectStore();
-const { activeOption } = storeToRefs(effectStore);
+import { getMyPage } from "@/api/mypage";
 
 const router = useRouter();
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
+
+
+// 페이지 이동 관련 함수
 const moveToProfile = () => {
   router.push({ name: "Profile" });
 };
 const moveToPrivacy = () => {
   router.push({ name: "Privacy" });
 };
-
+// 메뉴 토글
+const activeOption = ref(1);
 const handleOptionClick = (index) => {
   activeOption.value = index;
 };
+
+const myPageData = ref({});
+
+const myPage = () => {
+  console.log(accessToken.value);
+  console.log("myPage 함수 호출");
+  getMyPage(
+    accessToken.value,
+    ({ data }) => {
+      console.log(data);
+      myPageData.value = data.data;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+onMounted(() => {
+  myPage();
+  router.push({ name: "MyPage" });
+});
 </script>
 
 <template>
@@ -39,8 +65,15 @@ const handleOptionClick = (index) => {
         개인정보
       </li>
     </ul>
-    <div style="width: 1620px; height: 1px; border-radius: 8px; background-color: #323232;"></div>
-    <RouterView />
+    <div
+      style="
+        width: 1620px;
+        height: 1px;
+        border-radius: 8px;
+        background-color: #323232;
+      "
+    ></div>
+    <RouterView :myPageData="myPageData" />
   </div>
 </template>
 

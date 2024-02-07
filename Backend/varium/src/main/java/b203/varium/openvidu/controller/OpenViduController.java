@@ -1,18 +1,18 @@
 package b203.varium.openvidu.controller;
 
 import b203.varium.openvidu.domain.ConnectionPropertiesDto;
+import b203.varium.openvidu.domain.RecordingPropertiesDto;
 import b203.varium.openvidu.domain.SessionPropertiesDto;
 import b203.varium.openvidu.service.OpenViduService;
-import io.openvidu.java.client.Connection;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Session;
+import io.openvidu.java.client.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,15 +26,33 @@ import java.util.List;
 public class OpenViduController {
     private final OpenViduService openViduService;
 
+    private static ResponseEntity<String> getStringResponseEntity(BindingResult result) {
+        if (result.hasErrors()) {
+            StringBuilder errorMessage = new StringBuilder();
+            for (ObjectError error : result.getAllErrors()) {
+                if (error instanceof FieldError fieldError) {
+                    errorMessage.append(fieldError.getField()).append(": ").append(fieldError.getDefaultMessage()).append("; ");
+                } else {
+                    errorMessage.append(error.getDefaultMessage()).append("; ");
+                }
+            }
+            log.info("Validation errors: {}", errorMessage);
+            return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
+        }
+        return null;
+    }
+
     @GetMapping("/sessions")
     public ResponseEntity<List<Session>> getSessions() {
         return openViduService.getSessions();
     }
 
     @PostMapping("/sessions")
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({OpenViduJavaClientException.class, OpenViduHttpException.class})
     public ResponseEntity<String> initializeSession(@Validated @RequestBody(required = false) SessionPropertiesDto sessionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
-        if (result.hasErrors())
-            return new ResponseEntity<>(result.getNestedPath(), HttpStatus.OK);
+        ResponseEntity<String> errorMessage = getStringResponseEntity(result);
+        if (errorMessage != null) return errorMessage;
 
         log.info("openViduSession={}", sessionPropertiesDto);
         return openViduService.initializeSession(sessionPropertiesDto);
@@ -46,9 +64,9 @@ public class OpenViduController {
     }
 
     @PostMapping("/sessions/{sessionId}/connection")
-    public ResponseEntity<String> connectionSession(@PathVariable String sessionId, @Valid @RequestBody(required = false) ConnectionPropertiesDto connectionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
-        if (result.hasErrors())
-            return new ResponseEntity<>(result.getNestedPath(), HttpStatus.OK);
+    public ResponseEntity<String> connectionSession(@PathVariable String sessionId, @Validated @RequestBody(required = false) ConnectionPropertiesDto connectionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
+        ResponseEntity<String> errorMessage = getStringResponseEntity(result);
+        if (errorMessage != null) return errorMessage;
 
         log.info("OpenViduConnection = {}", connectionPropertiesDto);
         log.info("sessionId = {}", sessionId);
@@ -84,7 +102,13 @@ public class OpenViduController {
     }
 
     @PostMapping("sessions/{sessionId}/recordings/start")
-    public ResponseEntity<String> startRecordings(@PathVariable String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
-        return openViduService.startRecordings(sessionId);
+    public ResponseEntity<String> startRecordings(@PathVariable String sessionId, @Validated @RequestBody RecordingPropertiesDto recordingPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
+        ResponseEntity<String> errorMessage = getStringResponseEntity(result);
+        if (errorMessage != null) return errorMessage;
+
+        log.info("시작은 되?");
+        log.info("sessionId = {}", sessionId);
+        log.info("recordingProperties = {}",recordingPropertiesDto);
+        return openViduService.startRecordings(sessionId, recordingPropertiesDto);
     }
 }

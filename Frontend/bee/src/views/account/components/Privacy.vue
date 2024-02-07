@@ -1,5 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
+import { useAuthStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+import { checkNickname, changeNickname, changePassword } from "@/api/mypage";
+
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 
 const account = ref({
   image: "account-image",
@@ -10,6 +16,97 @@ const account = ref({
 const getAccountImageUrl = (name) => {
   return new URL(`/src/assets/img/mypage/${name}.png`, import.meta.url).href;
 };
+
+// 마이페이지 정보 prop
+const prop = defineProps(["myPageData"]);
+const nickname = ref(prop.myPageData.username);
+
+// 닉네임 중복 확인
+const isNicknameSame = ref("");
+const doCheckNickname = () => {
+  checkNickname(
+    accessToken.value,
+    nickname,
+    ({ data }) => {
+      console.log(data.data.msg);
+      isNicknameSame.value = data.status;
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+};
+
+// 닉네임 변경
+const doChangeNickname = () => {
+  if (isNicknameSame.value == "success") {
+    changeNickname(
+      accessToken.value,
+      {
+        nickname: nickname.value,
+      },
+      ({ data }) => {
+        console.log(data.data.msg);
+      },
+      (error) => {
+        console.log(error.data.msg);
+      }
+    );
+  }
+};
+
+// 비밀번호 확인
+const newPassword = ref("");
+const passwordCheck = ref("");
+const isPasswordSame = computed(() => {
+  if (
+    newPassword.value != "" &&
+    passwordCheck.value != "" &&
+    newPassword.value === passwordCheck.value
+  ) {
+    return 1;
+  }
+  if (
+    newPassword.value != "" &&
+    passwordCheck.value != "" &&
+    newPassword.value != passwordCheck.value
+  ) {
+    return 2;
+  }
+});
+watch(
+  () => newPassword.value,
+  (newValue, oldValue) => {
+    newPassword.value = newValue;
+  }
+);
+watch(
+  () => passwordCheck.value,
+  (newValue, oldValue) => {
+    passwordCheck.value = newValue;
+  }
+);
+
+// 비밀번호 변경
+const doChangePassword = () => {
+  if (isPasswordSame == 1) {
+    changePassword(
+      accessToken.value,
+      {
+        password: newPassword.value,
+      },
+      ({ data }) => {
+        console.log(data.data.msg);
+      },
+      (error) => {
+        console.log(error.data.msg);
+      }
+    );
+  } else {
+    alert("비밀번호가 일치하지 않습니다.");
+  }
+};
+
 </script>
 
 <template>
@@ -17,8 +114,19 @@ const getAccountImageUrl = (name) => {
     <div style="font-size: 20px; font-weight: 600">내 정보 변경</div>
     <div class="privacy-box">
       <div class="account-info-container">
-        <div style="width: 106px; height: 21px; font-size: 18px; font-weight: 600">가입 계정</div>
-        <div style="display: flex; align-items: center; height: 40px; margin-left: 244px">
+        <div
+          style="width: 106px; height: 21px; font-size: 18px; font-weight: 600"
+        >
+          가입 계정
+        </div>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            height: 40px;
+            margin-left: 244px;
+          "
+        >
           <img :src="getAccountImageUrl(account.image)" class="account-image" />
           <div class="account-info-box">
             <div class="account-platform">{{ account.platform }}</div>
@@ -26,9 +134,33 @@ const getAccountImageUrl = (name) => {
           </div>
         </div>
       </div>
-      <div style="width: 1540px; height: 1px; border-radius: 8px; background-color: #434343;"></div>
-      <div style="width: 1540px; height: 21px; font-size: 18px; font-weight: 600; margin: 30px 0;">계정 설정</div>
-      <div style="width: 1540px; height: 1px; border-radius: 8px; background-color: #323232;"></div>
+      <div
+        style="
+          width: 1540px;
+          height: 1px;
+          border-radius: 8px;
+          background-color: #434343;
+        "
+      ></div>
+      <div
+        style="
+          width: 1540px;
+          height: 21px;
+          font-size: 18px;
+          font-weight: 600;
+          margin: 30px 0;
+        "
+      >
+        계정 설정
+      </div>
+      <div
+        style="
+          width: 1540px;
+          height: 1px;
+          border-radius: 8px;
+          background-color: #323232;
+        "
+      ></div>
       <div class="name-setting-container">
         <div
           style="
@@ -44,17 +176,40 @@ const getAccountImageUrl = (name) => {
         </div>
         <div class="name-edit-container">
           <div class="name-edit-box">
-            <input type="text" class="name-input" />
-            <div class="duplication-check-button">중복 확인</div>
-            <div class="name-edit-button">닉네임 변경</div>
+            <input type="text" class="name-input" v-model="nickname" />
+            <div class="duplication-check-button" @click="doCheckNickname">
+              중복 확인
+            </div>
+            <div class="name-edit-button" @click="doChangeNickname">
+              닉네임 변경
+            </div>
           </div>
-          <div style="width: 586px; height: 40px; font-size: 14px; font-weight: 400">
-            <div>ㅡ 닉네임을 만드세요! 닉네임을 한국어, 영어로 설정할 수 있습니다.</div>
-            <div>ㅡ BEEVARIUM 이용약관을 위반한 닉네임은 제재당할 수 있으니 주의하세요.</div>
+          <div
+            style="
+              width: 586px;
+              height: 40px;
+              font-size: 14px;
+              font-weight: 400;
+            "
+          >
+            <div>
+              ㅡ 닉네임을 만드세요! 닉네임을 한국어, 영어로 설정할 수 있습니다.
+            </div>
+            <div>
+              ㅡ BEEVARIUM 이용약관을 위반한 닉네임은 제재당할 수 있으니
+              주의하세요.
+            </div>
           </div>
         </div>
       </div>
-      <div style="width: 1540px; height: 1px; border-radius: 8px; background-color: #323232"></div>
+      <div
+        style="
+          width: 1540px;
+          height: 1px;
+          border-radius: 8px;
+          background-color: #323232;
+        "
+      ></div>
       <div class="password-setting-container">
         <div
           style="
@@ -69,16 +224,32 @@ const getAccountImageUrl = (name) => {
           비밀번호 변경
         </div>
         <div class="password-edit-container">
-          <input type="password" class="new-password" placeholder="새 비밀번호" />
-          <input type="password" class="new-password-check" placeholder="새 비밀번호 확인" />
+          <input
+            type="password"
+            class="new-password"
+            placeholder="새 비밀번호"
+            v-model="newPassword"
+          />
+          <input
+            type="password"
+            class="new-password-check"
+            placeholder="새 비밀번호 확인"
+            v-model="passwordCheck"
+          />
           <div
-            style="width: 295px; height: 20px; font-size: 14px; font-weight: 400; color: #e6e5ea"
+            style="
+              width: 295px;
+              height: 20px;
+              font-size: 14px;
+              font-weight: 400;
+              color: #e6e5ea;
+            "
           >
             영문/숫자/특수문자 조합으로 10~15자 대소문자 구분
           </div>
         </div>
       </div>
-      <div class="save-button">저장</div>
+      <div class="save-button" @click="doChangePassword">저장</div>
     </div>
   </div>
 </template>
@@ -208,7 +379,7 @@ const getAccountImageUrl = (name) => {
 }
 .save-button {
   position: absolute;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
   bottom: 40px;
@@ -218,7 +389,7 @@ const getAccountImageUrl = (name) => {
   font-weight: 700;
   color: #121212;
   border-radius: 8px;
-  background-color: #ffec3e;;
+  background-color: #ffec3e;
   cursor: pointer;
 }
 </style>
