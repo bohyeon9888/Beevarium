@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class MyPageRespDTO {
     private String username;
+    private String code;
     private String profileUrl;
     private int point;
     private List<FollowRespDTO> subscribeList;
