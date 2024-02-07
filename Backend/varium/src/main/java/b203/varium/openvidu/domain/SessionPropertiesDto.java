@@ -4,9 +4,13 @@ import io.openvidu.java.client.MediaMode;
 import io.openvidu.java.client.RecordingMode;
 import io.openvidu.java.client.VideoCodec;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class SessionPropertiesDto {
     private MediaMode mediaMode;
     private RecordingMode recordingMode;
