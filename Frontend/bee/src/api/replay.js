@@ -9,3 +9,5 @@ const replayList = async (streamerId, success, fail) => {
 const replayDetail = async (streamerId, replayNo, success, fail) => {
   await local.get(`/video/replay/${streamerId}?${replayNo}`).then(success).catch(fail);
 };
+
+export { replayList, replayDetail };
