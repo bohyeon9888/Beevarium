@@ -113,9 +113,4 @@ public class OpenViduController {
         return openViduService.startRecordings(sessionId, recordingPropertiesDto);
     }
 
-    @PostMapping("/maphook")
-    public ResponseEntity<String> mapHook(@RequestBody String payload) {
-        log.info("payload = {}", payload);
-        return new ResponseEntity<>(payload, HttpStatus.OK);
-    }
 }
