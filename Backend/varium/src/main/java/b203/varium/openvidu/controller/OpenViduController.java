@@ -4,8 +4,10 @@ import b203.varium.openvidu.domain.ConnectionPropertiesDto;
 import b203.varium.openvidu.domain.RecordingPropertiesDto;
 import b203.varium.openvidu.domain.SessionPropertiesDto;
 import b203.varium.openvidu.service.OpenViduService;
-import io.openvidu.java.client.*;
-import jakarta.validation.Valid;
+import io.openvidu.java.client.Connection;
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,7 +51,6 @@ public class OpenViduController {
 
     @PostMapping("/sessions")
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({OpenViduJavaClientException.class, OpenViduHttpException.class})
     public ResponseEntity<String> initializeSession(@Validated @RequestBody(required = false) SessionPropertiesDto sessionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
         ResponseEntity<String> errorMessage = getStringResponseEntity(result);
         if (errorMessage != null) return errorMessage;
@@ -108,7 +109,8 @@ public class OpenViduController {
 
         log.info("시작은 되?");
         log.info("sessionId = {}", sessionId);
-        log.info("recordingProperties = {}",recordingPropertiesDto);
+        log.info("recordingProperties = {}", recordingPropertiesDto);
         return openViduService.startRecordings(sessionId, recordingPropertiesDto);
     }
+
 }
