@@ -23,6 +23,8 @@ export const useAuthStore = defineStore(
 
     const logout = () => {
       isLoggedIn.value = false;
+      accessToken.value = null;
+      user.value = null;
     };
 
     const chooseCoperation = (index) => {

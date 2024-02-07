@@ -2,13 +2,11 @@
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 import { login } from "@/api/user";
 
 const router = useRouter();
 const authStore = useAuthStore();
-const { accessToken } = storeToRefs(authStore);
 
 const loginData = ref({
   username: "",
@@ -18,11 +16,7 @@ const loginData = ref({
 const moveToHome = () => {
   router.push({ name: "Home" });
 }
-const forceLogin = () => {
-  authStore.login();
-  accessToken.value = 1;
-  moveToHome();
-}
+
 const doLogin = () => {
   console.log(loginData.value);
   router.push({ name: "Home" });
@@ -72,7 +66,7 @@ const changeCoper = (value) => {
             v-model="loginData.password"
           />
         </div>
-        <div class="login-button" @click="[doLogin(), forceLogin()]">로그인</div>
+        <div class="login-button" @click="[doLogin()]">로그인</div>
         <div class="user-function-box">
           <router-link :to="{ name: 'Signup' }">회원가입</router-link>
           <div
