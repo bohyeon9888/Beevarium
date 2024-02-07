@@ -2,10 +2,14 @@ package b203.varium.openvidu.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
 
 
-@Data
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConnectionPropertiesDto {
     @NotBlank(message = "Type is required")
     private String type;
