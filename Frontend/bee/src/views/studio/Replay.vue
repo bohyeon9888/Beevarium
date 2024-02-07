@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import StudioInfo from "./components/StudioInfo.vue";
+import { replayList } from "@/api/replay";
 
 const currentPage = ref(1);
 const ReplaysPerPage = 15;
@@ -519,6 +520,10 @@ const changePage = (page) => {
 const getReplayUrl = (name) => {
   return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
 };
+
+onMounted(() => {
+  replayList(streamerId);
+});
 </script>
 
 <template>

@@ -7,19 +7,44 @@ import { checkNickname, changeNickname, changePassword } from "@/api/mypage";
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 
-const account = ref({
-  image: "account-image",
-  platform: "네이버",
-  date: "24.01.27",
-});
+const account = computed(() => ({
+  image: platformImage,
+  platform: platform,
+}));
 
 const getAccountImageUrl = (name) => {
-  return new URL(`/src/assets/img/mypage/${name}.png`, import.meta.url).href;
+  return new URL(`/src/assets/img/mypage/platform/${name}.png`, import.meta.url).href;
 };
 
 // 마이페이지 정보 prop
 const prop = defineProps(["myPageData"]);
 const nickname = ref(prop.myPageData.username);
+
+// 로그인 플랫폼 이미지
+const platformImage = computed(() => {
+  if (prop.myPageData.code == "U1") {
+    return "beevarium";
+  } else if (prop.myPageData.code == "U2") {
+    return "google";
+  } else if (prop.myPageData.code == "U3") {
+    return "naver";
+  } else if (prop.myPageData.code == "U4") {
+    return "kakao";
+  }
+});
+
+// 로그인 플랫폼
+const platform = computed(() => {
+  if (prop.myPageData.code == "U1") {
+    return "비바리움";
+  } else if (prop.myPageData.code == "U2") {
+    return "구글";
+  } else if (prop.myPageData.code == "U3") {
+    return "네이버";
+  } else if (prop.myPageData.code == "U4") {
+    return "카카오";
+  }
+});
 
 // 닉네임 중복 확인
 const isNicknameSame = ref("");
@@ -106,7 +131,6 @@ const doChangePassword = () => {
     alert("비밀번호가 일치하지 않습니다.");
   }
 };
-
 </script>
 
 <template>
@@ -114,53 +138,19 @@ const doChangePassword = () => {
     <div style="font-size: 20px; font-weight: 600">내 정보 변경</div>
     <div class="privacy-box">
       <div class="account-info-container">
-        <div
-          style="width: 106px; height: 21px; font-size: 18px; font-weight: 600"
-        >
-          가입 계정
-        </div>
-        <div
-          style="
-            display: flex;
-            align-items: center;
-            height: 40px;
-            margin-left: 244px;
-          "
-        >
+        <div style="width: 106px; height: 21px; font-size: 18px; font-weight: 600">가입 계정</div>
+        <div style="display: flex; align-items: center; height: 40px; margin-left: 244px">
           <img :src="getAccountImageUrl(account.image)" class="account-image" />
           <div class="account-info-box">
             <div class="account-platform">{{ account.platform }}</div>
-            <div class="account-signup-date">({{ account.date }})</div>
           </div>
         </div>
       </div>
-      <div
-        style="
-          width: 1540px;
-          height: 1px;
-          border-radius: 8px;
-          background-color: #434343;
-        "
-      ></div>
-      <div
-        style="
-          width: 1540px;
-          height: 21px;
-          font-size: 18px;
-          font-weight: 600;
-          margin: 30px 0;
-        "
-      >
+      <div style="width: 1540px; height: 1px; border-radius: 8px; background-color: #434343"></div>
+      <div style="width: 1540px; height: 21px; font-size: 18px; font-weight: 600; margin: 30px 0">
         계정 설정
       </div>
-      <div
-        style="
-          width: 1540px;
-          height: 1px;
-          border-radius: 8px;
-          background-color: #323232;
-        "
-      ></div>
+      <div style="width: 1540px; height: 1px; border-radius: 8px; background-color: #323232"></div>
       <div class="name-setting-container">
         <div
           style="
@@ -177,39 +167,16 @@ const doChangePassword = () => {
         <div class="name-edit-container">
           <div class="name-edit-box">
             <input type="text" class="name-input" v-model="nickname" />
-            <div class="duplication-check-button" @click="doCheckNickname">
-              중복 확인
-            </div>
-            <div class="name-edit-button" @click="doChangeNickname">
-              닉네임 변경
-            </div>
+            <div class="duplication-check-button" @click="doCheckNickname">중복 확인</div>
+            <div class="name-edit-button" @click="doChangeNickname">닉네임 변경</div>
           </div>
-          <div
-            style="
-              width: 586px;
-              height: 40px;
-              font-size: 14px;
-              font-weight: 400;
-            "
-          >
-            <div>
-              ㅡ 닉네임을 만드세요! 닉네임을 한국어, 영어로 설정할 수 있습니다.
-            </div>
-            <div>
-              ㅡ BEEVARIUM 이용약관을 위반한 닉네임은 제재당할 수 있으니
-              주의하세요.
-            </div>
+          <div style="width: 586px; height: 40px; font-size: 14px; font-weight: 400">
+            <div>ㅡ 닉네임을 만드세요! 닉네임을 한국어, 영어로 설정할 수 있습니다.</div>
+            <div>ㅡ BEEVARIUM 이용약관을 위반한 닉네임은 제재당할 수 있으니 주의하세요.</div>
           </div>
         </div>
       </div>
-      <div
-        style="
-          width: 1540px;
-          height: 1px;
-          border-radius: 8px;
-          background-color: #323232;
-        "
-      ></div>
+      <div style="width: 1540px; height: 1px; border-radius: 8px; background-color: #323232"></div>
       <div class="password-setting-container">
         <div
           style="
@@ -237,13 +204,7 @@ const doChangePassword = () => {
             v-model="passwordCheck"
           />
           <div
-            style="
-              width: 295px;
-              height: 20px;
-              font-size: 14px;
-              font-weight: 400;
-              color: #e6e5ea;
-            "
+            style="width: 295px; height: 20px; font-size: 14px; font-weight: 400; color: #e6e5ea"
           >
             영문/숫자/특수문자 조합으로 10~15자 대소문자 구분
           </div>
