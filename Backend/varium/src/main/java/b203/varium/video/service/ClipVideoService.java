@@ -1,7 +1,10 @@
 // ClipVideoService.java
 package b203.varium.video.service;
 
+import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
+import b203.varium.user.entity.UserEntity;
+import b203.varium.user.repository.UserRepository;
 import b203.varium.video.dto.ClipVideoDTO;
 import b203.varium.video.dto.FileInfoDTO;
 import b203.varium.video.entity.ClipVideo;
@@ -9,6 +12,7 @@ import b203.varium.video.entity.FileEntity;
 import b203.varium.video.repository.ClipVideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,7 @@ public class ClipVideoService {
 
     private final ClipVideoRepository clipVideoRepository;
     private final BroadcastStationRepository broadcastStationRepository;
+    private final UserRepository userRepository;
 
     public List<ClipVideoDTO> getClipVideos(String streamerid) {
         int stationId = broadcastStationRepository.findByUser_UserId(streamerid).getId();
@@ -49,11 +54,21 @@ public class ClipVideoService {
         return result;
     }
 
-    public ClipVideo saveClipVideo(ClipVideo clipVideo) {
-        return clipVideoRepository.save(clipVideo);
+    public void saveClipVideo(String username, String streamerId, String title, MultipartFile video, MultipartFile imgFile) {
+        BroadcastStation station = broadcastStationRepository.findByUser_UserId(streamerId);
+        UserEntity writer = userRepository.findByUsername(username);
+
+        if (station == null || writer == null) {
+            return;
+        }
+
+        ClipVideo clip = new ClipVideo();
+        clip.setClipVideoNo(clipVideoRepository.findMaxClipVideoNo() + 1);
+        clip.setUser(writer);
+        clip.setVideoTitle(title);
+        clip.setVideoImgUrl("none");
     }
 
-    // 주어진 ID(clipVideoNo)에 해당하는 ClipVideo 엔티티 조회
     public ClipVideo getClipVideoById(Integer clipVideoNo) {
         return clipVideoRepository.findById(clipVideoNo)
                 .orElseThrow(() -> new IllegalArgumentException("ClipVideo not found with id: " + clipVideoNo));
@@ -62,22 +77,6 @@ public class ClipVideoService {
     //삭제
     public void deleteClipVideo(Integer id) {
         clipVideoRepository.deleteById(id);
-    }
-
-
-    // 수정
-    public ClipVideo updateClipVideo(Integer clipVideoNo, ClipVideo clipVideoDetails) {
-        ClipVideo clipVideo = clipVideoRepository.findById(clipVideoNo)
-                .orElseThrow(() -> new IllegalArgumentException("ClipVideo not found with id: " + clipVideoNo));
-
-        // Video 클래스의 필드 업데이트
-        clipVideo.setVideoTitle(clipVideoDetails.getVideoTitle());
-        clipVideo.setVideoUrl(clipVideoDetails.getVideoUrl());
-        clipVideo.setVideoImgUrl(clipVideoDetails.getVideoImgUrl());
-        clipVideo.setVideoViewers(clipVideoDetails.getVideoViewers());
-
-
-        return clipVideoRepository.save(clipVideo);
     }
 
 

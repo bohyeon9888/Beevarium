@@ -13,7 +13,5 @@ public class ReplayVideoDTO {
     private Timestamp createdDate;
     private FileInfoDTO fileInfo;
     private String replayVideoTextUrl; // 리플레이 비디오 전용 필드
-
-    // getters and setters
 }
 

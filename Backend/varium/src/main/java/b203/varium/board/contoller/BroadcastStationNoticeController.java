@@ -61,7 +61,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 수정
-    @PutMapping("/board/update/{broadcasting_station_notice_no}")
+    @PutMapping("/board/update")
     public ResponseEntity<Map<String, String>> updateBroadcastStationNotice(
             @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
         if (result.hasErrors()) {

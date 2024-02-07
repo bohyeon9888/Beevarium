@@ -1,5 +1,6 @@
 package b203.varium.video.controller;
 
+import b203.varium.video.dto.ClipReqDTO;
 import b203.varium.video.dto.ClipVideoDTO;
 import b203.varium.video.dto.ReplayVideoDTO;
 import b203.varium.video.service.ClipVideoService;
@@ -23,18 +24,19 @@ public class VideoController {
     private final ReplayVideoService replayVideoService;
     private final ClipVideoService clipVideoService;
 
-    @GetMapping("/list/replay/{userid}")
-    public ResponseEntity<List<ReplayVideoDTO>> veiwReplayList(@PathVariable String userid) {
-        return ResponseEntity.ok(replayVideoService.getReplayVideos(userid));
+    @GetMapping("/list/replay/{streamerId}")
+    public ResponseEntity<List<ReplayVideoDTO>> viewReplayList(@PathVariable String streamerId) {
+        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
     }
 
-    @GetMapping("/list/clip/{userid}")
-    public ResponseEntity<List<ClipVideoDTO>> veiwClipList(@PathVariable String userid) {
-        return ResponseEntity.ok(clipVideoService.getClipVideos(userid));
+    @GetMapping("/list/clip/{streamerId}")
+    public ResponseEntity<List<ClipVideoDTO>> viewClipList(@PathVariable String streamerId) {
+        return ResponseEntity.ok(clipVideoService.getClipVideos(streamerId));
     }
 
     @PostMapping("/upload/clip")
-    public void uploadClip(@RequestParam(value = "file", required = false) MultipartFile file) {
+    public void uploadClip(ClipReqDTO clipReqDTO, @RequestParam(value = "videoclip", required = false) MultipartFile file
+            , @RequestParam(value = "thumbnail", required = false) MultipartFile imgFile) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
