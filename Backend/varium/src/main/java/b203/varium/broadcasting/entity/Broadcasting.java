@@ -21,7 +21,7 @@ public class Broadcasting extends Record {
     @Column(name = "broadcasting_no")
     private int id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "broadcast_station_no", referencedColumnName = "broadcast_station_no")
     private BroadcastStation broadcastStation;
 

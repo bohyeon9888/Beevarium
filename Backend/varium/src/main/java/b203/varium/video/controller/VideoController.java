@@ -1,47 +1,47 @@
 package b203.varium.video.controller;
 
-import b203.varium.video.entity.Video;
-import b203.varium.video.service.VideoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import b203.varium.video.dto.ClipReqDTO;
+import b203.varium.video.dto.ClipVideoDTO;
+import b203.varium.video.dto.ReplayVideoDTO;
+import b203.varium.video.service.ClipVideoService;
+import b203.varium.video.service.ReplayVideoService;
+import com.amazonaws.services.s3.AmazonS3;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/videos")
+@RequiredArgsConstructor
 public class VideoController {
 
-    private final VideoService videoService;
+    private final AmazonS3 amazonS3;
+    private final ReplayVideoService replayVideoService;
+    private final ClipVideoService clipVideoService;
 
-    @Autowired
-    public VideoController(VideoService videoService) {
-        this.videoService = videoService;
+    @GetMapping("/list/replay/{streamerId}")
+    public ResponseEntity<List<ReplayVideoDTO>> viewReplayList(@PathVariable String streamerId) {
+        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
     }
 
-    @PostMapping
-    public ResponseEntity<Video> createVideo(@RequestBody Video video) {
-        Video savedVideo = videoService.saveVideo(video);
-        return ResponseEntity.ok(savedVideo);
+    @GetMapping("/list/clip/{streamerId}")
+    public ResponseEntity<List<ClipVideoDTO>> viewClipList(@PathVariable String streamerId) {
+        return ResponseEntity.ok(clipVideoService.getClipVideos(streamerId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Video> getVideoById(@PathVariable Integer id) {
-        return videoService.getVideoById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PostMapping("/upload/clip")
+    public void uploadClip(@RequestBody ClipReqDTO clipReqDTO, @RequestParam(value = "videoclip", required = false) MultipartFile file
+            , @RequestParam(value = "thumbnail", required = false) MultipartFile imgFile) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+
+
     }
 
-    @GetMapping
-    public ResponseEntity<List<Video>> getAllVideos() {
-        return ResponseEntity.ok(videoService.getAllVideos());
-    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVideo(@PathVariable Integer id) {
-        videoService.deleteVideo(id);
-        return ResponseEntity.ok().build();
-    }
-
-    // Additional endpoint methods
 }

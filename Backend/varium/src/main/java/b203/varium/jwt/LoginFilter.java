@@ -78,6 +78,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         data.put("token", "Bearer " + token); // 예시 토큰 값, 실제로는 생성된 토큰 사용
         data.put("nickname", username);
         data.put("profile_img_url", customUserDetails.getPicture());
+        data.put("nickname", username);
 
         resp.put("data", data);
 
@@ -88,7 +89,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     //로그인 실패시 실행하는 메소드
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        Map<String, String> data = new HashMap<>();
+        data.put("status", "fail");
+        data.put("msg", "아이디나 비밀번호가 잘못되었습니다.");
+
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(data));
     }
 }

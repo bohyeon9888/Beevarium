@@ -1,60 +1,90 @@
 package b203.varium.board.contoller;
 
-import b203.varium.board.entity.BroadcastStationNotice;
+import b203.varium.board.dto.BroadcastStationNoticeDto;
 import b203.varium.board.service.BroadcastStationNoticeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/notice/broadcasting")
+@RequiredArgsConstructor
 public class BroadcastStationNoticeController {
 
     private final BroadcastStationNoticeService broadcastStationNoticeService;
 
-    @Autowired
-    public BroadcastStationNoticeController(BroadcastStationNoticeService broadcastStationNoticeService) {
-        this.broadcastStationNoticeService = broadcastStationNoticeService;
-    }
-
     // 개인 방송국 공지 조회
-    @GetMapping
-    public ResponseEntity<List<BroadcastStationNotice>> getBroadcastStationNotices(@RequestParam("broadcast_station_no") Integer broadcastStationNo) {
-        List<BroadcastStationNotice> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
-        return ResponseEntity.ok().body(notices);
+    @GetMapping("/{broadcast_station_no}")
+    public ResponseEntity<Map<String, Object>> getBroadcastStationNotices(@RequestParam("broadcast_station_no") Integer broadcastStationNo) {
+        log.info("broadcastStationNo = {}", broadcastStationNo);
+        List<BroadcastStationNoticeDto> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("data", notices);
+        return ResponseEntity.ok(response);
     }
 
     // 방송국 공지사항 게시글 삽입
-    @PostMapping("/{broadcasting_station_no}")
-    public ResponseEntity<BroadcastStationNotice> createBroadcastStationNotice(@PathVariable("broadcasting_station_no") Integer stationNo,
-                                                                               @RequestBody BroadcastStationNotice broadcastStationNotice) {
-        BroadcastStationNotice savedNotice = broadcastStationNoticeService.saveBroadcastStationNotice(stationNo, broadcastStationNotice);
-        return ResponseEntity.ok().body(savedNotice);
+    @PostMapping("/board/create")
+    public ResponseEntity<Map<String, String>> createBroadcastStationNotice(
+            @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", result.getAllErrors().toString());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        broadcastStationNoticeService.saveBroadcastStationNotice(broadcastStationNoticeDto);
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("status", "success");
+        successResponse.put("message", "Broadcast station notice created successfully.");
+        return ResponseEntity.ok(successResponse);
     }
 
     // 방송국 공지사항 게시글 조회
-    @GetMapping("/{broadcasting_station_notice_no}")
-    public ResponseEntity<BroadcastStationNotice> getBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
-        BroadcastStationNotice notice = broadcastStationNoticeService.findBroadcastStationNoticeById(noticeNo);
-        return ResponseEntity.ok().body(notice);
+    @GetMapping("/board/{broadcasting_station_notice_no}")
+    public ResponseEntity<Map<String, Object>> getBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
+        BroadcastStationNoticeDto notice = broadcastStationNoticeService.findBroadcastStationNoticeById(noticeNo);
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("data", notice);
+        return ResponseEntity.ok(response);
     }
 
     // 방송국 공지사항 수정
-    @PutMapping("/{broadcasting_station_notice_no}")
-    public ResponseEntity<BroadcastStationNotice> updateBroadcastStationNotice(
-            @PathVariable("broadcasting_station_notice_no") Integer noticeNo,
-            @RequestBody BroadcastStationNotice broadcastStationNotice) {
+    @PutMapping("/board/update")
+    public ResponseEntity<Map<String, String>> updateBroadcastStationNotice(
+            @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", result.getAllErrors().toString());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
 
-        BroadcastStationNotice updatedNotice = broadcastStationNoticeService.updateBroadcastStationNotice(noticeNo, broadcastStationNotice);
-        return ResponseEntity.ok().body(updatedNotice);
+        broadcastStationNoticeService.updateBroadcastStationNotice(broadcastStationNoticeDto);
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("status", "success");
+        successResponse.put("message", "Broadcast station notice updated successfully.");
+        return ResponseEntity.ok(successResponse);
     }
 
     // 방송국 공지사항 삭제
-    @DeleteMapping("/{broadcasting_station_notice_no}")
-    public ResponseEntity<Void> deleteBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer broadcastStationNoticeNo) {
-        broadcastStationNoticeService.deleteBroadcastStationNotice(broadcastStationNoticeNo);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/board/delete/{broadcasting_station_notice_no}")
+    public ResponseEntity<Map<String, String>> deleteBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
+        broadcastStationNoticeService.deleteBroadcastStationNotice(noticeNo);
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("status", "success");
+        successResponse.put("message", "Broadcast station notice deleted successfully.");
+        return ResponseEntity.ok(successResponse);
     }
 }
