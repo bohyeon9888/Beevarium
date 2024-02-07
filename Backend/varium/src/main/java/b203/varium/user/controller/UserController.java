@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, String>> joinUser(JoinDTO joinDTO) {
+    public ResponseEntity<Map<String, String>> joinUser(@RequestBody JoinDTO joinDTO) {
 
         System.out.println(joinDTO.getUsername());
         Map<String, String> result = userService.joinUser(joinDTO);
@@ -64,14 +64,14 @@ public class UserController {
 
     // 닉네임, 비밀번호 수정 api
     @PostMapping("/update/nickname")
-    public ResponseEntity<Map<String, Object>> updateUsername(NameReqDTO nameReqDTO) {
+    public ResponseEntity<Map<String, Object>> updateUsername(@RequestBody NameReqDTO nameReqDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return ResponseEntity.ok(userService.updateName(auth.getName(), nameReqDTO.getNickname()));
     }
 
     @PostMapping("/update/pw")
-    public ResponseEntity<Map<String, Object>> updatePassword(PwReqDTO pwReqDTO) {
+    public ResponseEntity<Map<String, Object>> updatePassword(@RequestBody PwReqDTO pwReqDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return ResponseEntity.ok(userService.updatePassword(auth.getName(), pwReqDTO.getPassword()));

@@ -35,7 +35,7 @@ public class VideoController {
     }
 
     @PostMapping("/upload/clip")
-    public void uploadClip(ClipReqDTO clipReqDTO, @RequestParam(value = "videoclip", required = false) MultipartFile file
+    public void uploadClip(@RequestBody ClipReqDTO clipReqDTO, @RequestParam(value = "videoclip", required = false) MultipartFile file
             , @RequestParam(value = "thumbnail", required = false) MultipartFile imgFile) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
