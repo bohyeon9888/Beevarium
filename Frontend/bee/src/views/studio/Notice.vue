@@ -315,11 +315,7 @@ onMounted(() => {
     accessToken.value,
     5,
     ({ data }) => {
-<<<<<<< HEAD
-      Notices = data.data;
-=======
       Notices.value = data.data;
->>>>>>> develop-fe
     },
     (error) => {
       console.log("?");
@@ -586,4 +582,5 @@ onMounted(() => {
   background-color: #ffcf40;
   border-radius: 8px;
   color: #121212;
-}</style>
+}
+</style>
