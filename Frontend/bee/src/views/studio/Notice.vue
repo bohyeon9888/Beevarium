@@ -254,17 +254,17 @@ const streamer = ref({
 //   },
 // ];
 
-const Notices = [];
+const Notices = ref([]);
 
 const currentPage = ref(1);
 const noticesPerPage = 4;
 
-const totalPages = computed(() => Math.ceil(Notices.length / noticesPerPage));
+const totalPages = computed(() => Math.ceil(Notices.value.length / noticesPerPage));
 
 const paginatedNotices = computed(() => {
   const start = (currentPage.value - 1) * noticesPerPage;
   const end = start + noticesPerPage;
-  return Notices.slice(start, end);
+  return Notices.value.slice(start, end);
 });
 
 const visiblePages = computed(() => {
@@ -315,7 +315,7 @@ onMounted(() => {
     accessToken.value,
     5,
     ({ data }) => {
-      Notices = data.data;
+      Notices.value = data.data;
     },
     (error) => {
       console.log("?");
