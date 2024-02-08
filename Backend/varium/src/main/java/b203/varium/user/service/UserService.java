@@ -93,6 +93,7 @@ public class UserService {
 
         MyPageRespDTO respDTO = new MyPageRespDTO();
         respDTO.setUsername(username);
+        respDTO.setCode(user.getCodeName());
         respDTO.setProfileUrl(user.getProfileUrl());
         respDTO.setPoint(user.getPoint());
         respDTO.setSubscribeList(followList);

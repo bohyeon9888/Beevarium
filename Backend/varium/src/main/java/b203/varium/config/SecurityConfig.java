@@ -33,7 +33,7 @@ public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler successHandler;
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    @Value("#{'${spring.security.permit-path}'.split(',')}")
+    @Value("#{'${spring.security.banned-path}'.split(',')}")
     private String[] paths;
 
     public SecurityConfig(UserRepository userRepository, CustomOauth2UserService customOAuth2UserService, JWTUtil jwtUtil, CustomAuthenticationSuccessHandler successHandler, AuthenticationConfiguration authenticationConfiguration) {
@@ -81,8 +81,8 @@ public class SecurityConfig {
                 .successHandler(successHandler));
 
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers(paths).permitAll()
-                .anyRequest().authenticated());
+                .requestMatchers(paths).authenticated()
+                .anyRequest().permitAll());
 
         // JWT 주입
         http.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
