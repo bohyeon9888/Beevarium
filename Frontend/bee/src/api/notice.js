@@ -2,18 +2,19 @@ import { localAxios } from "@/util/http-commons";
 
 const local = localAxios();
 
-const noticeList = async (stationNo, success, fail) => {
+const noticeList = async (accessToken, stationNo, success, fail) => {
   await local
-    .get(`/notice/broadcasting/${stationNo}`)
+    .get(`/notice/broadcasting/${stationNo}`, {
+      headers: {
+        Authorization: accessToken,
+      },
+    })
     .then(success)
     .catch(fail);
 };
 
 const noticeDetail = async (noticeNo, success, fail) => {
-  await local
-    .get(`/notice/broadcasting/board/${noticeNo}`)
-    .then(success)
-    .catch(fail);
+  await local.get(`/notice/broadcasting/board/${noticeNo}`).then(success).catch(fail);
 };
 
 const noticeCreate = async (accessToken, noticeData, success, fail) => {
@@ -38,7 +39,7 @@ const noticeUpdate = async (accessToken, noticeData, success, fail) => {
 
 const noticeDelete = async (accessToken, noticeNo, success, fail) => {
   await local
-    .delete(`/notie/broadcasting/board/delete/${noticeNo}`, {
+    .delete(`/notice/broadcasting/board/delete/${noticeNo}`, {
       headers: {
         Authorization: accessToken,
       },

@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import StudioInfo from "./components/StudioInfo.vue";
+import { replayDetail } from "@/api/replay";
 
 const replay = ref({
   title: "다시보기 방송 제목입니다.",
@@ -9,6 +10,21 @@ const replay = ref({
   views: 1353,
   date: "24.01.09",
 });
+
+// const replay = ref({});
+// 
+// onMounted(() => {
+//   replayDetail(
+//     streamerId,
+//     replayNo,
+//     ({ data }) => {
+//       replay.value = data.data;
+//     },
+//     (error) => {
+//       console.log(error.data.msg);
+//     }
+//   );
+// });
 </script>
 
 <template>
@@ -20,7 +36,7 @@ const replay = ref({
       <div class="back-to-replay-button">
         <router-link
           :to="{ name: 'Replay' }"
-          style="display: flex; align-items: center; width: 91px; height: 24px;"
+          style="display: flex; align-items: center; width: 91px; height: 24px"
         >
           <img src="../../assets/img/common/prev-button.png" alt="" class="back-to-replay" />
           <div style="width: 70px; height: 24px; font-size: 20px; font-weight: 600">다시보기</div>

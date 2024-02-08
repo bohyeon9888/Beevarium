@@ -7,11 +7,6 @@ import { checkNickname, changeNickname, changePassword } from "@/api/mypage";
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 
-const account = computed(() => ({
-  image: platformImage,
-  platform: platform,
-}));
-
 const getAccountImageUrl = (name) => {
   return new URL(`/src/assets/img/mypage/platform/${name}.png`, import.meta.url).href;
 };
@@ -131,6 +126,10 @@ const doChangePassword = () => {
     alert("비밀번호가 일치하지 않습니다.");
   }
 };
+
+onMounted(() => {
+  console.log(prop.myPageData.code);
+});
 </script>
 
 <template>
@@ -140,9 +139,9 @@ const doChangePassword = () => {
       <div class="account-info-container">
         <div style="width: 106px; height: 21px; font-size: 18px; font-weight: 600">가입 계정</div>
         <div style="display: flex; align-items: center; height: 40px; margin-left: 244px">
-          <img :src="getAccountImageUrl(account.image)" class="account-image" />
+          <img :src="getAccountImageUrl(platformImage)" class="account-image" />
           <div class="account-info-box">
-            <div class="account-platform">{{ account.platform }}</div>
+            <div class="account-platform">{{ platform }}</div>
           </div>
         </div>
       </div>

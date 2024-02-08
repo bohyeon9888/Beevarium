@@ -1,253 +1,260 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import StudioInfo from "./components/StudioInfo.vue";
+import { noticeList } from "@/api/notice";
+import { useAuthStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 const streamer = ref({
   name: "LCK_KR",
   id: "bvlol",
 });
-const Notices = [
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-  {
-    title: "[안내] 2024 LCK SPRING 일정 안내",
-    date: "24.01.09",
-    views: 1353,
-    content: "[1월 17일 수요일 오후 5시]...",
-  },
-];
+// const Notices = [
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+//   {
+//     title: "[안내] 2024 LCK SPRING 일정 안내",
+//     date: "24.01.09",
+//     views: 1353,
+//     content: "[1월 17일 수요일 오후 5시]...",
+//   },
+// ];
+
+const Notices = [];
 
 const currentPage = ref(1);
 const noticesPerPage = 4;
@@ -302,6 +309,19 @@ const changePage = (page) => {
     currentPage.value = page;
   }
 };
+
+onMounted(() => {
+  noticeList(
+    accessToken.value,
+    5,
+    ({ data }) => {
+      Notices = data.data;
+    },
+    (error) => {
+      console.log("?");
+    }
+  );
+});
 </script>
 
 <template>
@@ -315,13 +335,22 @@ const changePage = (page) => {
         <div class="notice-content">
           <div class="notice-count-box">
             <div class="notice-count">{{ Notices.length }}</div>
-            <div style="font-size: 16px; font-weight: 600; color: #e6e5ea;">개의 글</div>
+            <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">개의 글</div>
           </div>
           <ul class="notice-list">
             <router-link :to="{ name: 'NoticeDetail' }">
               <li v-for="(notice, index) in paginatedNotices" class="notice">
-                <div style="display: flex; justify-content: space-between; align-items: center; width: 1420px; height: 33px; margin-bottom: 23px;">
-                  <div style="display: flex; align-items: center;">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 1420px;
+                    height: 33px;
+                    margin-bottom: 23px;
+                  "
+                >
+                  <div style="display: flex; align-items: center">
                     <div class="streamer-logo-box">
                       <img
                         src="../../assets/img/studio/studio-logo.png"
