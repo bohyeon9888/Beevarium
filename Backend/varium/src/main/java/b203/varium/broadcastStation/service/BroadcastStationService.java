@@ -6,6 +6,9 @@ import b203.varium.broadcastStation.dto.MyStationRespDTO;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.user.entity.UserEntity;
+import b203.varium.user.repository.UserRepository;
+import b203.varium.video.service.ClipVideoService;
+import b203.varium.video.service.ReplayVideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
@@ -23,7 +28,10 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 public class BroadcastStationService {
 
     private final BroadcastStationRepository stationRepository;
+    private final UserRepository userRepository;
     private final BroadcastStationNoticeService stationNoticeService;
+    private final ReplayVideoService replayVideoService;
+    private final ClipVideoService clipVideoService;
 
     public BroadcastStation getBroadcastStationWithDetails(int stationId) {
 
@@ -50,25 +58,39 @@ public class BroadcastStationService {
         return station;
     }
 
-    public void viewMyStation(String stationId, String username) {
+    public Map<String, Object> viewMyStation(String streamerId, String username) {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         MyStationRespDTO respDTO = new MyStationRespDTO();
 
-        if (!stationRepository.existsByUser_UserId(stationId)) {
+        if (!stationRepository.existsByUser_UserId(streamerId)) {
             data.put("msg", "존재하지 않는 방송국입니다.");
+            result.put("data", data);
+            result.put("status", "fail");
+        } else if (username != null && !userRepository.existsByUsername(username)) {
+            data.put("msg", "존재하지 않는 회원입니다.");
             result.put("data", data);
             result.put("status", "fail");
         } else {
             result.put("status", "success");
-            BroadcastStation station = stationRepository.findByUser_UserId(stationId);
+            BroadcastStation station = stationRepository.findByUser_UserId(streamerId);
             respDTO.setStationNo(station.getId());
             respDTO.setStationTitle(station.getBroadcastStationTitle());
-            respDTO.setUserId(stationId);
-            respDTO.setIsMine(username.equals(stationId));
+            respDTO.setUserId(streamerId);
+//            respDTO.setIsMine(username.equals(station.getUser().getUsername()));
+            boolean isMine = Objects.equals(username, Optional.ofNullable(station).map(s -> s.getUser()).map(u -> u.getUsername()).orElse(null));
+            respDTO.setIsMine(isMine);
+
             respDTO.setStationImg("none");
-//            respDTO.setNoticeList();
+            respDTO.setNoticeList(stationNoticeService.findNoticesByStationId(station.getId()));
+            respDTO.setReplayList(replayVideoService.getReplayVideos(streamerId));
+            respDTO.setClipList(clipVideoService.getClipVideos(streamerId));
+
+            data.put("stationInfo", respDTO);
+            result.put("data", data);
         }
+
+        return result;
     }
 
 }
