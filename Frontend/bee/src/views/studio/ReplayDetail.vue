@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import StudioInfo from "./components/StudioInfo.vue";
+import { replayDetail } from "@/api/replay";
 
 const replay = ref({
   title: "다시보기 방송 제목입니다.",
@@ -9,6 +10,21 @@ const replay = ref({
   views: 1353,
   date: "24.01.09",
 });
+
+// const replay = ref({});
+//
+// onMounted(() => {
+//   replayDetail(
+//     streamerId,
+//     replayNo,
+//     ({ data }) => {
+//       replay.value = data.data;
+//     },
+//     (error) => {
+//       console.log(error.data.msg);
+//     }
+//   );
+// });
 </script>
 
 <template>
@@ -20,15 +36,27 @@ const replay = ref({
       <div class="back-to-replay-button">
         <router-link
           :to="{ name: 'Replay' }"
-          style="display: flex; align-items: center; width: 91px; height: 24px;"
+          style="display: flex; align-items: center; width: 91px; height: 24px"
         >
-          <img src="../../assets/img/common/prev-button.png" alt="" class="back-to-replay" />
-          <div style="width: 70px; height: 24px; font-size: 20px; font-weight: 600">다시보기</div>
+          <img
+            src="../../assets/img/common/prev-button.png"
+            alt=""
+            class="back-to-replay"
+          />
+          <div
+            style="width: 70px; height: 24px; font-size: 20px; font-weight: 600"
+          >
+            다시보기
+          </div>
         </router-link>
       </div>
       <div class="replay-detail-content-box">
         <div class="replay-screen-box">
-          <img src="../../assets/img/stream/stream-display.png" alt="" class="replay-screen" />
+          <img
+            src="../../assets/img/stream/stream-display.png"
+            alt=""
+            class="replay-screen"
+          />
         </div>
         <div class="progressbar-container"></div>
         <div class="replay-info-container">
@@ -38,14 +66,25 @@ const replay = ref({
             </div>
             <div class="replay-tag-box">
               <ul class="tag-list">
-                <li v-for="(tag, index) in replay.tags" :key="index" class="tag">
+                <li
+                  v-for="(tag, index) in replay.tags"
+                  :key="index"
+                  class="tag"
+                >
                   {{ tag }}
                 </li>
               </ul>
             </div>
             <div class="replay-views-date-box">
               <div>조회수 {{ replay.views }}회</div>
-              <div style="width: 1px; height: 14px; margin: 0 10px; background: #636363"></div>
+              <div
+                style="
+                  width: 1px;
+                  height: 14px;
+                  margin: 0 10px;
+                  background: #636363;
+                "
+              ></div>
               <div>{{ replay.date }}</div>
             </div>
           </div>
@@ -70,8 +109,14 @@ const replay = ref({
             </div>
             <div class="clip-save-button-box">
               <div class="clip-save-button">
-                <div style="font-size: 14px; font-weight: 700; color: #121212">클립 저장</div>
-                <img src="../../assets/img/studio/clip/clip-save.png" alt="" class="clip-save" />
+                <div style="font-size: 14px; font-weight: 700; color: #121212">
+                  클립 저장
+                </div>
+                <img
+                  src="../../assets/img/studio/clip/clip-save.png"
+                  alt=""
+                  class="clip-save"
+                />
               </div>
             </div>
           </div>

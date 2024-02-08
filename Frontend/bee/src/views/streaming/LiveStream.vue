@@ -1,13 +1,15 @@
 <script setup>
 import Screen from "./components/Screen.vue";
 import LiveStreamChat from "./components/LiveStreamChat.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import LanguageSelectorModal from "./components/LanguageSelectorModal.vue";
 import { useSidebarStore } from "@/stores/sidebar";
 import { storeToRefs } from "pinia";
+import { useOVSStore } from "@/stores/ov_subscriber";
 
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
+const ovsStore = useOVSStore();
 
 // 도네이션 모달 활성화
 const donModActive = ref(false);
@@ -28,6 +30,19 @@ const stream = ref({
   liveWatcher: "626",
   tags: ["한국어", "게임", "수다"],
 });
+
+function applyVideoStyles() {
+  var videoElements = document.querySelectorAll("video");
+  videoElements.forEach(function (video) {
+    video.style.width = "1280px";
+    video.style.height = "720px";
+  });
+}
+
+onMounted(() => {
+  ovsStore.subscribeToSession();
+  applyVideoStyles();
+});
 </script>
 
 <template>
@@ -46,8 +61,8 @@ const stream = ref({
         class="screen-container"
         :class="{ expanded: !isExpanded }"
       >
-        <div class="screen">
-          <Screen />
+        <div class="screen" id="subscriber-video">
+          <!-- <Screen /> -->
         </div>
       </div>
       <div
@@ -213,6 +228,8 @@ const stream = ref({
 .screen {
   width: 1280px;
   height: 720px;
+  display: flex;
+  justify-content: center;
 }
 #screen-container.expanded {
   width: 1470px;

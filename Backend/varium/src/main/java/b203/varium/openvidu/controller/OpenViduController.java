@@ -18,6 +18,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 @Slf4j
@@ -51,7 +52,7 @@ public class OpenViduController {
 
     @PostMapping("/sessions")
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> initializeSession(@Validated @RequestBody(required = false) SessionPropertiesDto sessionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> initializeSession(@Validated @RequestBody SessionPropertiesDto sessionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
         ResponseEntity<String> errorMessage = getStringResponseEntity(result);
         if (errorMessage != null) return errorMessage;
 
@@ -65,7 +66,7 @@ public class OpenViduController {
     }
 
     @PostMapping("/sessions/{sessionId}/connection")
-    public ResponseEntity<String> connectionSession(@PathVariable String sessionId, @Validated @RequestBody(required = false) ConnectionPropertiesDto connectionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> connectionSession(@PathVariable String sessionId, @Validated @RequestBody ConnectionPropertiesDto connectionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException, MalformedURLException {
         ResponseEntity<String> errorMessage = getStringResponseEntity(result);
         if (errorMessage != null) return errorMessage;
 
@@ -73,6 +74,16 @@ public class OpenViduController {
         log.info("sessionId = {}", sessionId);
         return openViduService.connectionSession(sessionId, connectionPropertiesDto);
     }
+
+//    @PostMapping("/sessions/{sessionId}/connection")
+//    public ResponseEntity<String> connectionSession(@PathVariable String sessionId, @Validated @RequestBody(required = false) ConnectionPropertiesDto connectionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
+//        ResponseEntity<String> errorMessage = getStringResponseEntity(result);
+//        if (errorMessage != null) return errorMessage;
+//
+//        log.info("OpenViduConnection = {}", connectionPropertiesDto);
+//        log.info("sessionId = {}", sessionId);
+//        return openViduService.connectionSession(sessionId, connectionPropertiesDto);
+//    }
 
     @DeleteMapping("/sessions/{sessionId}/connection/{connectionId}")
     public ResponseEntity<String> connectionDeleteSession(@PathVariable String sessionId, @PathVariable String connectionId) throws OpenViduJavaClientException, OpenViduHttpException {
@@ -107,10 +118,19 @@ public class OpenViduController {
         ResponseEntity<String> errorMessage = getStringResponseEntity(result);
         if (errorMessage != null) return errorMessage;
 
-        log.info("시작은 되?");
+        log.info("레코딩 엔티티");
         log.info("sessionId = {}", sessionId);
         log.info("recordingProperties = {}", recordingPropertiesDto);
         return openViduService.startRecordings(sessionId, recordingPropertiesDto);
+    }
+
+    @PostMapping("sessions/{sessionId}/recordings/{name}")
+    public ResponseEntity<String> startRecordings(@PathVariable String sessionId, @PathVariable String name) throws OpenViduJavaClientException, OpenViduHttpException {
+
+        log.info("이름 시작");
+        log.info("sessionId = {}", sessionId);
+        log.info("name = {}", name);
+        return openViduService.startRecordingsforName(sessionId, name);
     }
 
 }

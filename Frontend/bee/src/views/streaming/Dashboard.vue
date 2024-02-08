@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/user";
+import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
 import Screen from "./components/Screen.vue";
 import { streamingStart, streamingEnd } from "@/api/live.js";
 
+const ovpStore = useOVPStore();
 const authStore = useAuthStore();
 const { isLoggedIn, accessToken } = storeToRefs(authStore);
 const streamerId = ref("김싸피");
@@ -119,14 +121,20 @@ addNewsFeedItem("아재개더", "3,000");
       </div>
       <div class="stream-screen-setting">
         <div class="dashboard-header">방송 미리보기</div>
-        <div class="stream-screen">
-          <Screen />
+        <div class="stream-screen" id="my-video">
+          <!-- <Screen /> -->
         </div>
         <div class="streaming-option">
-          <button class="streaming-start-btn" @click="doStreamingStart">
+          <button
+            class="streaming-start-btn"
+            @click="[doStreamingStart(), ovpStore.openSession()]"
+          >
             방송 시작
           </button>
-          <button class="streaming-end-btn" @click="doStreamingEnd">
+          <button
+            class="streaming-end-btn"
+            @click="[doStreamingEnd(), ovpStore.closeSession()]"
+          >
             방송 종료
           </button>
         </div>
@@ -245,10 +253,17 @@ button:hover {
   color: white;
 }
 .stream-screen {
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  width: 890px;
   height: 493px;
   background-color: #000000;
   margin-bottom: 24px;
+}
+#my-video video {
+  max-width: 890px !important;
+  max-height: 493px !important;
+  object-fit: contain;
 }
 .stream-setting {
   width: 100%;

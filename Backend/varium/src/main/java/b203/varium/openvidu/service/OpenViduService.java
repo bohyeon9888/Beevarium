@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,28 +37,46 @@ public class OpenViduService {
     public ResponseEntity<String> initializeSession(SessionPropertiesDto sessionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
         log.info("openviduSession={}", sessionPropertiesDto);
 
+        Recording.OutputMode outputMode = Optional.ofNullable(sessionPropertiesDto.getDefaultRecordingProperties().getOutputMode())
+                .map(String::toUpperCase)
+                .map(Recording.OutputMode::valueOf)
+                .orElse(Recording.OutputMode.COMPOSED_QUICK_START); // 기본값으로 COMPOSED_QUICK_START를 사용
+
+        RecordingLayout recordingLayout = Optional.ofNullable(sessionPropertiesDto.getDefaultRecordingProperties().getRecordingLayout())
+                .map(String::toUpperCase)
+                .filter(layout -> layout.equals("CUSTOM"))
+                .map(layout -> RecordingLayout.CUSTOM)
+                .orElse(RecordingLayout.BEST_FIT); // 기본값으로 BEST_FIT를 사용
+
         RecordingProperties recordingProperties = new RecordingProperties.Builder()
                 .name(sessionPropertiesDto.getDefaultRecordingProperties().getName())
                 .hasAudio(sessionPropertiesDto.getDefaultRecordingProperties().getHasAudio())
                 .hasVideo(sessionPropertiesDto.getDefaultRecordingProperties().getHasVideo())
-                .outputMode(sessionPropertiesDto.getDefaultRecordingProperties().getOutputMode())
-                .recordingLayout(sessionPropertiesDto.getDefaultRecordingProperties().getRecordingLayout())
+                .outputMode(outputMode)
+                .recordingLayout(recordingLayout)
                 .resolution(sessionPropertiesDto.getDefaultRecordingProperties().getResolution())
                 .frameRate(sessionPropertiesDto.getDefaultRecordingProperties().getFrameRate())
                 .shmSize(sessionPropertiesDto.getDefaultRecordingProperties().getShmSize())
                 .mediaNode(sessionPropertiesDto.getDefaultRecordingProperties().getMediaNode())
                 .build();
 
+        RecordingMode recordingMode = Optional.ofNullable(sessionPropertiesDto.getRecordingMode())
+                .filter("Always"::equals)
+                .map(mode -> RecordingMode.ALWAYS)
+                .orElse(RecordingMode.MANUAL);
+
         SessionProperties properties = new SessionProperties.Builder()
-                .mediaMode(sessionPropertiesDto.getMediaMode())
-                .recordingMode(sessionPropertiesDto.getRecordingMode())
+                .mediaMode(MediaMode.ROUTED)
+                .recordingMode(recordingMode)
                 .customSessionId(sessionPropertiesDto.getCustomSessionId())
-                .forcedVideoCodec(sessionPropertiesDto.getForcedVideoCodec())
-                .allowTranscoding(sessionPropertiesDto.isAllowTranscoding())
+                .forcedVideoCodec(VideoCodec.VP8)
+                .forcedVideoCodecResolved(VideoCodec.VP8)
+                .allowTranscoding(sessionPropertiesDto.getAllowTranscoding())
                 .defaultRecordingProperties(recordingProperties)
                 .mediaNode(sessionPropertiesDto.getMediaNode())
                 .build();
 
+        log.info("properties = {}", properties);
         Session session = openvidu.createSession(properties);
         return new ResponseEntity<>(session.getSessionId(), HttpStatus.OK);
     }
@@ -72,34 +90,45 @@ public class OpenViduService {
         return new ResponseEntity<>(sessionId, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException, MalformedURLException {
+
         ConnectionType connectionType = Optional.ofNullable(connectionPropertiesDto.getType())
-                .map(String::toUpperCase)
-                .map(ConnectionType::valueOf)
-                .orElse(ConnectionType.IPCAM); // 기본값으로 IPCAM을 사용
+                .filter("WEBRTC"::equals)
+                .map(type -> ConnectionType.WEBRTC)
+                .orElse(ConnectionType.IPCAM);
 
         OpenViduRole openViduRole = Optional.ofNullable(connectionPropertiesDto.getRole())
-                .map(String::toUpperCase)
-                .filter(role -> Arrays.asList("PUBLISHER", "MODERATOR").contains(role))
-                .map(OpenViduRole::valueOf)
-                .orElse(OpenViduRole.SUBSCRIBER); // 기본값으로 SUBSCRIBER를 사용
+                .map(role -> {
+                    switch (role) {
+                        case "SUBSCRIBER":
+                            return OpenViduRole.SUBSCRIBER;
+                        case "MODERATOR":
+                            return OpenViduRole.MODERATOR;
+                        default:
+                            return OpenViduRole.PUBLISHER;
+                    }
+                })
+                .orElse(OpenViduRole.PUBLISHER);
 
         log.info("connectionType={}", connectionType);
         log.info("openViduRole={}", openViduRole);
 
-        KurentoOptions kurentoOptions = new KurentoOptions(
-                connectionPropertiesDto.getKurentoOptions().getVideoMaxRecvBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getVideoMinRecvBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getVideoMaxSendBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getVideoMinSendBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getAllowedFilters().toArray(new String[0])
-        );
+//        KurentoOptions kurentoOptions = new KurentoOptions(
+//                connectionPropertiesDto.getKurentoOptions().getVideoMaxRecvBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getVideoMinRecvBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getVideoMaxSendBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getVideoMinSendBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getAllowedFilters().toArray(new String[0])
+//        );
 
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
                 .type(connectionType)
-                .role(openViduRole)
                 .data(connectionPropertiesDto.getData())
-                .kurentoOptions(kurentoOptions)
+                .record(true)
+                .role(openViduRole)
+                .adaptativeBitrate(true)
+                .onlyPlayWithSubscribers(true)
+                .networkCache(2000)
                 .build();
 
         Connection connection = openvidu.getActiveSession(sessionId).createConnection(connectionProperties);
@@ -136,17 +165,32 @@ public class OpenViduService {
     }
 
     public ResponseEntity<Boolean> getRecorded(String sessionId) {
+        log.info("sessionId = {}", sessionId);
         boolean recorded = openvidu.getActiveSession(sessionId).isBeingRecorded();
+        log.info("recorded = {}", recorded);
         return new ResponseEntity<>(recorded, HttpStatus.OK);
     }
 
     public ResponseEntity<String> startRecordings(String sessionId, RecordingPropertiesDto recordingPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
+
+        Recording.OutputMode outputMode = Optional.ofNullable(recordingPropertiesDto.getOutputMode())
+                .map(String::toUpperCase)
+                .map(Recording.OutputMode::valueOf)
+                .orElse(Recording.OutputMode.COMPOSED_QUICK_START); // 기본값으로 COMPOSED_QUICK_START를 사용
+
+        RecordingLayout recordingLayout = Optional.ofNullable(recordingPropertiesDto.getRecordingLayout())
+                .map(String::toUpperCase)
+                .filter(layout -> layout.equals("CUSTOM"))
+                .map(layout -> RecordingLayout.CUSTOM)
+                .orElse(RecordingLayout.BEST_FIT); // 기본값으로 BEST_FIT를 사용
+
+
         RecordingProperties recordingProperties = new RecordingProperties.Builder()
                 .name(recordingPropertiesDto.getName())
                 .hasAudio(recordingPropertiesDto.getHasAudio())
                 .hasVideo(recordingPropertiesDto.getHasVideo())
-                .outputMode(recordingPropertiesDto.getOutputMode())
-                .recordingLayout(recordingPropertiesDto.getRecordingLayout())
+                .outputMode(outputMode)
+                .recordingLayout(recordingLayout)
                 .customLayout(recordingPropertiesDto.getCustomLayout())
                 .resolution(recordingPropertiesDto.getResolution())
                 .frameRate(recordingPropertiesDto.getFrameRate())
@@ -156,8 +200,19 @@ public class OpenViduService {
                 .build();
 
         log.info("여기까지 되");
+        log.info("recordingProperties = {}", recordingProperties);
 
         Recording recording = openvidu.startRecording(sessionId, recordingProperties);
+        Gson gson = new Gson();
+        String json = gson.toJson(recording);
+
+        log.info("json = {}", json);
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> startRecordingsforName(String sessionId, String name) throws OpenViduJavaClientException, OpenViduHttpException {
+        Recording recording = openvidu.startRecording(sessionId, name);
+
         Gson gson = new Gson();
         String json = gson.toJson(recording);
 

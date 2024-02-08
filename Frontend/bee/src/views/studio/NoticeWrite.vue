@@ -2,19 +2,35 @@
 import { ref } from "vue";
 import StudioInfo from "./components/StudioInfo.vue";
 import { useRouter } from "vue-router";
+import { noticeCreate } from "@/api/notice";
+import { useAuthStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 
 const router = useRouter();
 
 const noticeData = ref({
-  title: "",
-  content: "",
+  broadcastStationNo: "5",
+  broadcastStationNoticeTitle: "",
+  broadcastStationNoticeContent: "",
 });
 const noticeWrite = () => {
-  // 글쓰기 axios 함수 들어갈 곳
-}
+  noticeCreate(
+    accessToken.value,
+    noticeData.value,
+    ({ data }) => {
+      console.log(data.message);
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+};
 const goBack = () => {
   router.go(-1);
-}
+};
 </script>
 
 <template>
@@ -39,19 +55,14 @@ const goBack = () => {
           class="notice-title-input"
           type="text"
           placeholder="제목을 입력해 주세요"
-          v-model="noticeData.title"
+          v-model="noticeData.broadcastStationNoticeTitle"
         />
         <div
-          style="
-            width: 1420px;
-            height: 2px;
-            background-color: #434343;
-            border-radius: 8px;
-          "
+          style="width: 1420px; height: 2px; background-color: #434343; border-radius: 8px"
         ></div>
         <textarea
           class="notice-content-input"
-          v-model="noticeData.content"
+          v-model="noticeData.broadcastStationNoticeContent"
         ></textarea>
         <div class="notice-write-cancel-button-box">
           <div class="notice-write-button" @click="noticeWrite">등록</div>
