@@ -1,7 +1,9 @@
 <script setup>
 import UserInfoModal from "./UserInfoModal.vue";
 import { ref, onUpdated, reactive, watchEffect } from "vue";
+import { useOVPStore } from "@/stores/ov_publisher";
 
+const ovpStore = useOVPStore();
 const infoModalActive = ref(false);
 const toggleInfo = () => {
   infoModalActive.value = !infoModalActive.value;
