@@ -2,7 +2,7 @@
 package b203.varium.video.service;
 
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
-import b203.varium.video.entity.FileEntity;
+import b203.varium.video.entity.VideoFile;
 import b203.varium.video.repository.FileInfoRepository;
 import b203.varium.video.repository.VideoRepository;
 import com.amazonaws.services.s3.AmazonS3;
@@ -32,9 +32,9 @@ public class VideoService {
 
     @Transactional
     public void saveFile(MultipartFile file, String videoType, int videoNo) throws IOException {
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setOriginName(file.getOriginalFilename());
-        String originalFileName = fileEntity.getOriginName();
+        VideoFile videoFile = new VideoFile();
+        videoFile.setOriginName(file.getOriginalFilename());
+        String originalFileName = videoFile.getOriginName();
         String saveFileName = null;
         String today = new SimpleDateFormat("yyMMdd").format(new Date());
 
@@ -47,11 +47,11 @@ public class VideoService {
             amazonS3Client.putObject(
                     new PutObjectRequest("b203-beevarium", videoType + "/" + today + "/" + saveFileName, file.getInputStream(), metadata));
 
-            fileEntity.setFilePath(today);
-            fileEntity.setSavedName(saveFileName);
+            videoFile.setFilePath(today);
+            videoFile.setSavedName(saveFileName);
         }
 
-        fileEntity.setVideo(videoRepository.findById(videoNo));
-        fileInfoRepository.save(fileEntity);
+        videoFile.setVideo(videoRepository.findById(videoNo));
+        fileInfoRepository.save(videoFile);
     }
 }

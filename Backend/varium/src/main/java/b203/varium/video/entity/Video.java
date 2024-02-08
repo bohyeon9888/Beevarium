@@ -34,7 +34,7 @@ public abstract class Video extends Record {
     private String videoImgUrl;
 
     @OneToOne(mappedBy = "video")
-    private FileEntity file;
+    private VideoFile file;
 
     // Constructors, getters and setters
 }

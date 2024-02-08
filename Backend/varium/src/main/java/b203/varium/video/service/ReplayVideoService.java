@@ -3,7 +3,7 @@ package b203.varium.video.service;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.video.dto.FileInfoDTO;
 import b203.varium.video.dto.ReplayVideoDTO;
-import b203.varium.video.entity.FileEntity;
+import b203.varium.video.entity.VideoFile;
 import b203.varium.video.entity.ReplayVideo;
 import b203.varium.video.repository.ReplayVideoRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class ReplayVideoService {
             videoDTO.setCreatedDate(replay.getCreatedDate());
             videoDTO.setImgUrl(replay.getVideoImgUrl());
 
-            FileEntity file = replay.getFile();
+            VideoFile file = replay.getFile();
             FileInfoDTO fileData = new FileInfoDTO();
             fileData.setFilepath(file.getFilePath());
             fileData.setOriginFileName(file.getOriginName());

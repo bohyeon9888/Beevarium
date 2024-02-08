@@ -8,7 +8,7 @@ import b203.varium.user.repository.UserRepository;
 import b203.varium.video.dto.ClipVideoDTO;
 import b203.varium.video.dto.FileInfoDTO;
 import b203.varium.video.entity.ClipVideo;
-import b203.varium.video.entity.FileEntity;
+import b203.varium.video.entity.VideoFile;
 import b203.varium.video.repository.ClipVideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class ClipVideoService {
             videoDTO.setCreatedDate(clip.getCreatedDate());
 
             // video service에 따로 빼자
-            FileEntity file = clip.getFile();
+            VideoFile file = clip.getFile();
             FileInfoDTO fileData = new FileInfoDTO();
             fileData.setFilepath(file.getFilePath());
             fileData.setOriginFileName(file.getOriginName());

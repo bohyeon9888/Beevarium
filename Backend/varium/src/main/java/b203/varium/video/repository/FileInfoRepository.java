@@ -1,10 +1,10 @@
 package b203.varium.video.repository;
 
-import b203.varium.video.entity.FileEntity;
+import b203.varium.video.entity.VideoFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FileInfoRepository extends JpaRepository<FileEntity, Integer> {
+public interface FileInfoRepository extends JpaRepository<VideoFile, Integer> {
 
-    FileEntity findByVideo_Id(int id);
+    VideoFile findByVideo_Id(int id);
 
 }
