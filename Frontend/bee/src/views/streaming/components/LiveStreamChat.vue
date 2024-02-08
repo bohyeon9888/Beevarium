@@ -1,8 +1,13 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import DonationModal from "./DonationModal.vue";
+import { useOVSStore } from "@/stores/ov_subscriber";
 
+const ovsStore = useOVSStore();
 const isModalOpened = ref(false);
+const messages = computed(() => {
+  return ovsStore.messages;
+})
 const openModal = () => {
   isModalOpened.value = true;
 };
@@ -27,7 +32,15 @@ const closeModal = () => {
     >
       채팅
     </div>
-    <div class="livestream-chat-box"></div>
+    <div class="livestream-chat-box">
+      <div
+        v-for="(message, index) in messages"
+        :key="index"
+        class="chat-message"
+      >
+        {{ message }}
+      </div>
+    </div>
     <div
       id="livestream-chat-input-container"
       class="livestream-chat-input-container"

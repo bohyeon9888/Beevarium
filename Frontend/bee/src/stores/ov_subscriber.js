@@ -16,12 +16,21 @@ export const useOVSStore = defineStore(
     let sessionId = "";
     let connectId = "";
 
+    const messages = ref([]);
+
+    // 메시지를 추가하는 함수
+    const addMessage = (message) => {
+      console.log("몇번 호출?");
+      messages.value.push(message);
+    };
+
     // 세션 연결 - 방송 참여자
     // ssesionID = opensession 하면 전역변수로 생김
     const subscribeToSession = async () => {
       try {
         // 세션 생성
         session = OV.initSession();
+        messages.value = [];
 
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
@@ -40,6 +49,11 @@ export const useOVSStore = defineStore(
           console.log("새로운 스트림 구독 시작");
         });
 
+        session.on("signal:my-chat", (event) => {
+          console.log(event.data); // Message
+          addMessage(event.data); // The type of message
+        });
+
         // 세션에 연결할 토큰 가져오기
         const token = await getToken();
 
@@ -54,7 +68,7 @@ export const useOVSStore = defineStore(
     const getToken = async () => {
       try {
         const response = await axios.post(
-          `${API_SERVER_URL}openvidu/api/sessions/CUSTOM_SESSION_ID2/connection`,
+          `${API_SERVER_URL}openvidu/api/sessions/CUSTOM_SESSION_ID3/connection`,
           {
             type: "WEBRTC",
             data: "My Server Data",
@@ -75,8 +89,13 @@ export const useOVSStore = defineStore(
         throw error; // 예외를 다시 던지고 호출하는 쪽에서 처리할 수 있도록 합니다.
       }
     };
-
-    return { subscribeToSession, sessionId, connectId };
+    return {
+      subscribeToSession,
+      messages,
+      addMessage,
+      sessionId,
+      connectId,
+    };
   },
   {
     persist: true,

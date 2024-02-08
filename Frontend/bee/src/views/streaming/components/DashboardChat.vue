@@ -102,7 +102,8 @@ const sendMessage = () => {
       content: trimmedMessage,
       type: "normal",
     });
-    newMessage.value = "";
+    ovpStore.sendMessage1(newMessage.value); // 업데이트된 newMessage로 sendMessage1 호출
+    newMessage.value = ""; // 전송 후 newMessage를 지웁니다.
   }
 };
 
@@ -151,11 +152,12 @@ watchEffect(() => {
             v-model="newMessage"
             type="text"
             class="chat-input"
+            @keyup.enter="sendMessage"
             placeholder="채팅을 입력해주세요."
           />
         </div>
         <div class="chat-button-box">
-          <button class="chat-send" @click="sendMessage">전송</button>
+          <button class="chat-send" @click="sendMessage()">전송</button>
         </div>
       </div>
     </div>

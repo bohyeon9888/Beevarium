@@ -25,7 +25,7 @@ export const useOVPStore = defineStore(
           {
             mediaMode: "ROUTED",
             recordingMode: "MANUAL",
-            customSessionId: "CUSTOM_SESSION_ID2",
+            customSessionId: "CUSTOM_SESSION_ID3",
             forcedVideoCodec: "VP8",
             allowTranscoding: false,
             defaultRecordingProperties: {
@@ -80,7 +80,7 @@ export const useOVPStore = defineStore(
 
             // 퍼블리셔의 카메라 및 화면 공유 설정
             var publisher = OV.initPublisher("my-video", {
-              videoSource: "screen",
+              videoSource: ["camera"],
               // videoDimensions: '{"width":890, "height":493}',
               // 카메라와 화면 공유 설정
             });
@@ -126,7 +126,8 @@ export const useOVPStore = defineStore(
       }
     };
 
-    const sendMessage = async (message) => {
+    const sendMessage1 = async (message) => {
+      console.log(message);
       try {
         // 모든 연결에게 메시지 브로드캐스트
         await session.signal({
@@ -153,7 +154,7 @@ export const useOVPStore = defineStore(
       openSession,
       connectSession,
       closeSession,
-      sendMessage,
+      sendMessage1,
       receiveMessage,
       sessionId,
       connectId,

@@ -6,10 +6,12 @@ import LanguageSelectorModal from "./components/LanguageSelectorModal.vue";
 import { useSidebarStore } from "@/stores/sidebar";
 import { storeToRefs } from "pinia";
 import { useOVSStore } from "@/stores/ov_subscriber";
+import { useOVPStore } from "@/stores/ov_publisher";
 
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 const ovsStore = useOVSStore();
+const ovpStore = useOVPStore();
 
 // 도네이션 모달 활성화
 const donModActive = ref(false);
