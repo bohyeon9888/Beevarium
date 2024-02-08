@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.MalformedURLException;
+
 @Slf4j
 @RestControllerAdvice(assignableTypes = OpenViduController.class)
 public class OpenViduExceptionHandler {
@@ -24,6 +26,14 @@ public class OpenViduExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     @ExceptionHandler(OpenViduHttpException.class)
     public ResponseEntity<ErrorResult> openViduHttpExceptionHandle(Exception e) {
+        log.error("[exceptionHandle] ex", e);
+        ErrorResult errorResult = new ErrorResult("OpenViduHttpException", e.getMessage());
+        return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    @ExceptionHandler(MalformedURLException.class)
+    public ResponseEntity<ErrorResult> malformedURLExceptionHandle(Exception e) {
         log.error("[exceptionHandle] ex", e);
         ErrorResult errorResult = new ErrorResult("OpenViduHttpException", e.getMessage());
         return new ResponseEntity<>(errorResult, HttpStatus.BAD_REQUEST);

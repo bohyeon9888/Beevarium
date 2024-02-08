@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -90,34 +90,45 @@ public class OpenViduService {
         return new ResponseEntity<>(sessionId, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException, MalformedURLException {
+
         ConnectionType connectionType = Optional.ofNullable(connectionPropertiesDto.getType())
-                .map(String::toUpperCase)
-                .map(ConnectionType::valueOf)
-                .orElse(ConnectionType.IPCAM); // 기본값으로 IPCAM을 사용
+                .filter("WEBRTC"::equals)
+                .map(type -> ConnectionType.WEBRTC)
+                .orElse(ConnectionType.IPCAM);
 
         OpenViduRole openViduRole = Optional.ofNullable(connectionPropertiesDto.getRole())
-                .map(String::toUpperCase)
-                .filter(role -> Arrays.asList("PUBLISHER", "MODERATOR").contains(role))
-                .map(OpenViduRole::valueOf)
-                .orElse(OpenViduRole.SUBSCRIBER); // 기본값으로 SUBSCRIBER를 사용
+                .map(role -> {
+                    switch (role) {
+                        case "SUBSCRIBER":
+                            return OpenViduRole.SUBSCRIBER;
+                        case "MODERATOR":
+                            return OpenViduRole.MODERATOR;
+                        default:
+                            return OpenViduRole.PUBLISHER;
+                    }
+                })
+                .orElse(OpenViduRole.PUBLISHER);
 
         log.info("connectionType={}", connectionType);
         log.info("openViduRole={}", openViduRole);
 
-        KurentoOptions kurentoOptions = new KurentoOptions(
-                connectionPropertiesDto.getKurentoOptions().getVideoMaxRecvBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getVideoMinRecvBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getVideoMaxSendBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getVideoMinSendBandwidth(),
-                connectionPropertiesDto.getKurentoOptions().getAllowedFilters().toArray(new String[0])
-        );
+//        KurentoOptions kurentoOptions = new KurentoOptions(
+//                connectionPropertiesDto.getKurentoOptions().getVideoMaxRecvBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getVideoMinRecvBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getVideoMaxSendBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getVideoMinSendBandwidth(),
+//                connectionPropertiesDto.getKurentoOptions().getAllowedFilters().toArray(new String[0])
+//        );
 
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
                 .type(connectionType)
-                .role(openViduRole)
                 .data(connectionPropertiesDto.getData())
-                .kurentoOptions(kurentoOptions)
+                .record(true)
+                .role(openViduRole)
+                .adaptativeBitrate(true)
+                .onlyPlayWithSubscribers(true)
+                .networkCache(2000)
                 .build();
 
         Connection connection = openvidu.getActiveSession(sessionId).createConnection(connectionProperties);
@@ -154,7 +165,9 @@ public class OpenViduService {
     }
 
     public ResponseEntity<Boolean> getRecorded(String sessionId) {
+        log.info("sessionId = {}", sessionId);
         boolean recorded = openvidu.getActiveSession(sessionId).isBeingRecorded();
+        log.info("recorded = {}", recorded);
         return new ResponseEntity<>(recorded, HttpStatus.OK);
     }
 
@@ -190,6 +203,16 @@ public class OpenViduService {
         log.info("recordingProperties = {}", recordingProperties);
 
         Recording recording = openvidu.startRecording(sessionId, recordingProperties);
+        Gson gson = new Gson();
+        String json = gson.toJson(recording);
+
+        log.info("json = {}", json);
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> startRecordingsforName(String sessionId, String name) throws OpenViduJavaClientException, OpenViduHttpException {
+        Recording recording = openvidu.startRecording(sessionId, name);
+
         Gson gson = new Gson();
         String json = gson.toJson(recording);
 
