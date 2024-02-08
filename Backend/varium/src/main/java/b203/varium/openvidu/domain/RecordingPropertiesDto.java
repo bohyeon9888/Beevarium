@@ -1,7 +1,5 @@
 package b203.varium.openvidu.domain;
 
-import io.openvidu.java.client.Recording;
-import io.openvidu.java.client.RecordingLayout;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,10 +20,10 @@ public class RecordingPropertiesDto {
     private Boolean hasVideo;
 
     @NotNull(message = "출력 모드를 설정해야 합니다")
-    private Recording.OutputMode outputMode;
+    private String outputMode;
 
     @NotNull(message = "녹화 레이아웃을 설정해야 합니다")
-    private RecordingLayout recordingLayout;
+    private String recordingLayout;
 
     @NotBlank(message = "해상도 설정은 필수입니다")
     private String resolution;
@@ -40,5 +38,8 @@ public class RecordingPropertiesDto {
 
     private String customLayout;
     private Boolean ignoreFailedStreams;
+
+    @NotNull(message = "미디어 노드를 입력해주세요")
     private String mediaNode;
+
 }

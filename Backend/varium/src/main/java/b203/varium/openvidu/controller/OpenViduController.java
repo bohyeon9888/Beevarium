@@ -51,7 +51,7 @@ public class OpenViduController {
 
     @PostMapping("/sessions")
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> initializeSession(@Validated @RequestBody(required = false) SessionPropertiesDto sessionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> initializeSession(@Validated @RequestBody SessionPropertiesDto sessionPropertiesDto, BindingResult result) throws OpenViduJavaClientException, OpenViduHttpException {
         ResponseEntity<String> errorMessage = getStringResponseEntity(result);
         if (errorMessage != null) return errorMessage;
 
