@@ -2,12 +2,14 @@ package b203.varium.broadcasting.service;
 
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
+import b203.varium.broadcasting.dto.EnterRespDTO;
 import b203.varium.broadcasting.dto.ListRespDTO;
 import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.broadcasting.repository.BroadcastingRepository;
 import b203.varium.follow.dto.FollowRespDTO;
 import b203.varium.follow.service.FollowRelationService;
 import b203.varium.hashtag.entity.HashTag;
+import b203.varium.hashtag.repository.HashTagRepository;
 import b203.varium.hashtag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class BroadcastingService {
     private final BroadcastingRepository broadcastingRepository;
     private final BroadcastStationRepository broadcastStationRepository;
     private final TagService tagService;
+    private final HashTagRepository tagRepository;
     private final FollowRelationService followService;
 
     @Transactional
@@ -115,4 +118,45 @@ public class BroadcastingService {
         return resp;
     }
 
+    @Transactional
+    public Map<String, Object> enterBroadcasting(String username, String streamerId) {
+        Map<String, Object> resp = new HashMap<>();
+
+        BroadcastStation station = broadcastStationRepository.findByUser_UserId(streamerId);
+        EnterRespDTO respDTO = new EnterRespDTO();
+        Broadcasting broadcasting = broadcastingRepository.findByBroadcastStation_Id(station.getId());
+
+        if (broadcasting == null) {
+            Map<String, Object> msg = new HashMap<>();
+            msg.put("msg", "존재하는 생방송이 없습니다.");
+            resp.put("status", "fail");
+            resp.put("data", msg);
+            return resp;
+        }
+        if (username.equals(station.getUser().getUsername())) {
+            Map<String, Object> msg = new HashMap<>();
+            msg.put("msg", "당신의 방송에 입장하실 수 없습니다.");
+            resp.put("status", "fail");
+            resp.put("data", msg);
+            return resp;
+        }
+
+        respDTO.setStreamerId(streamerId);
+        respDTO.setStreamerName(station.getUser().getUsername());
+        respDTO.setStreamerProfile(station.getUser().getProfileUrl());
+        respDTO.setViewers(broadcasting.getBroadcastingViewers()+1);
+        respDTO.setUsername(username);
+
+        List<HashTag> tagList = tagRepository.findAllByBroadcasting_Id(broadcasting.getId());
+        List<String> tags = new ArrayList<>();
+        for (HashTag hashTag : tagList) {
+            tags.add(hashTag.getTag().getTagText());
+        }
+
+        respDTO.setTags(tags);
+
+        resp.put("data", respDTO);
+        resp.put("status", "success");
+        return resp;
+    }
 }

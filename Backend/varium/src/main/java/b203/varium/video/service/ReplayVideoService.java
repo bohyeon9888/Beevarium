@@ -23,8 +23,8 @@ public class ReplayVideoService {
     private final ReplayVideoRepository replayVideoRepository;
     private final BroadcastStationRepository broadcastStationRepository;
 
-    public List<ReplayVideoDTO> getReplayVideos(String streamerid) {
-        int stationId = broadcastStationRepository.findByUser_UserId(streamerid).getId();
+    public List<ReplayVideoDTO> getReplayVideos(String streamerId) {
+        int stationId = broadcastStationRepository.findByUser_UserId(streamerId).getId();
         List<ReplayVideo> list = replayVideoRepository.findAllByBroadcastStation_Id(stationId);
         List<ReplayVideoDTO> result = new ArrayList<>();
 
@@ -43,7 +43,6 @@ public class ReplayVideoService {
             fileData.setSaveFileName(file.getSavedName());
 
             videoDTO.setFileInfo(fileData);
-            System.out.println(videoDTO);
             result.add(videoDTO);
         }
 

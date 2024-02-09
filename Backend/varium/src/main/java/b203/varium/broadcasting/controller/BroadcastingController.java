@@ -52,4 +52,10 @@ public class BroadcastingController {
     }
 
     // 생방송 화면 들어갈 때 팔로우 여부, 스트리머정보
+    @GetMapping("/enter/{streamerId}")
+    public ResponseEntity<Map<String, Object>> enterBroadcasting(@PathVariable String streamerId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        return ResponseEntity.ok(broadcastingService.enterBroadcasting(auth.getName(), streamerId));
+    }
 }
