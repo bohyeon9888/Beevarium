@@ -35,7 +35,6 @@ public class ReplayVideoService {
             videoDTO.setViewers(replay.getVideoViewers());
             videoDTO.setReplayVideoTextUrl("none");
             videoDTO.setCreatedDate(replay.getCreatedDate());
-            videoDTO.setImgUrl(replay.getVideoImgUrl());
 
             VideoFile file = replay.getFile();
             VideoFileDTO fileData = new VideoFileDTO();

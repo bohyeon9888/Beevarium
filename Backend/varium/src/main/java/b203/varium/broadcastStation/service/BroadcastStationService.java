@@ -67,10 +67,6 @@ public class BroadcastStationService {
             data.put("msg", "존재하지 않는 방송국입니다.");
             result.put("data", data);
             result.put("status", "fail");
-        } else if (username != null && !userRepository.existsByUsername(username)) {
-            data.put("msg", "존재하지 않는 회원입니다.");
-            result.put("data", data);
-            result.put("status", "fail");
         } else {
             result.put("status", "success");
             BroadcastStation station = stationRepository.findByUser_UserId(streamerId);

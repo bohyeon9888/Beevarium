@@ -23,6 +23,7 @@ public class ClipVideoService {
 
     private final ClipVideoRepository clipVideoRepository;
     private final BroadcastStationRepository broadcastStationRepository;
+    private final VideoService videoService;
     private final UserRepository userRepository;
 
     public List<ClipVideoDTO> getClipVideos(String streamerid) {
@@ -36,7 +37,6 @@ public class ClipVideoService {
             videoDTO.setStationId(stationId);
             videoDTO.setTitle(clip.getVideoTitle());
             videoDTO.setViewers(clip.getVideoViewers());
-            videoDTO.setImgUrl(clip.getVideoImgUrl());
             videoDTO.setCreatedDate(clip.getCreatedDate());
 
             // video service에 따로 빼자
@@ -66,7 +66,6 @@ public class ClipVideoService {
         clip.setClipVideoNo(clipVideoRepository.findMaxClipVideoNo() + 1);
         clip.setUser(writer);
         clip.setVideoTitle(title);
-        clip.setVideoImgUrl("none");
     }
 
     public ClipVideo getClipVideoById(Integer clipVideoNo) {

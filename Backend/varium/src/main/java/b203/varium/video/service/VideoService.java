@@ -3,7 +3,7 @@ package b203.varium.video.service;
 
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.video.entity.VideoFile;
-import b203.varium.video.repository.FileInfoRepository;
+import b203.varium.video.repository.VideoFileRepository;
 import b203.varium.video.repository.VideoRepository;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -26,8 +26,7 @@ import java.util.UUID;
 public class VideoService {
 
     private final VideoRepository videoRepository;
-    private final FileInfoRepository fileInfoRepository;
-    private final BroadcastStationRepository broadcastStationRepository;
+    private final VideoFileRepository videoFileRepository;
     private final AmazonS3 amazonS3Client;
 
     @Transactional
@@ -52,6 +51,6 @@ public class VideoService {
         }
 
         videoFile.setVideo(videoRepository.findById(videoNo));
-        fileInfoRepository.save(videoFile);
+        videoFileRepository.save(videoFile);
     }
 }
