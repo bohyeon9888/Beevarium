@@ -2,10 +2,14 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
+import { useAuthStore } from "./user";
+import { storeToRefs } from "pinia";
 
 export const useOVSStore = defineStore(
   "OVSStore",
   () => {
+    const authStore = useAuthStore();
+    const { user } = storeToRefs(authStore);
     var session;
     var OV = new OpenVidu();
     var mainstreamer;
@@ -16,12 +20,13 @@ export const useOVSStore = defineStore(
     let sessionId = "";
     let connectId = "";
 
-    const messages = ref([]);
+    const messagee = ref("");
 
     // 메시지를 추가하는 함수
     const addMessage = (message) => {
       console.log("몇번 호출?");
-      messages.value.push(message);
+      messagee.value = message;
+      console.log(messagee.value);
     };
 
     // 세션 연결 - 방송 참여자
@@ -30,7 +35,7 @@ export const useOVSStore = defineStore(
       try {
         // 세션 생성
         session = OV.initSession();
-        messages.value = [];
+        messagee.value = "";
 
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
@@ -50,7 +55,8 @@ export const useOVSStore = defineStore(
         });
 
         session.on("signal:my-chat", (event) => {
-          console.log(event.data); // Message
+          console.log(event.data);
+          console.log(event.name); // Message
           addMessage(event.data); // The type of message
         });
 
@@ -89,9 +95,56 @@ export const useOVSStore = defineStore(
         throw error; // 예외를 다시 던지고 호출하는 쪽에서 처리할 수 있도록 합니다.
       }
     };
+    const closeSession = async () => {
+      try {
+        await axios.delete(
+          `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
+        );
+        console.log("세션 닫힘");
+        //클라이언트측 세션 닫기 -> 필요없나??
+      } catch (error) {
+        console.error("Error", error);
+      }
+    };
+
+    const sendMessage1 = async (message) => {
+      try {
+        const currentTime = new Date(); // 현재 시간 가져오기
+        const messageData = {
+          message: message,
+          name: user.value.name,
+          time: currentTime.toISOString(), // ISO 형식으로 시간을 문자열로 변환
+        };
+
+        // 메시지 브로드캐스트
+        await session.signal({
+          data: JSON.stringify(messageData),
+          to: [], // 모든 연결에게 브로드캐스트
+          type: "my-chat",
+        });
+        console.log("Message successfully sent");
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+    };
+
+    // 채팅 메시지 수신하기
+    const receiveMessage = () => {
+      console.log("11");
+      session.on("signal:my-chat", (event) => {
+        console.log(event);
+        console.log("Received message:", event.data); // 수신된 메시지 출력
+        console.log("Sender:", event.from); // 메시지 보낸 사용자 정보
+        console.log("Message type:", event.type); // 메시지 타입 출력
+      });
+    };
+
     return {
       subscribeToSession,
-      messages,
+      sendMessage1,
+      receiveMessage,
+      closeSession,
+      messagee,
       addMessage,
       sessionId,
       connectId,

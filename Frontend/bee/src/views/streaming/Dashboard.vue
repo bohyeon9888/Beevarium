@@ -4,7 +4,6 @@ import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
-import Screen from "./components/Screen.vue";
 import { streamingStart, streamingEnd } from "@/api/live.js";
 
 const ovpStore = useOVPStore();
