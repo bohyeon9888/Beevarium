@@ -23,7 +23,7 @@ public class BroadcastingController {
     private final BroadcastingService broadcastingService;
 
     @PostMapping("/start")
-    public ResponseEntity<Map<String, String>> createBroadcasting(@RequestBody ReqDTO reqDTO) {
+    public ResponseEntity<Map<String, Object>> createBroadcasting(@RequestBody ReqDTO reqDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return ResponseEntity.ok(broadcastingService.startBroadcasting(auth.getName(),

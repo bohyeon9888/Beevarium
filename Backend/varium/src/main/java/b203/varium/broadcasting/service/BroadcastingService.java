@@ -30,8 +30,8 @@ public class BroadcastingService {
     private final FollowRelationService followService;
 
     @Transactional
-    public Map<String, String> startBroadcasting(String username, String title, String thumbnail, List<String> tagList) {
-        Map<String, String> resp = new HashMap<>();
+    public Map<String, Object> startBroadcasting(String username, String title, String thumbnail, List<String> tagList) {
+        Map<String, Object> resp = new HashMap<>();
         Broadcasting data = new Broadcasting();
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
         BroadcastStation station = broadcastStationRepository.findByUser_Username(username);
@@ -48,8 +48,10 @@ public class BroadcastingService {
         data.setHashTagList(hashTagList);
         broadcastingRepository.save(data);
 
+        Map<String, Object> result = new HashMap<>();
+        result.put("streamerId", username);
         resp.put("status", "success");
-        resp.put("msg", "Success Starting the live");
+        resp.put("data", result);
         return resp;
     }
 

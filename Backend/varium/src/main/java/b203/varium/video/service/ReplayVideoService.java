@@ -1,7 +1,7 @@
 package b203.varium.video.service;
 
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
-import b203.varium.video.dto.FileInfoDTO;
+import b203.varium.video.dto.VideoFileDTO;
 import b203.varium.video.dto.ReplayVideoDTO;
 import b203.varium.video.entity.VideoFile;
 import b203.varium.video.entity.ReplayVideo;
@@ -38,7 +38,7 @@ public class ReplayVideoService {
             videoDTO.setImgUrl(replay.getVideoImgUrl());
 
             VideoFile file = replay.getFile();
-            FileInfoDTO fileData = new FileInfoDTO();
+            VideoFileDTO fileData = new VideoFileDTO();
             fileData.setFilepath(file.getFilePath());
             fileData.setOriginFileName(file.getOriginName());
             fileData.setSaveFileName(file.getSavedName());
@@ -50,5 +50,9 @@ public class ReplayVideoService {
 
         return result;
     }
+
+//    public void saveReplayInfo(String filePath, String ) {
+//
+//    }
 }
 

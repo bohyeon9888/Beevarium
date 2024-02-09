@@ -6,7 +6,7 @@ import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.user.entity.UserEntity;
 import b203.varium.user.repository.UserRepository;
 import b203.varium.video.dto.ClipVideoDTO;
-import b203.varium.video.dto.FileInfoDTO;
+import b203.varium.video.dto.VideoFileDTO;
 import b203.varium.video.entity.ClipVideo;
 import b203.varium.video.entity.VideoFile;
 import b203.varium.video.repository.ClipVideoRepository;
@@ -41,7 +41,7 @@ public class ClipVideoService {
 
             // video service에 따로 빼자
             VideoFile file = clip.getFile();
-            FileInfoDTO fileData = new FileInfoDTO();
+            VideoFileDTO fileData = new VideoFileDTO();
             fileData.setFilepath(file.getFilePath());
             fileData.setOriginFileName(file.getOriginName());
             fileData.setSaveFileName(file.getSavedName());

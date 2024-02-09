@@ -14,6 +14,6 @@ public class ClipVideoDTO {
     private int viewers;
     private String imgUrl;
     private Timestamp createdDate;
-    private FileInfoDTO fileInfo;
+    private VideoFileDTO fileInfo;
 
 }
