@@ -40,8 +40,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'com.google.code.gson:gson' // 최신 버전으로 확인
-<<<<<<< HEAD
+    implementation 'com.google.code.gson:gson'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     //WEBSOCKET
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
@@ -51,9 +50,6 @@ dependencies {
 
 ext {
     snippetsDir = file('build/generated-snippets')
-=======
-
->>>>>>> 0d5b6804922d61dd3bf3cf8551e588e13ddc4ff1
 }
 
 tasks.named('test') {

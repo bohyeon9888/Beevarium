@@ -7,6 +7,5 @@ import java.util.List;
 @Data
 public class ReqDTO {
     private String broadcastingTitle;
-    private String broadcastingImgUrl;
     private List<String> tagList;
 }

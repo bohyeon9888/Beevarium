@@ -27,22 +27,23 @@ public class BroadcastingController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
         return ResponseEntity.ok(broadcastingService.startBroadcasting(auth.getName(),
-                reqDTO.getBroadcastingTitle(), reqDTO.getBroadcastingImgUrl(), reqDTO.getTagList()));
+                reqDTO.getBroadcastingTitle(), reqDTO.getTagList()));
     }
 
     // 사용자가 구독중인 스트리머 실시간 방송 목록
     @GetMapping("/subscribe")
-    public ResponseEntity<Map<String, Object>> viewBroadcastingList() {
+    public ResponseEntity<Map<String, Object>> viewSubscriberList() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         log.info("user name : " + auth.getName());
 
         return ResponseEntity.ok(broadcastingService.subscribeListBroadcasting(auth.getName()));
     }
 
-    // 랜덤 실시간 방송 5개 조회
-
-
-    // 시청자 높은 순 방송 5개 조회
+    // 실시간 방송 조회
+    @GetMapping("/list")
+    public ResponseEntity<Map<String, Object>> viewBroadcastingList() {
+        return ResponseEntity.ok(broadcastingService.getBroadcasting());
+    }
 
 
     @GetMapping("/end")

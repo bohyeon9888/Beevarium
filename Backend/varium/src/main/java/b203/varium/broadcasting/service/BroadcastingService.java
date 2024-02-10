@@ -33,7 +33,7 @@ public class BroadcastingService {
     private final FollowRelationService followService;
 
     @Transactional
-    public Map<String, Object> startBroadcasting(String username, String title, String thumbnail, List<String> tagList) {
+    public Map<String, Object> startBroadcasting(String username, String title, List<String> tagList) {
         Map<String, Object> resp = new HashMap<>();
         Map<String, Object> result = new HashMap<>();
         Broadcasting data = new Broadcasting();
@@ -49,7 +49,7 @@ public class BroadcastingService {
 
         data.setBroadcastStation(station);
         data.setBroadcastingTitle(title);
-        data.setBroadcastingImgUrl(thumbnail);
+        data.setBroadcastingImgUrl("https://b203-beevairum.s3.ap-northeast-2.amazonaws.com/thumbnail/none.png");
         data.setCreatedDate(nowT);
         data.setUpdatedDate(nowT);
         broadcastingRepository.save(data);
@@ -71,22 +71,7 @@ public class BroadcastingService {
 
         for (FollowRespDTO follow : followList) {
             BroadcastStation station = broadcastStationRepository.findById(follow.getStationNo());
-            ListRespDTO data = new ListRespDTO();
-
-            data.setStreamerName(station.getUser().getUsername());
-            data.setStreamerId(station.getUser().getUserId());
-            data.setProfileUrl(station.getUser().getProfileUrl());
-
-            int stationId = station.getId();
-            Broadcasting live = broadcastingRepository.findByBroadcastStation_Id(stationId);
-            if (live == null) {
-                break;
-            }
-            data.setLiveTitle(live.getBroadcastingTitle());
-            data.setThumbnailUrl(live.getBroadcastingImgUrl());
-            data.setViewer(live.getBroadcastingViewers());
-
-            result.add(data);
+            result.add(setRespDTO(station));
         }
 
         Map<String, Object> resp = new HashMap<>();
@@ -103,6 +88,52 @@ public class BroadcastingService {
         }
 
         return resp;
+    }
+
+    public Map<String, Object> getBroadcasting() {
+        List<Broadcasting> list = broadcastingRepository.findTop8ByOrderByBroadcastingViewersDesc();
+        List<ListRespDTO> result = new ArrayList<>();
+
+        for (Broadcasting live : list) {
+            BroadcastStation station = live.getBroadcastStation();
+
+            result.add(setRespDTO(station));
+        }
+
+        Map<String, Object> resp = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+        if (result.size() <= 0) {
+            data.put("msg", "데이터가 없습니다.");
+            resp.put("status", "fail");
+            resp.put("data", data);
+        } else {
+            data.put("topList", result);
+            resp.put("status", "success");
+            resp.put("data", data);
+        }
+
+        return resp;
+    }
+
+    public ListRespDTO setRespDTO(BroadcastStation station) {
+        ListRespDTO data = new ListRespDTO();
+        int stationId = station.getId();
+        Broadcasting live = broadcastingRepository.findByBroadcastStation_Id(stationId);
+        if (live == null) {
+            return null;
+        }
+
+        int broadcastingNo = live.getId();
+        data.setBroadcastingNo(broadcastingNo);
+        data.setStreamerName(station.getUser().getUsername());
+        data.setStreamerId(station.getUser().getUserId());
+        data.setProfileUrl(station.getUser().getProfileUrl());
+        data.setLiveTitle(live.getBroadcastingTitle());
+        data.setThumbnailUrl(live.getBroadcastingImgUrl());
+        data.setViewer(live.getBroadcastingViewers());
+        data.setTags(getTags(broadcastingNo));
+
+        return data;
     }
 
     @Transactional
@@ -147,16 +178,20 @@ public class BroadcastingService {
         respDTO.setViewers(broadcasting.getBroadcastingViewers()+1);
         respDTO.setUsername(username);
 
-        List<HashTag> tagList = tagRepository.findAllByBroadcasting_Id(broadcasting.getId());
+        respDTO.setTags(getTags(broadcasting.getId()));
+
+        resp.put("data", respDTO);
+        resp.put("status", "success");
+        return resp;
+    }
+
+    public List<String> getTags(int BroadcastingNo) {
+        List<HashTag> tagList = tagRepository.findAllByBroadcasting_Id(BroadcastingNo);
         List<String> tags = new ArrayList<>();
         for (HashTag hashTag : tagList) {
             tags.add(hashTag.getTag().getTagText());
         }
 
-        respDTO.setTags(tags);
-
-        resp.put("data", respDTO);
-        resp.put("status", "success");
-        return resp;
+        return tags;
     }
 }
