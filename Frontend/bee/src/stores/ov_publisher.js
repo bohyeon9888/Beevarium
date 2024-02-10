@@ -2,10 +2,14 @@ import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
+import { useAuthStore } from "./user";
+import { storeToRefs } from "pinia";
 
 export const useOVPStore = defineStore(
   "OVPStore",
   () => {
+    const authStore = useAuthStore();
+    const { user } = storeToRefs(authStore);
     var session;
     var OV = new OpenVidu();
     var mainstreamer;
@@ -16,6 +20,15 @@ export const useOVPStore = defineStore(
     let sessionId = "";
     let connectId = "";
 
+    const messagee = ref("");
+
+    // 메시지를 추가하는 함수
+    const addMessage = (message) => {
+      console.log("몇번 호출?");
+      messagee.value = message;
+      console.log(messagee.value);
+    };
+
     const openSession = async () => {
       try {
         // 성공적으로 통신시 클라이언트측 세션 초기화
@@ -25,7 +38,7 @@ export const useOVPStore = defineStore(
           {
             mediaMode: "ROUTED",
             recordingMode: "MANUAL",
-            customSessionId: "CUSTOM_SESSION_ID2",
+            customSessionId: "CUSTOM_SESSION_ID3",
             forcedVideoCodec: "VP8",
             allowTranscoding: false,
             defaultRecordingProperties: {
@@ -90,7 +103,7 @@ export const useOVPStore = defineStore(
               var videoElement = event.element;
 
               // 비디오 엘리먼트의 크기를 고정된 값으로 설정
-              videoElement.style.width = "890px"; // 너비를 640픽셀로 설정
+              videoElement.style.width = "890px"; // 너비를 640픽셀로 설정W
               videoElement.style.height = "493px"; // 높이를 480픽셀로 설정
             });
 
@@ -104,6 +117,12 @@ export const useOVPStore = defineStore(
               .catch((error) => {
                 console.error("화면 및 카메라 공유 스트림 발행 실패", error);
               });
+
+            session.on("signal:my-chat", (event) => {
+              console.log(event.data);
+              console.log(event.name); // Message
+              addMessage(event.data); // The type of message
+            });
           })
           .catch((error) => {
             console.error("클라이언트측 세션 연결 실패", error);
@@ -126,11 +145,18 @@ export const useOVPStore = defineStore(
       }
     };
 
-    const sendMessage = async (message) => {
+    const sendMessage1 = async (message) => {
       try {
-        // 모든 연결에게 메시지 브로드캐스트
+        const currentTime = new Date(); // 현재 시간 가져오기
+        const messageData = {
+          message: message,
+          name: user.value.name,
+          time: currentTime.toISOString(), // ISO 형식으로 시간을 문자열로 변환
+        };
+
+        // 메시지 브로드캐스트
         await session.signal({
-          data: message,
+          data: JSON.stringify(messageData),
           to: [], // 모든 연결에게 브로드캐스트
           type: "my-chat",
         });
@@ -142,7 +168,9 @@ export const useOVPStore = defineStore(
 
     // 채팅 메시지 수신하기
     const receiveMessage = () => {
+      console.log("11");
       session.on("signal:my-chat", (event) => {
+        console.log(event);
         console.log("Received message:", event.data); // 수신된 메시지 출력
         console.log("Sender:", event.from); // 메시지 보낸 사용자 정보
         console.log("Message type:", event.type); // 메시지 타입 출력
@@ -153,8 +181,10 @@ export const useOVPStore = defineStore(
       openSession,
       connectSession,
       closeSession,
-      sendMessage,
+      sendMessage1,
       receiveMessage,
+      addMessage,
+      messagee,
       sessionId,
       connectId,
     };

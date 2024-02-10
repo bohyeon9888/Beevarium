@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from "vue";
 
 const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
 };
-
 
 const recommendChannels = ref([
   {
@@ -12,8 +11,9 @@ const recommendChannels = ref([
     img: "https://images.unsplash.com/photo-1530651788726-1dbf58eeef1f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=882&q=80",
     logo: "streamer_image_1",
     name: "스트리머1",
-    tags: ["한국어", "게임", "수다","한국어", "게임", "수다"],
-    intro: "종합 게임 스트리머 스트리머1 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머1 채널을 시청해보세요!",
+    tags: ["한국어", "게임", "수다", "한국어", "게임", "수다"],
+    intro:
+      "종합 게임 스트리머 스트리머1 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머1 채널을 시청해보세요!",
     watcher: "626",
   },
   {
@@ -22,7 +22,8 @@ const recommendChannels = ref([
     logo: "streamer_image_2",
     name: "스트리머2",
     tags: ["한국어", "게임", "수다"],
-    intro: "종합 게임 스트리머 스트리머2 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머2 채널을 시청해보세요!",
+    intro:
+      "종합 게임 스트리머 스트리머2 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머2 채널을 시청해보세요!",
     watcher: "310",
   },
   {
@@ -31,7 +32,8 @@ const recommendChannels = ref([
     logo: "streamer_image_1",
     name: "스트리머3",
     tags: ["한국어", "게임", "수다"],
-    intro: "종합 게임 스트리머 스트리머3 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머3 채널을 시청해보세요!",
+    intro:
+      "종합 게임 스트리머 스트리머3 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머3 채널을 시청해보세요!",
     watcher: "1492",
   },
   {
@@ -40,7 +42,8 @@ const recommendChannels = ref([
     logo: "streamer_image_2",
     name: "스트리머4",
     tags: ["한국어", "게임", "수다"],
-    intro: "종합 게임 스트리머 스트리머4 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머4 채널을 시청해보세요!",
+    intro:
+      "종합 게임 스트리머 스트리머4 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머4 채널을 시청해보세요!",
     watcher: "72",
   },
   {
@@ -49,9 +52,10 @@ const recommendChannels = ref([
     logo: "streamer_image_1",
     name: "스트리머5",
     tags: ["한국어", "게임", "수다"],
-    intro: "종합 게임 스트리머 스트리머5 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머5 채널을 시청해보세요!",
+    intro:
+      "종합 게임 스트리머 스트리머5 채널입니다! 다양한 장르의 게임을 기발한 방식으로 클리어하는 스트리머5 채널을 시청해보세요!",
     watcher: "221",
-  }
+  },
 ]);
 </script>
 
@@ -63,29 +67,47 @@ const recommendChannels = ref([
     <input type="radio" name="slider" id="item-4" />
     <input type="radio" name="slider" id="item-5" />
     <div class="cards">
-      <label v-for="(recommendChannel, index) in recommendChannels" :key="index" class="card" :for="`item-${recommendChannel.id}`" :id="`slide-${recommendChannel.id}`">
-        <img
-          class="slide-image"
-          :src=recommendChannel.img
-          alt="slide"
-        />
+      <label
+        v-for="(recommendChannel, index) in recommendChannels"
+        :key="index"
+        class="card"
+        :for="`item-${recommendChannel.id}`"
+        :id="`slide-${recommendChannel.id}`"
+      >
+        <img class="slide-image" :src="recommendChannel.img" alt="slide" />
         <div class="channel-info-container">
           <div class="channel-info-box">
             <div class="streamer-info-box">
               <div class="streamer-logo-box">
-                <img :src=getImageUrl(recommendChannel.logo) alt="" class="streamer-logo">
+                <img
+                  :src="getImageUrl(recommendChannel.logo)"
+                  alt=""
+                  class="streamer-logo"
+                />
               </div>
               <div>
                 <div class="streamer-name-box">{{ recommendChannel.name }}</div>
                 <div class="live-watcher-box">
-                  <img src="../../assets/img/live.png" alt="" class="live-watcher">
-                  <div style="font-size: 14px; font-weight: 500;">현재 {{ recommendChannel.watcher }}명 시청 중</div>
+                  <img
+                    src="../../assets/img/live.png"
+                    alt=""
+                    class="live-watcher"
+                  />
+                  <div style="font-size: 14px; font-weight: 500">
+                    현재 {{ recommendChannel.watcher }}명 시청 중
+                  </div>
                 </div>
               </div>
             </div>
             <div class="tag-list-box">
               <ul class="tag-list">
-                <li v-for="(tag, index) in recommendChannel.tags" :key="index" class="tag">{{ tag }}</li>
+                <li
+                  v-for="(tag, index) in recommendChannel.tags"
+                  :key="index"
+                  class="tag"
+                >
+                  {{ tag }}
+                </li>
               </ul>
             </div>
             <div class="channel-intro">{{ recommendChannel.intro }}</div>

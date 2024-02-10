@@ -14,7 +14,7 @@ const { coperation } = storeToRefs(authStore);
 onMounted(async () => {
   // URL의 쿼리스트링에서 'code' 매개변수를 가져옴
   authCode.value = route.query.code;
-console.log(coperation);
+  console.log(coperation);
   await socialLogin(
     coperation.value,
     authCode.value,
