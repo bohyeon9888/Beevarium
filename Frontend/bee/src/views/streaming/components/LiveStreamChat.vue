@@ -141,7 +141,7 @@ watchEffect(() => {
         />
       </div>
       <div class="livestream-chat-button">
-        <button class="chat-send" @click="sendMessage()">전송</button>
+        <div class="chat-send" @click="sendMessage()">전송</div>
       </div>
     </div>
     <div
@@ -242,6 +242,7 @@ watchEffect(() => {
   margin-right: 16px;
   margin-bottom: 16px;
 }
+
 .donation-modal {
   position: absolute;
   right: 24px;

@@ -287,8 +287,7 @@ button:hover {
   display: inline-flex;
   padding: 8px 16px;
   align-items: center;
-  color: #8a8b8f;
-
+  color: #e6e5ea;
   font-size: 14px;
   font-weight: 600;
   line-height: normal;
