@@ -30,7 +30,7 @@ public class VideoService {
     private final AmazonS3 amazonS3Client;
 
     @Transactional
-    public void saveFile(MultipartFile file, String videoType, int videoNo) throws IOException {
+    public void saveFile(MultipartFile file, String videoType, int videoNo, String streamerId) throws IOException {
         VideoFile videoFile = new VideoFile();
         videoFile.setOriginName(file.getOriginalFilename());
         String originalFileName = videoFile.getOriginName();
