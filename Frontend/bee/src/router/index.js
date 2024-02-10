@@ -58,7 +58,7 @@ const router = createRouter({
       component: Dashboard,
     },
     {
-      path: "/streaming/live-stream",
+      path: "/streaming/live-stream/:streamerId",
       name: "LiveStream",
       component: LiveStream,
     },
@@ -144,7 +144,7 @@ const router = createRouter({
       component: BanListManagement,
     },
     {
-      path: "/studio/studio-main",
+      path: "/studio/studio-main/:streamerId",
       name: "StudioMain",
       component: StudioMain,
     },

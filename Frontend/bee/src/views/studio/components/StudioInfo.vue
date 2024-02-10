@@ -2,6 +2,8 @@
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 
+const prop = defineProps(["studioInfo", "streamer"]);
+
 const router = useRouter();
 
 const streamer = ref({
@@ -72,8 +74,8 @@ const getStudioUrl = (name) => {
         </div>
       </div>
       <div class="follower-count">팔로워 {{ streamer.follower }}명</div>
-      <div class="write-button" @click="moveToNoticeWrite">글쓰기</div>
-      <div class="studio-setting-button" @click="moveToStudioSetting">방송국 설정</div>
+      <div v-if="prop.studioInfo.isMine" class="write-button" @click="moveToNoticeWrite">글쓰기</div>
+      <div v-if="prop.studioInfo.isMine" class="studio-setting-button" @click="moveToStudioSetting">방송국 설정</div>
       <div class="stream-live-thumbnail-box">
         <router-link :to="{ name: 'LiveStream' }">
           <img
