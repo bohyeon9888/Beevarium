@@ -41,8 +41,18 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     implementation 'com.google.code.gson:gson' // 최신 버전으로 확인
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    //WEBSOCKET
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
+}
+
+ext {
+    snippetsDir = file('build/generated-snippets')
 }
 
 tasks.named('test') {
+    outputs.dir snippetsDir
     useJUnitPlatform()
 }

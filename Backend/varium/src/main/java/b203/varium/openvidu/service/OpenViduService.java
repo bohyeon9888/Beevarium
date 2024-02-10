@@ -113,14 +113,6 @@ public class OpenViduService {
         log.info("connectionType={}", connectionType);
         log.info("openViduRole={}", openViduRole);
 
-//        KurentoOptions kurentoOptions = new KurentoOptions(
-//                connectionPropertiesDto.getKurentoOptions().getVideoMaxRecvBandwidth(),
-//                connectionPropertiesDto.getKurentoOptions().getVideoMinRecvBandwidth(),
-//                connectionPropertiesDto.getKurentoOptions().getVideoMaxSendBandwidth(),
-//                connectionPropertiesDto.getKurentoOptions().getVideoMinSendBandwidth(),
-//                connectionPropertiesDto.getKurentoOptions().getAllowedFilters().toArray(new String[0])
-//        );
-
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
                 .type(connectionType)
                 .data(connectionPropertiesDto.getData())
@@ -219,4 +211,5 @@ public class OpenViduService {
         log.info("json = {}", json);
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
+
 }
