@@ -129,6 +129,7 @@ addNewsFeedItem("아재개더", "3,000");
         <div class="stream-screen" id="my-video">
           <!-- <Screen /> -->
         </div>
+
         <div class="streaming-option">
           <button
             class="streaming-start-btn"

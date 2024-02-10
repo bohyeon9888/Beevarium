@@ -1,11 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 
 const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
 };
-
-const currentIndex = ref(0);
 
 const recommendChannels = ref([
   {
@@ -59,15 +57,6 @@ const recommendChannels = ref([
     watcher: "221",
   },
 ]);
-
-onMounted(() => {
-  setInterval(() => {
-    currentIndex.value =
-      (currentIndex.value + 1) % recommendChannels.value.length;
-    const radios = document.getElementsByName("slider");
-    radios[currentIndex.value].checked = true;
-  }, 5000);
-});
 </script>
 
 <template>
