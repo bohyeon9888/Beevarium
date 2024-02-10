@@ -99,8 +99,8 @@ function hashCode(str) {
 }
 function generateColorForUsername(username) {
   const hash = hashCode(username);
-  const hue = Math.abs(hash) % 360; // 음수 방지를 위해 Math.abs를 사용합니다.
-  const lightness = 50; // 채도와 명도를 고정하고 휘도만 변화시킵니다.
+  const hue = Math.abs(hash) % 360;
+  const lightness = 50;
   const saturation = 70;
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
