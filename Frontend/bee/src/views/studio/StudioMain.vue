@@ -1,6 +1,15 @@
 <script setup>
 import { ref } from "vue";
 import StudioInfo from "./components/StudioInfo.vue";
+import { studio } from "@/api/studio";
+import { useAuthStore } from "@/stores/user";
+import { useStreamerStore } from "@/stores/streamer";
+import { storeToRefs } from "pinia";
+
+const authStore = useAuthStore();
+const streamerStore = useStreamerStore();
+const { accessToken } = storeToRefs(authStore);
+const { streamer } = storeToRefs(streamerStore);
 
 const replays = ref([
   {
@@ -66,21 +75,30 @@ const clips = ref([
 const getReplayUrl = (name) => {
   return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
 };
+
+const studioInfo = ref({});
+
+const getStudio = () => {
+  studio(
+    accessToken.value,
+    streamer.value.id,
+    ({ data }) => {
+      studioInfo.value = data.data.stationInfo;
+    },
+    (error) => {}
+  );
+};
 </script>
 
 <template>
   <div class="studiomain-container">
     <div class="studio-info">
-      <StudioInfo />
+      <StudioInfo :studioInfo="studioInfo" :streamer="streamer"/>
     </div>
     <div class="studiomain-content-container">
       <div class="studiomain-content-box">
         <div class="studio-banner-container">
-          <img
-            src="../../assets/img/studio/studio-banner.png"
-            alt=""
-            class="studio-banner"
-          />
+          <img src="../../assets/img/studio/studio-banner.png" alt="" class="studio-banner" />
         </div>
         <div class="studio-notice-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
@@ -91,11 +109,7 @@ const getReplayUrl = (name) => {
               <div class="notice-content-box"></div>
             </router-link>
             <div class="notice-banner-box">
-              <img
-                src="../../assets/img/studio/notice-banner.png"
-                alt=""
-                class="notice-banner"
-              />
+              <img src="../../assets/img/studio/notice-banner.png" alt="" class="notice-banner" />
             </div>
           </div>
         </div>
@@ -106,17 +120,9 @@ const getReplayUrl = (name) => {
           <div class="replay-container">
             <ul>
               <router-link :to="{ name: 'ReplayDetail' }" class="replay-list">
-                <li
-                  v-for="(replay, index) in replays"
-                  :key="index"
-                  class="replay"
-                >
+                <li v-for="(replay, index) in replays" :key="index" class="replay">
                   <div class="replay-thumbnail-box">
-                    <img
-                      :src="getReplayUrl(replay.thumbnail)"
-                      alt=""
-                      class="replay-thumbnail"
-                    />
+                    <img :src="getReplayUrl(replay.thumbnail)" alt="" class="replay-thumbnail" />
                     <div
                       style="
                         position: absolute;
@@ -152,11 +158,7 @@ const getReplayUrl = (name) => {
               <router-link :to="{ name: 'ClipDetail' }" class="clip-list">
                 <li v-for="(clip, index) in clips" :key="index" class="clip">
                   <div class="clip-thumbnail-box">
-                    <img
-                      :src="getReplayUrl(clip.thumbnail)"
-                      alt=""
-                      class="clip-thumbnail"
-                    />
+                    <img :src="getReplayUrl(clip.thumbnail)" alt="" class="clip-thumbnail" />
                   </div>
                   <div class="clip-info-box">
                     <div class="clip-title">{{ clip.title }}</div>

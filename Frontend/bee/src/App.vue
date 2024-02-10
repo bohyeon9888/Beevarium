@@ -10,36 +10,25 @@ const route = useRoute();
 
 // navbar가 안보여야 하는 컴포넌트
 const invisiblePaths_navbar = [
-  "/user/login",
-  "/user/signup",
-  "/admin/monitoring",
-  "/admin/warning-user",
-  "/admin/blacklist",
+  "/user",
+  "/admin"
 ];
 
 // sidebar가 안보여야 하는 컴포넌트
 const invisiblePaths_sidebar = [
-  "/studio/banlist-management",
-  "/studio/replay-detail",
-  "/studio/replay",
-  "/studio/studio-main",
-  "/studio/clip",
-  "/studio/clip-detail",
-  "/studio/notice",
-  "/studio/notice-detail",
-  "/studio/notice-write",
-  "/studio/setting",
-  "/user/login",
-  "/user/signup",
+  "/studio",
+  "/user",
   "/streaming/dashboard",
-  "/admin/monitoring",
-  "/admin/warning-user",
-  "/admin/blacklist",
+  "/admin"
 ];
 
 // navbar, sidebar 표시 관련 함수
-const isInvisible_n = computed(() => invisiblePaths_navbar.includes(route.path));
-const isInvisible_s = computed(() => invisiblePaths_sidebar.includes(route.path));
+const isInvisible_n = computed(() =>
+  invisiblePaths_navbar.some((path) => route.path.startsWith(path))
+);
+const isInvisible_s = computed(() =>
+  invisiblePaths_sidebar.some((path) => route.path.startsWith(path))
+);
 
 // sidebar 확장 관련 함수
 const sidebarStore = useSidebarStore();

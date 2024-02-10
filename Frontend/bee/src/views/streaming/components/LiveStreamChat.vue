@@ -1,14 +1,88 @@
 <script setup>
-import { ref } from "vue";
 import DonationModal from "./DonationModal.vue";
+import { useOVSStore } from "@/stores/ov_subscriber";
+import { ref, onMounted, onUpdated, reactive, watchEffect } from "vue";
+import { useOVPStore } from "@/stores/ov_publisher";
+import { useAuthStore } from "@/stores/user";
+
+const ovsStore = useOVSStore();
+const ovpStore = useOVPStore();
+const authStore = useAuthStore();
+const chatBoxRef = ref(null);
 
 const isModalOpened = ref(false);
+const messages = ref([]);
+const newMessage = ref("");
+onUpdated(() => {
+  if (chatBoxRef.value) {
+    chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight;
+  }
+});
+function hashCode(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+function generateColorForUsername(username) {
+  const hash = hashCode(username);
+  const hue = Math.abs(hash) % 360; // 음수 방지를 위해 Math.abs를 사용합니다.
+  const lightness = 50; // 채도와 명도를 고정하고 휘도만 변화시킵니다.
+  const saturation = 70;
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
 const openModal = () => {
   isModalOpened.value = true;
 };
+
 const closeModal = () => {
   isModalOpened.value = false;
 };
+
+const sendMessage = () => {
+  const trimmedMessage = newMessage.value.trim();
+  if (trimmedMessage) {
+    const messageObject = {
+      id: Date.now(),
+      username: authStore.user.name,
+      content: trimmedMessage,
+      type: "normal",
+    };
+    // messages.value.push(messageObject);
+    ovsStore.sendMessage1(newMessage.value);
+    newMessage.value = "";
+  }
+};
+const usernameColors = reactive({});
+
+onMounted(() => {
+  ovsStore.closeSession();
+});
+
+watchEffect(() => {
+  messages.value.forEach((message) => {
+    const username = message.name;
+    if (!usernameColors[username]) {
+      usernameColors[username] = generateColorForUsername(username);
+    }
+  });
+});
+
+watchEffect(() => {
+  const newMessages = ovsStore.messagee;
+  if (typeof newMessages === "string") {
+    try {
+      const messageObject = JSON.parse(newMessages);
+      messages.value.push(messageObject);
+    } catch (error) {
+      console.error("Parsing error:", error);
+    }
+  } else {
+    messages.value.push(newMessages);
+  }
+});
 </script>
 
 <template>
@@ -27,7 +101,25 @@ const closeModal = () => {
     >
       채팅
     </div>
-    <div class="livestream-chat-box"></div>
+    <div class="livestream-chat-box">
+      <div v-for="message in messages" :key="message.id" class="chat-message">
+        <img
+          src="../../../assets/img/stream/fan.png"
+          alt="fan"
+          style="margin-right: 4px"
+        />
+        <span
+          v-if="message.name"
+          :style="{ color: usernameColors[message.name] }"
+          class="chat-username"
+          @click="selectUser(message.name)"
+          >{{ message.name }}</span
+        >
+        <span v-if="message.message" class="chat-content">
+          {{ message.message }}</span
+        >
+      </div>
+    </div>
     <div
       id="livestream-chat-input-container"
       class="livestream-chat-input-container"
@@ -36,8 +128,10 @@ const closeModal = () => {
       <div class="livestream-chat-input-box">
         <input
           class="livestream-chat-input"
+          v-model="newMessage"
           type="text"
-          placeholder="채팅을 입력해주세요"
+          @keyup.enter="sendMessage"
+          placeholder="채팅을 입력해주세요."
         />
         <img
           src="../../../assets/img/stream/donation.png"
@@ -46,7 +140,9 @@ const closeModal = () => {
           @click="openModal"
         />
       </div>
-      <div class="livestream-chat-button">채팅</div>
+      <div class="livestream-chat-button">
+        <div class="chat-send" @click="sendMessage()">전송</div>
+      </div>
     </div>
     <div
       id="donation-modal"
@@ -65,8 +161,36 @@ const closeModal = () => {
   height: 862px;
 }
 .livestream-chat-box {
+  overflow-y: auto;
+  padding: 10px;
+  flex-grow: 1;
   width: 370px;
   height: 691px;
+  max-height: 691px;
+}
+.livestream-chat-box::-webkit-scrollbar {
+  width: 16px;
+  display: none;
+}
+.livestream-chat-box:hover::-webkit-scrollbar {
+  display: block;
+}
+.livestream-chat-box::-webkit-scrollbar-track {
+  background-color: #1e1e1e;
+}
+.livestream-chat-box::-webkit-scrollbar-thumb {
+  border: 4px solid #1e1e1e;
+}
+.chat-message {
+  width: 292px;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.chat-username {
+  font-weight: bold;
+  margin-right: 8px;
 }
 .livestream-chat-input-container {
   display: flex;
@@ -118,6 +242,7 @@ const closeModal = () => {
   margin-right: 16px;
   margin-bottom: 16px;
 }
+
 .donation-modal {
   position: absolute;
   right: 24px;

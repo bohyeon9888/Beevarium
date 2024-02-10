@@ -1,9 +1,11 @@
 <script setup>
 import UserInfoModal from "./UserInfoModal.vue";
-import { ref, onUpdated, reactive, watchEffect } from "vue";
+import { ref, onUpdated, onMounted, reactive, watchEffect } from "vue";
 import { useOVPStore } from "@/stores/ov_publisher";
+import { useAuthStore } from "@/stores/user";
 
 const ovpStore = useOVPStore();
+const authStore = useAuthStore();
 const infoModalActive = ref(false);
 const toggleInfo = () => {
   infoModalActive.value = !infoModalActive.value;
@@ -12,71 +14,71 @@ const chatBoxRef = ref(null);
 const messages = ref([
   {
     id: 0,
-    username: "MightyEagle",
-    content: "와, 정말 놀라운 플레이였어요!",
+    name: "MightyEamessage",
+    message: "와, 정말 놀라운 플레이였어요!",
     type: "normal",
     time: "2024-01-31 05:50:21",
   },
   {
     id: 1,
-    username: "BlueRabbit",
-    content: "좋아요! 계속 이야기해주세요!",
+    name: "BlueRabbit",
+    message: "좋아요! 계속 이야기해주세요!",
     type: "greeting",
     time: "2024-01-31 05:28:53",
   },
   {
     id: 2,
-    username: "QuietCat",
-    content: "정말 재미있는 방송이네요!",
+    name: "QuietCat",
+    message: "정말 재미있는 방송이네요!",
     type: "shoutout",
     time: "2024-01-31 05:04:29",
   },
   {
     id: 3,
-    username: "RedFox",
-    content: "지금 무슨 게임을 하고 계신가요?",
+    name: "RedFox",
+    message: "지금 무슨 게임을 하고 계신가요?",
     type: "greeting",
     time: "2024-01-31 05:00:29",
   },
   {
     id: 4,
-    username: "RedFox",
-    content: "저는 이 부분에 대해 다른 생각이 있어요.",
+    name: "RedFox",
+    message: "저는 이 부분에 대해 다른 생각이 있어요.",
     type: "normal",
     time: "2024-01-31 05:39:01",
   },
   {
     id: 5,
-    username: "RedFox",
-    content: "여기 누구 있나요?",
+    name: "RedFox",
+    message: "여기 누구 있나요?",
     type: "question",
     time: "2024-01-31 05:00:09",
   },
   {
     id: 6,
-    username: "CrazyPanda",
-    content: "지금 무슨 게임을 하고 계신가요?",
+    name: "CrazyPanda",
+    message: "지금 무슨 게임을 하고 계신가요?",
     type: "greeting",
     time: "2024-01-31 05:15:41",
   },
   {
     id: 7,
-    username: "BlueRabbit",
-    content: "오늘 방송 언제 시작해요?",
+    name: "BlueRabbit",
+    message: "오늘 방송 언제 시작해요?",
     type: "greeting",
     time: "2024-01-31 05:12:18",
   },
   {
     id: 8,
-    username: "CrazyPanda",
-    content: "좋아요! 계속 이야기해주세요!",
+    name: "CrazyPanda",
+    message: "좋아요! 계속 이야기해주세요!",
     type: "question",
     time: "2024-01-31 04:59:04",
   },
   {
     id: 9,
-    username: "BlueRabbit",
-    content: "좋아요! 계속 이야기해주세요!",
+    name: "BlueRabbit",
+    message: "좋아요! 계속 이야기해주세요!",
     type: "greeting",
     time: "2024-01-31 05:16:52",
   },
@@ -88,7 +90,20 @@ onUpdated(() => {
   }
 });
 const selectedUsername = ref("");
-
+function hashCode(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+function generateColorForUsername(username) {
+  const hash = hashCode(username);
+  const hue = Math.abs(hash) % 360;
+  const lightness = 50;
+  const saturation = 70;
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
 const selectUser = (username) => {
   selectedUsername.value = username;
   toggleInfo();
@@ -96,33 +111,39 @@ const selectUser = (username) => {
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
-    messages.value.push({
-      id: Date.now(),
-      username: "User",
-      content: trimmedMessage,
-      type: "normal",
-    });
-    newMessage.value = "";
+    ovpStore.sendMessage1(newMessage.value); // 서버 또는 다른 클라이언트에 메시지 전송
+    newMessage.value = ""; // 입력 필드 초기화
   }
-};
-
-const generateRandomColor = () => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
 };
 
 const usernameColors = reactive({});
 
 watchEffect(() => {
   messages.value.forEach((message) => {
-    if (!usernameColors[message.username]) {
-      usernameColors[message.username] = generateRandomColor();
+    const username = message.name;
+    if (!usernameColors[username]) {
+      usernameColors[username] = generateColorForUsername(username);
     }
   });
+});
+watchEffect(() => {
+  const newMessages = ovpStore.messagee;
+  if (typeof newMessages === "string") {
+    try {
+      const messageObject = JSON.parse(newMessages);
+      // 메시지 객체가 올바른 속성을 가지고 있는지 확인
+      messages.value.push(messageObject);
+    } catch (error) {
+      console.error("Parsing error:", error);
+    }
+  } else {
+    // 객체가 올바른 속성을 가지고 있는지 확인
+    messages.value.push(newMessages);
+  }
+});
+
+onMounted(() => {
+  ovpStore.closeSession();
 });
 </script>
 
@@ -136,13 +157,17 @@ watchEffect(() => {
             alt="fan"
             style="margin-right: 4px"
           />
+
           <span
-            :style="{ color: usernameColors[message.username] }"
+            v-if="message.name"
+            :style="{ color: usernameColors[message.name] }"
             class="chat-username"
-            @click="selectUser(message.username)"
-            >{{ message.username }}</span
+            @click="selectUser(message.name)"
+            >{{ message.name }}</span
           >
-          <span class="chat-content">{{ message.content }}</span>
+          <span v-if="message.message" class="chat-content">
+            {{ message.message }}</span
+          >
         </div>
       </div>
       <div class="chat-input-container">
@@ -151,11 +176,12 @@ watchEffect(() => {
             v-model="newMessage"
             type="text"
             class="chat-input"
+            @keyup.enter="sendMessage"
             placeholder="채팅을 입력해주세요."
           />
         </div>
         <div class="chat-button-box">
-          <button class="chat-send" @click="sendMessage">전송</button>
+          <button class="chat-send" @click="sendMessage()">전송</button>
         </div>
       </div>
     </div>
@@ -261,8 +287,7 @@ button:hover {
   display: inline-flex;
   padding: 8px 16px;
   align-items: center;
-  color: #8a8b8f;
-
+  color: #e6e5ea;
   font-size: 14px;
   font-weight: 600;
   line-height: normal;

@@ -1,5 +1,10 @@
 <script setup>
 import { useRouter } from "vue-router";
+import { useAuthStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
 
 const prop = defineProps(["mypageModActive"]);
 
@@ -8,13 +13,13 @@ const router = useRouter();
 
 const toggleMpMod = () => {
   emit("toggleMpMod");
-}
+};
 const moveToStudioMain = () => {
-  router.push({ name: "StudioMain" });
-}
+  router.push({ path: `/studio/studio-main/${user.value.id}` });
+};
 const moveToMypage = () => {
   router.push({ name: "MyPage" });
-}
+};
 const logout = () => {
   emit("toggleMpMod");
   emit("logOut");

@@ -10,6 +10,7 @@ const { isExpanded } = storeToRefs(sidebarStore);
 
 const livestreams = ref([
   {
+    streamerId: "streamer1",
     thumbnail: "hotlive1",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -18,6 +19,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer2",
     thumbnail: "hotlive2",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -26,6 +28,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer3",
     thumbnail: "hotlive3",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -34,6 +37,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer4",
     thumbnail: "hotlive4",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -42,6 +46,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer5",
     thumbnail: "hotlive5",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -50,6 +55,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer6",
     thumbnail: "hotlive6",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -58,6 +64,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer7",
     thumbnail: "hotlive7",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -66,6 +73,7 @@ const livestreams = ref([
     watcher: "1579",
   },
   {
+    streamerId: "streamer8",
     thumbnail: "hotlive8",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -78,38 +86,21 @@ const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
 };
 const getThumbnailUrl = (name) => {
-  return new URL(`/src/assets/img/home/hotlive/${name}.png`, import.meta.url)
-    .href;
+  return new URL(`/src/assets/img/home/hotlive/${name}.png`, import.meta.url).href;
 };
 </script>
 
 <template>
-  <div
-    id="home-container"
-    class="home-container"
-    :class="{ expanded: !isExpanded }"
-  >
+  <div id="home-container" class="home-container" :class="{ expanded: !isExpanded }">
     <div class="carousel-container">
       <CardCarousel />
     </div>
-    <div
-      id="slogan-container"
-      class="slogan-container"
-      :class="{ expanded: !isExpanded }"
-    >
+    <div id="slogan-container" class="slogan-container" :class="{ expanded: !isExpanded }">
       <img class="slogan" src="../../assets/img/slogan.png" alt="" />
     </div>
-    <div
-      id="hotlive-container"
-      class="hotlive-container"
-      :class="{ expanded: !isExpanded }"
-    >
+    <div id="hotlive-container" class="hotlive-container" :class="{ expanded: !isExpanded }">
       <div style="font-size: 20px; font-weight: 600">인기 라이브</div>
-      <ul
-        id="hotlive-list"
-        class="hotlive-list"
-        :class="{ expanded: !isExpanded }"
-      >
+      <ul id="hotlive-list" class="hotlive-list" :class="{ expanded: !isExpanded }">
         <li
           id="hotlive"
           class="hotlive"
@@ -150,7 +141,7 @@ const getThumbnailUrl = (name) => {
             class="livestream-image-box"
             :class="{ expanded: !isExpanded }"
           >
-            <router-link :to="{ name: 'LiveStream' }">
+            <router-link :to="{ path: `/streaming/live-stream/${livestream.streamerId}` }">
               <img
                 id="livestream-image"
                 class="livestream-image"
@@ -166,11 +157,7 @@ const getThumbnailUrl = (name) => {
             :class="{ expanded: !isExpanded }"
           >
             <div class="streamer-logo-box">
-              <img
-                class="streamer-logo-image"
-                :src="getImageUrl(livestream.streamerLogo)"
-                alt=""
-              />
+              <img class="streamer-logo-image" :src="getImageUrl(livestream.streamerLogo)" alt="" />
             </div>
             <div
               id="livestream-info-box"
@@ -180,10 +167,7 @@ const getThumbnailUrl = (name) => {
               <div class="livestream-title">{{ livestream.title }}</div>
               <div class="streamer-name">{{ livestream.streamerName }}</div>
               <ul class="livestream-tag-list">
-                <li
-                  class="livestream-tag"
-                  v-for="(tag, index) in livestream.tags"
-                >
+                <li class="livestream-tag" v-for="(tag, index) in livestream.tags">
                   {{ tag }}
                 </li>
               </ul>

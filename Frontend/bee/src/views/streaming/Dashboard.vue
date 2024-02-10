@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
-import Screen from "./components/Screen.vue";
 import { streamingStart, streamingEnd } from "@/api/live.js";
 
 const ovpStore = useOVPStore();
@@ -26,6 +25,7 @@ const deleteTag = function (input) {
 };
 
 const newsFeed = ref([]);
+const onAir = ref(false);
 
 const addNewsFeedItem = (user, action) => {
   const item = {
@@ -46,6 +46,7 @@ const doStreamingStart = () => {
   console.dir(streamData.value);
   streamingStart(
     accessToken.value,
+    (onAir.value = true),
     streamData.value,
     ({ data }) => {
       console.log(data.msg);
@@ -58,6 +59,7 @@ const doStreamingStart = () => {
 const doStreamingEnd = () => {
   streamingEnd(
     accessToken.value,
+    (onAir.value = false),
     ({ data }) => {
       console.log(data.msg);
     },
@@ -66,6 +68,9 @@ const doStreamingEnd = () => {
     }
   );
 };
+const streamingButtonText = computed(() => {
+  return onAir.value ? "On Air" : "방송 시작";
+});
 
 // 테스트
 addNewsFeedItem("아재개더", "3,000");
@@ -124,12 +129,14 @@ addNewsFeedItem("아재개더", "3,000");
         <div class="stream-screen" id="my-video">
           <!-- <Screen /> -->
         </div>
+
         <div class="streaming-option">
           <button
             class="streaming-start-btn"
             @click="[doStreamingStart(), ovpStore.openSession()]"
+            :disabled="onAir"
           >
-            방송 시작
+            {{ streamingButtonText }}
           </button>
           <button
             class="streaming-end-btn"
@@ -416,5 +423,15 @@ button:hover {
 }
 .donation-action {
   color: #3effe8;
+}
+.streaming-start-btn[disabled] {
+  background: #eb3a3a;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.streaming-start-btn[disabled]:hover {
+  background: #434343;
+  color: #777777;
 }
 </style>

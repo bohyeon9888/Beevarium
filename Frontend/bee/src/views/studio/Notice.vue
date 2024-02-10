@@ -259,7 +259,9 @@ const Notices = ref([]);
 const currentPage = ref(1);
 const noticesPerPage = 4;
 
-const totalPages = computed(() => Math.ceil(Notices.value.length / noticesPerPage));
+const totalPages = computed(() =>
+  Math.ceil(Notices.value.length / noticesPerPage)
+);
 
 const paginatedNotices = computed(() => {
   const start = (currentPage.value - 1) * noticesPerPage;
@@ -335,7 +337,9 @@ onMounted(() => {
         <div class="notice-content">
           <div class="notice-count-box">
             <div class="notice-count">{{ Notices.length }}</div>
-            <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">개의 글</div>
+            <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">
+              개의 글
+            </div>
           </div>
           <ul class="notice-list">
             <router-link :to="{ name: 'NoticeDetail' }">
@@ -356,9 +360,23 @@ onMounted(() => {
                       <div class="streamer-name">{{ streamer.name }}</div>
                       <div class="streamer-id">({{ streamer.id }})</div>
                     </div>
-                    <div style="width: 1px; height: 14px; margin: 0 8px; background: #636363"></div>
+                    <div
+                      style="
+                        width: 1px;
+                        height: 14px;
+                        margin: 0 8px;
+                        background: #636363;
+                      "
+                    ></div>
                     <div class="notice-date">{{ notice.date }}</div>
-                    <div style="width: 1px; height: 14px; margin: 0 8px; background: #636363"></div>
+                    <div
+                      style="
+                        width: 1px;
+                        height: 14px;
+                        margin: 0 8px;
+                        background: #636363;
+                      "
+                    ></div>
                     <div class="notice-views">조회수 {{ notice.views }}회</div>
                   </div>
                   <div class="notice-manage-button">
@@ -373,7 +391,11 @@ onMounted(() => {
           </ul>
           <div class="pagination-container">
             <div class="prev-button-box" @click="changePage(currentPage - 1)">
-              <img src="../../assets/img/common/prev-button.png" alt="" class="prev-button" />
+              <img
+                src="../../assets/img/common/prev-button.png"
+                alt=""
+                class="prev-button"
+              />
             </div>
             <div class="pagination-button-box">
               <div v-for="page in visiblePages" :key="page" class="pagination-button"
@@ -382,7 +404,11 @@ onMounted(() => {
               </div>
             </div>
             <div class="next-button-box" @click="changePage(currentPage + 1)">
-              <img src="../../assets/img/common/next-button.png" alt="" class="next-button" />
+              <img
+                src="../../assets/img/common/next-button.png"
+                alt=""
+                class="next-button"
+              />
             </div>
           </div>
         </div>

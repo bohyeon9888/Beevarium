@@ -30,9 +30,7 @@ const doLogin = () => {
         moveToHome();
       }
     },
-    (error) => {
-  
-    }
+    (error) => {}
   );
 };
 
@@ -65,6 +63,7 @@ const changeCoper = (value) => {
             type="password"
             placeholder="비밀번호"
             v-model="password"
+            @keyup.enter="doLogin"
           />
         </div>
         <div class="login-button" @click="[doLogin()]">로그인</div>

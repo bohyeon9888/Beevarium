@@ -6,10 +6,23 @@ import LanguageSelectorModal from "./components/LanguageSelectorModal.vue";
 import { useSidebarStore } from "@/stores/sidebar";
 import { storeToRefs } from "pinia";
 import { useOVSStore } from "@/stores/ov_subscriber";
+import { useOVPStore } from "@/stores/ov_publisher";
 
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 const ovsStore = useOVSStore();
+const ovpStore = useOVPStore();
+
+const isSubOn = ref(false);
+const isFilterOn = ref(false);
+const subToggle = () => {
+  isSubOn.value = !isSubOn.value;
+  console.log(isSubOn.value);
+};
+const filterToggle = () => {
+  isFilterOn.value = !isFilterOn.value;
+  console.log(isFilterOn.value);
+};
 
 // 도네이션 모달 활성화
 const donModActive = ref(false);
@@ -62,7 +75,7 @@ onMounted(() => {
         :class="{ expanded: !isExpanded }"
       >
         <div class="screen" id="subscriber-video">
-          <!-- <Screen /> -->
+          <div v-if="isSubOn" class="subtitle">자막</div>
         </div>
       </div>
       <div
@@ -157,7 +170,7 @@ onMounted(() => {
             </div>
             <label class="switch">
               <input type="checkbox" />
-              <div class="slider round"></div>
+              <div class="slider round" @click="subToggle"></div>
             </label>
             <div
               style="
@@ -172,7 +185,7 @@ onMounted(() => {
             </div>
             <label class="switch">
               <input type="checkbox" />
-              <div class="slider round"></div>
+              <div class="slider round" @click="filterToggle"></div>
             </label>
           </div>
           <div class="follow-alarm-container">
@@ -226,10 +239,23 @@ onMounted(() => {
   background-color: black;
 }
 .screen {
+  position: relative;
   width: 1280px;
   height: 720px;
   display: flex;
   justify-content: center;
+}
+.subtitle {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: rgba(255, 255, 255, 0.15);
 }
 #screen-container.expanded {
   width: 1470px;
