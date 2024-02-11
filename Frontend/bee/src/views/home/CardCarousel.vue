@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 
 const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
@@ -58,20 +58,37 @@ const recommendChannels = ref([
     watcher: "221",
   },
 ]);
+
+const intervalId = ref(null);
+
 onMounted(() => {
-  setInterval(() => {
-    activeSlide.value =
+  intervalId.value = setInterval(() => {
+    // 현재 활성화된 슬라이드의 ID를 증가시키기 전에 확인
+    const nextSlideValue =
       activeSlide.value < recommendChannels.value.length
         ? activeSlide.value + 1
         : 1;
+    const elem = document.getElementById(`item-${nextSlideValue}`);
 
-    const elem = document.getElementById(`item-${activeSlide.value}`);
+    // 요소가 존재하는 경우에만 처리 진행
     if (elem) {
+      activeSlide.value = nextSlideValue;
       elem.checked = true;
     } else {
-      console.log("no item error");
+      // 요소가 없다면, 아마도 페이지가 이동되었거나, 컴포넌트가 언마운트되었을 가능성이 있습니다.
+      // 이 경우 추가적인 처리를 중단할 수 있습니다.
+      console.log(
+        "Element not found. Possibly the component has been unmounted."
+      );
+      clearInterval(intervalId.value);
     }
   }, 3000);
+});
+
+onUnmounted(() => {
+  if (intervalId.value) {
+    clearInterval(intervalId.value);
+  }
 });
 </script>
 

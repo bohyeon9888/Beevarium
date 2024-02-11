@@ -30,9 +30,6 @@ async function getAudioInputDevices() {
   }
 }
 
-// 이 함수를 호출하여 오디오 입력 장치 목록을 가져오고 콘솔에 출력
-getAudioInputDevices();
-
 const openSession = async () => {
   try {
     // 성공적으로 통신시 클라이언트측 세션 초기화
