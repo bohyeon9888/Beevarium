@@ -65,7 +65,12 @@ onMounted(() => {
         ? activeSlide.value + 1
         : 1;
 
-    document.getElementById(`item-${activeSlide.value}`).checked = true;
+    const elem = document.getElementById(`item-${activeSlide.value}`);
+    if (elem) {
+      elem.checked = true;
+    } else {
+      console.log("no item error");
+    }
   }, 3000);
 });
 </script>
