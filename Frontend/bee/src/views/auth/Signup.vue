@@ -1,7 +1,9 @@
 <script setup>
 import { ref, computed, watch, reactive } from "vue";
-import { RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
 import { signUp } from "@/api/user";
+
+const router = useRouter();
 
 const moveLogin = () => {
   router.push({ name: "Login" });

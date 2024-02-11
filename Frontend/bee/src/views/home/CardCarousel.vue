@@ -1,10 +1,11 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
 };
 
+const activeSlide = ref(1);
 const recommendChannels = ref([
   {
     id: "1",
@@ -57,6 +58,21 @@ const recommendChannels = ref([
     watcher: "221",
   },
 ]);
+onMounted(() => {
+  setInterval(() => {
+    activeSlide.value =
+      activeSlide.value < recommendChannels.value.length
+        ? activeSlide.value + 1
+        : 1;
+
+    const elem = document.getElementById(`item-${activeSlide.value}`);
+    if (elem) {
+      elem.checked = true;
+    } else {
+      console.log("no item error");
+    }
+  }, 3000);
+});
 </script>
 
 <template>
