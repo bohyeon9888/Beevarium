@@ -2,7 +2,7 @@ package b203.varium.video.controller;
 
 import b203.varium.video.dto.ClipReqDTO;
 import b203.varium.video.dto.ClipVideoDTO;
-import b203.varium.video.dto.ReplayInfoDTO;
+import b203.varium.video.dto.ReplayReqDTO;
 import b203.varium.video.dto.ReplayVideoDTO;
 import b203.varium.video.service.ClipVideoService;
 import b203.varium.video.service.ReplayVideoService;
@@ -45,8 +45,11 @@ public class VideoController {
     }
 
     @PostMapping("/upload/replay")
-    public void uploadReplay(@RequestBody ReplayInfoDTO infoDTO) {
+    public void uploadReplay(@RequestBody ReplayReqDTO infoDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
 
+        replayVideoService.saveReplayInfo(infoDTO.getFilePath(), infoDTO.getSaveName(), username);
     }
 
 }

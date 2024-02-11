@@ -30,6 +30,12 @@ public abstract class Video extends Record {
     @Column(name = "video_viewers")
     private int videoViewers = 0;
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
+    @Column(name = "code_name")
+    private String codeName;
+
     @OneToOne(mappedBy = "video")
     private VideoFile file;
 }

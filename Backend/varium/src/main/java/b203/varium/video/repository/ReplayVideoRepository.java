@@ -11,6 +11,6 @@ public interface ReplayVideoRepository extends JpaRepository<ReplayVideo, Intege
     // 데이터 JPA 사용할 때 JPQL 사용하는 방식
     List<ReplayVideo> findAllByBroadcastStation_Id(int id);
 
-    @Query("SELECT COALESCE(MAX(cv.replayVideoNo), 0) FROM ReplayVideo cv")
+    @Query("SELECT COALESCE(MAX(rv.replayVideoNo), 0) FROM ReplayVideo rv")
     int findMaxReplayVideoNo();
 }
