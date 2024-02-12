@@ -126,11 +126,15 @@ public class OpenViduController {
 
     @PostMapping("sessions/{sessionId}/recordings/{name}")
     public ResponseEntity<String> startRecordings(@PathVariable String sessionId, @PathVariable String name) throws OpenViduJavaClientException, OpenViduHttpException {
-
-        log.info("이름 시작");
         log.info("sessionId = {}", sessionId);
         log.info("name = {}", name);
         return openViduService.startRecordingsforName(sessionId, name);
+    }
+
+    @DeleteMapping("/recordings/{recordingId}")
+    public ResponseEntity<String> stopRecordings( @PathVariable String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+        log.info("recordingId = {}", recordingId);
+        return openViduService.stopRecordings(recordingId);
     }
 
 }
