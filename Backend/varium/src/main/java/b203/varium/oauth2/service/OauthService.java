@@ -120,6 +120,7 @@ public class OauthService {
 
         Map<String, String> data = new HashMap<>();
         data.put("profile_img_url", oAuth2Response.getProfileImg());
+        data.put("nickname", oAuth2Response.getName() + "#" + oAuth2Response.getProviderId().substring(0, 4));
         data.put("token", "Bearer " + jwtToken); // 예시 토큰 값, 실제로는 생성된 토큰 사용
 
         resp.put("data", data);
