@@ -2,6 +2,7 @@
 package b203.varium.board.service;
 
 import b203.varium.board.dto.BroadcastStationNoticeDto;
+import b203.varium.board.dto.UpdateNoticeDTO;
 import b203.varium.board.entity.BroadcastStationNotice;
 import b203.varium.board.repository.BroadcastStationNoticeCustomRepository;
 import b203.varium.board.repository.BroadcastStationNoticeRepository;
@@ -35,8 +36,7 @@ public class BroadcastStationNoticeService {
         BroadcastStationNotice notice = new BroadcastStationNotice();
 
         // BroadcastStation 엔티티를 찾아옵니다.
-        BroadcastStation broadcastStation = broadcastStationRepository.findById(broadcastStationNoticeDto.getBroadcastStationNo())
-                .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + broadcastStationNoticeDto.getBroadcastStationNo()));
+        BroadcastStation broadcastStation = broadcastStationRepository.findById(broadcastStationNoticeDto.getBroadcastStationNo());
 
         // BroadcastStation 엔티티를 BroadcastStationNotice에 설정합니다.
         notice.setBroadcastStation(broadcastStation);
@@ -67,12 +67,9 @@ public class BroadcastStationNoticeService {
                 .orElseThrow(() -> new RuntimeException("BroadcastStationNotice not found with id: " + noticeNo));
 
         return new BroadcastStationNoticeDto(
-                broadcastStationNotice.getBroadcastStationNoticeNo(),
                 broadcastStationNotice.getBroadcastStation().getId(),
                 broadcastStationNotice.getBroadcastStationNoticeTitle(),
-                broadcastStationNotice.getBroadcastStationNoticeContent(),
-                broadcastStationNotice.getCreatedDate(),
-                broadcastStationNotice.getUpdatedDate());
+                broadcastStationNotice.getBroadcastStationNoticeContent());
     }
 
     public List<BroadcastStationNoticeDto> findNoticesByStationId(Integer broadcastStationNo) {
@@ -80,12 +77,9 @@ public class BroadcastStationNoticeService {
         List<BroadcastStationNoticeDto> broadcastStationNoticeDtos = new ArrayList<>();
         for (BroadcastStationNotice notice : notices) {
             broadcastStationNoticeDtos.add(new BroadcastStationNoticeDto(
-                    notice.getBroadcastStationNoticeNo(),
                     notice.getBroadcastStation().getId(),
                     notice.getBroadcastStationNoticeTitle(),
-                    notice.getBroadcastStationNoticeContent(),
-                    notice.getCreatedDate(),
-                    notice.getUpdatedDate()));
+                    notice.getBroadcastStationNoticeContent()));
         }
         return broadcastStationNoticeDtos;
     }
@@ -93,19 +87,20 @@ public class BroadcastStationNoticeService {
 
     // 수정
     @Transactional
-    public void updateBroadcastStationNotice(BroadcastStationNoticeDto broadcastStationNoticeDto) {
-        log.info("broadcastStationNoticeDto={}", broadcastStationNoticeDto);
+    public void updateBroadcastStationNotice(UpdateNoticeDTO updateNoticeDTO) {
+        log.info("broadcastStationNoticeDto={}", updateNoticeDTO);
         //optional null 값 체크
-        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(broadcastStationNoticeDto.getBroadcastStationNoticeNo())
-                .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + broadcastStationNoticeDto.getBroadcastStationNo()));
+        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(updateNoticeDTO.getBroadcastStationNo())
+                .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + updateNoticeDTO.getBroadcastStationNo()));
         log.info("broadcastStationNotice = {}", broadcastStationNotice);
 
-        broadcastStationNotice.setBroadcastStationNoticeTitle(broadcastStationNoticeDto.getBroadcastStationNoticeTitle());
-        broadcastStationNotice.setBroadcastStationNoticeContent(broadcastStationNoticeDto.getBroadcastStationNoticeContent());
+        broadcastStationNotice.setBroadcastStationNoticeTitle(updateNoticeDTO.getBroadcastStationNoticeTitle());
+        broadcastStationNotice.setBroadcastStationNoticeContent(updateNoticeDTO.getBroadcastStationNoticeContent());
 
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
 
         broadcastStationNotice.setUpdatedDate(nowT);
+        broadcastStationNoticeRepository.save(broadcastStationNotice);
     }
 
 

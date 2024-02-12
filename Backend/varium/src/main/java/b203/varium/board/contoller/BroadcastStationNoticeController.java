@@ -1,6 +1,7 @@
 package b203.varium.board.contoller;
 
 import b203.varium.board.dto.BroadcastStationNoticeDto;
+import b203.varium.board.dto.UpdateNoticeDTO;
 import b203.varium.board.service.BroadcastStationNoticeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class BroadcastStationNoticeController {
     }
 
     // 방송국 공지사항 게시글 삽입
-    @PostMapping("/board/create")
+    @PostMapping("/create")
     public ResponseEntity<Map<String, String>> createBroadcastStationNotice(
             @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
         if (result.hasErrors()) {
@@ -64,7 +65,7 @@ public class BroadcastStationNoticeController {
     // 방송국 공지사항 수정
     @PutMapping("/board/update")
     public ResponseEntity<Map<String, String>> updateBroadcastStationNotice(
-            @Validated @RequestBody BroadcastStationNoticeDto broadcastStationNoticeDto, BindingResult result) {
+            @Validated @RequestBody UpdateNoticeDTO updateNoticeDTO, BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("status", "error");
@@ -72,7 +73,7 @@ public class BroadcastStationNoticeController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
-        broadcastStationNoticeService.updateBroadcastStationNotice(broadcastStationNoticeDto);
+        broadcastStationNoticeService.updateBroadcastStationNotice(updateNoticeDTO);
         Map<String, String> successResponse = new HashMap<>();
         successResponse.put("status", "success");
         successResponse.put("message", "Broadcast station notice updated successfully.");
