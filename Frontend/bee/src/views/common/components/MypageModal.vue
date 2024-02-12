@@ -2,7 +2,9 @@
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { useStreamerStore } from "@/stores/streamer";
 
+const streamerStore = useStreamerStore();
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
 
@@ -15,6 +17,7 @@ const toggleMpMod = () => {
   emit("toggleMpMod");
 };
 const moveToStudioMain = () => {
+  streamerStore.selectStreamer(user.value.name, user.value.id);
   router.push({ path: `/studio/studio-main/${user.value.id}` });
 };
 const moveToMypage = () => {

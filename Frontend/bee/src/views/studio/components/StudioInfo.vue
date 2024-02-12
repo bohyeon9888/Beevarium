@@ -115,7 +115,7 @@ const getStudioUrl = (name) => {
         <div class="stream-title">{{ stream.title }}</div>
       </div>
       <div class="studio-intro-container">
-        <div class="studio-intro">{{ studio.intro }}</div>
+        <div class="studio-intro">{{ prop.studioInfo.stationTitle }}</div>
       </div>
       <div class="board-menu-container">
         <div style="font-size: 18px; font-weight: 700">게시판</div>

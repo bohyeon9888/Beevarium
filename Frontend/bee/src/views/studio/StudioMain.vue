@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import StudioInfo from "./components/StudioInfo.vue";
 import { studio } from "@/api/studio";
 import { useAuthStore } from "@/stores/user";
@@ -11,66 +11,66 @@ const streamerStore = useStreamerStore();
 const { accessToken } = storeToRefs(authStore);
 const { streamer } = storeToRefs(streamerStore);
 
-const replays = ref([
-  {
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },
-]);
+// const replays = ref([
+//   {
+//     thumbnail: "replay1",
+//     title: "전체보기 / 2024 시즌 오프닝",
+//     date: "24.01.09",
+//   },
+//   {
+//     thumbnail: "replay2",
+//     title: "2023 LCK AWARDS",
+//     date: "23.12.13",
+//   },
+//   {
+//     thumbnail: "replay3",
+//     title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
+//     date: "23.10.28",
+//   },
+//   {
+//     thumbnail: "replay4",
+//     title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
+//     date: "23.10.28",
+//   },
+//   {
+//     thumbnail: "replay5",
+//     title: "[KT vs T1] 1세트 / 2023 LCK Summer",
+//     date: "23.08.06",
+//   },
+// ]);
 
-const clips = ref([
-  {
-    thumbnail: "clip1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-    username: "user1",
-  },
-  {
-    thumbnail: "clip2",
-    title: "2023 LCK AWARDS",
-    date: "24.01.09",
-    username: "user2",
-  },
-  {
-    thumbnail: "clip3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "24.01.09",
-    username: "user3",
-  },
-  {
-    thumbnail: "clip4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "24.01.09",
-    username: "user4",
-  },
-  {
-    thumbnail: "clip5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "24.01.09",
-    username: "user4",
-  },
-]);
+// const clips = ref([
+//   {
+//     thumbnail: "clip1",
+//     title: "전체보기 / 2024 시즌 오프닝",
+//     date: "24.01.09",
+//     username: "user1",
+//   },
+//   {
+//     thumbnail: "clip2",
+//     title: "2023 LCK AWARDS",
+//     date: "24.01.09",
+//     username: "user2",
+//   },
+//   {
+//     thumbnail: "clip3",
+//     title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
+//     date: "24.01.09",
+//     username: "user3",
+//   },
+//   {
+//     thumbnail: "clip4",
+//     title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
+//     date: "24.01.09",
+//     username: "user4",
+//   },
+//   {
+//     thumbnail: "clip5",
+//     title: "[KT vs T1] 1세트 / 2023 LCK Summer",
+//     date: "24.01.09",
+//     username: "user4",
+//   },
+// ]);
 
 const getReplayUrl = (name) => {
   return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
@@ -84,10 +84,15 @@ const getStudio = () => {
     streamer.value.id,
     ({ data }) => {
       studioInfo.value = data.data.stationInfo;
+      console.log(studioInfo.value);
     },
     (error) => {}
   );
 };
+
+onMounted(() => {
+  getStudio();
+});
 </script>
 
 <template>
@@ -120,7 +125,7 @@ const getStudio = () => {
           <div class="replay-container">
             <ul>
               <router-link :to="{ name: 'ReplayDetail' }" class="replay-list">
-                <li v-for="(replay, index) in replays" :key="index" class="replay">
+                <li v-for="(replay, index) in studioInfo.replayList" :key="index" class="replay">
                   <div class="replay-thumbnail-box">
                     <img :src="getReplayUrl(replay.thumbnail)" alt="" class="replay-thumbnail" />
                     <div
@@ -156,7 +161,7 @@ const getStudio = () => {
           <div class="clip-container">
             <ul>
               <router-link :to="{ name: 'ClipDetail' }" class="clip-list">
-                <li v-for="(clip, index) in clips" :key="index" class="clip">
+                <li v-for="(clip, index) in studioInfo.clipList" :key="index" class="clip">
                   <div class="clip-thumbnail-box">
                     <img :src="getReplayUrl(clip.thumbnail)" alt="" class="clip-thumbnail" />
                   </div>

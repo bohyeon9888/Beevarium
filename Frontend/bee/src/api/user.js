@@ -27,13 +27,4 @@ const socialLogin = async (coperation, code, success, fail) => {
     .catch(fail);
 };
 
-const changePassword = async (accessToken, password, success, fail) => {
-  await local
-    .post(`/user/update/pw`, password, {
-      headers: { Authorization: accessToken },
-    })
-    .then(success)
-    .catch(fail);
-};
-
-export { login, signUp, socialLogin, changePassword };
+export { login, signUp, socialLogin };

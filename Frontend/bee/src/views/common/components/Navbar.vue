@@ -35,11 +35,11 @@ const handleOutsideClick = (event) => {
   }
 };
 
-const getProfileImageUrl = (name) => {
-  if (name == "none") return new URL(`/src/assets/img/mypage/profile-image.png`, import.meta.url).href;
-  else return name;
-  console.log(name);
-};
+// const getProfileImageUrl = (name) => {
+//   if (name == "none") return new URL(`/src/assets/img/mypage/profile-image.png`, import.meta.url).href;
+//   else return name;
+//   console.log(name);
+// };
 
 onMounted(() => {
   document.addEventListener("click", handleOutsideClick);
@@ -101,7 +101,7 @@ onBeforeUnmount(() => {
         </div>
       </router-link>
       <div v-if="isLoggedIn" class="profile-button" @click="toggleMpMod($event)">
-        <img class="profile" :src="getProfileImageUrl(user.logo)" alt="" />
+        <img class="profile" :src="user.logo" alt="" />
       </div>
       <div v-if="!isLoggedIn" class="move-to-login">
         <router-link :to="{ name: 'Login' }" style="color: #e6e5ea"

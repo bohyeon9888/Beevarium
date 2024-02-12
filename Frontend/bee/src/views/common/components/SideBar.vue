@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { useSidebarStore } from "@/stores/sidebar";
 import { storeToRefs } from "pinia";
+import { followChannel } from "@/api/navbar";
 
 const authStore = useAuthStore();
-const { isLoggedIn } = storeToRefs(authStore);
+const { isLoggedIn, accessToken } = storeToRefs(authStore);
 
 const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
@@ -26,11 +27,26 @@ const follows = ref([
     watcher: 226,
   },
 ]);
-const recommends = ref([{}, {}]);
 
 const getImageUrl = (index) => {
   return new URL(`/src/assets/img/${index}.png`, import.meta.url).href;
 };
+
+const followChannels = ref([]);
+const getFollowChannel = () => {
+  followChannel(accessToken.value,
+  ({data}) => {
+    followChannels.value = data.data.subscribeList;
+    console.log(followChannels.value);
+  },
+  (error) => {
+
+  });
+}
+
+onMounted(() => {
+  getFollowChannel();
+});
 </script>
 
 <template>
@@ -68,7 +84,7 @@ const getImageUrl = (index) => {
         팔로우
       </div>
       <ul class="follow-list">
-        <li class="follow" v-for="(follow, index) in follows">
+        <li class="follow" v-for="(follow, index) in followChannels">
           <div
             style="
               width: 33px;
@@ -79,14 +95,14 @@ const getImageUrl = (index) => {
           >
             <img
               class="streamer-image"
-              :src="getImageUrl(follow.streamer_image)"
+              :src="follow.profileUrl"
               alt=""
             />
             
 
           </div>
           <div v-if="isExpanded" class="streamer-name">
-            {{ follow.streamer_name }}
+            {{ follow.streamerName }}
           </div>
           <div style="position: absolute; display: flex; right: 30px; width: 70px; height:">
             <div
@@ -95,7 +111,7 @@ const getImageUrl = (index) => {
             >
               <img src="../../../assets/img/live.png" alt="" />
             </div>
-            <div v-if="isExpanded" class="watcher">{{ follow.watcher }}</div>
+            <div v-if="isExpanded" class="watcher">{{ follow.viewer }}</div>
           </div>
         </li>
       </ul>
