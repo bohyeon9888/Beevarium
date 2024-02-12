@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -77,23 +76,20 @@ public class BroadcastStationNoticeService {
     }
 
     public List<BroadcastStationNoticeDto> findNoticesByStationId(Integer broadcastStationNo) {
-        // 이 메소드의 구현은 BroadcastStation과 BroadcastStationNotice 엔티티 간의 관계에 따라 다릅니다.
-        // 예시: return broadcastStationNoticeRepository.findByBroadcastStationId(broadcastStationNo);
-        Set<BroadcastStationNotice> notices = broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo);
+        List<BroadcastStationNotice> notices = broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo);
         List<BroadcastStationNoticeDto> broadcastStationNoticeDtos = new ArrayList<>();
         for (BroadcastStationNotice notice : notices) {
-            BroadcastStationNoticeDto broadcastStationNoticeDto = new BroadcastStationNoticeDto(
+            broadcastStationNoticeDtos.add(new BroadcastStationNoticeDto(
                     notice.getBroadcastStationNoticeNo(),
                     notice.getBroadcastStation().getId(),
                     notice.getBroadcastStationNoticeTitle(),
                     notice.getBroadcastStationNoticeContent(),
                     notice.getCreatedDate(),
-                    notice.getUpdatedDate());
-
-            broadcastStationNoticeDtos.add(broadcastStationNoticeDto);
+                    notice.getUpdatedDate()));
         }
         return broadcastStationNoticeDtos;
     }
+
 
     // 수정
     @Transactional
