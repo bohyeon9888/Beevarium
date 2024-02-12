@@ -443,7 +443,7 @@ onMounted(() => {
 /* .notice-container {
   display: flex;
   width: 1899px;
-}
+} */
 .notice-content-container {
   display: flex;
   justify-content: center;
