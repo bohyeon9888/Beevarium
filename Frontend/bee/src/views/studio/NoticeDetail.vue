@@ -32,7 +32,7 @@ const doNoticeDelete = () => {
     route.params.noticeNo,
     ({ data }) => {
       console.log(data.message);
-      router.push({path: `/studio/${route.params.streamerId}/notice`})
+      router.push({ path: `/studio/${route.params.streamerId}/notice` });
     },
     () => {}
   );
@@ -97,19 +97,6 @@ onMounted(() => {
                 margin: 0 8px;
               "
             ></div>
-            <div class="notice-views">
-              <div
-                style="
-                  font-size: 16px;
-                  font-weight: 400;
-                  color: #a0a0a0;
-                  margin-right: 4px;
-                "
-              >
-                조회수
-              </div>
-              {{ notice.views }}회
-            </div>
           </div>
         </div>
         <div class="notice-content">
@@ -119,7 +106,9 @@ onMounted(() => {
       <div class="notice-detail-manage-button-box">
         <div class="notice-detail-manage-button">
           <div class="notice-detail-edit-button">수정</div>
-          <div class="notice-detail-delete-button" @click="doNoticeDelete">삭제</div>
+          <div class="notice-detail-delete-button" @click="doNoticeDelete">
+            삭제
+          </div>
         </div>
       </div>
     </div>

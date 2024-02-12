@@ -354,7 +354,9 @@ onMounted(() => {
             v-for="(notice, index) in paginatedNotices"
             class="notice"
             @click="
-              router.push({ path: `/studio/${route.params.streamerId}/notice/${notice.broadcastStationNoticeNo}` })
+              router.push({
+                path: `/studio/${route.params.streamerId}/notice/${notice.broadcastStationNoticeNo}`,
+              })
             "
           >
             <div
@@ -376,7 +378,9 @@ onMounted(() => {
                   />
                 </div>
                 <div class="streamer-name-box">
-                  <div class="streamer-name">{{ prop.studioInfo.userName }}</div>
+                  <div class="streamer-name">
+                    {{ prop.studioInfo.userName }}
+                  </div>
                   <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
                 </div>
                 <div
@@ -388,19 +392,15 @@ onMounted(() => {
                   "
                 ></div>
                 <div class="notice-date">{{ notice.createdDate }}</div>
-                <div
-                  style="
-                    width: 1px;
-                    height: 14px;
-                    margin: 0 8px;
-                    background: #636363;
-                  "
-                ></div>
-                <div class="notice-views">조회수 {{ notice.views }}회</div>
               </div>
               <div class="notice-manage-button">
                 <div class="notice-edit-button">수정</div>
-                <div class="notice-delete-button" @click="doNoticeDelete(notice.broadcastStationNoticeNo)">삭제</div>
+                <div
+                  class="notice-delete-button"
+                  @click="doNoticeDelete(notice.broadcastStationNoticeNo)"
+                >
+                  삭제
+                </div>
               </div>
             </div>
             <div class="notice-title">
