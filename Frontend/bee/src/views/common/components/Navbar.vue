@@ -6,7 +6,7 @@ import { storeToRefs } from "pinia";
 import MypageModal from "./MypageModal.vue";
 
 const authStore = useAuthStore();
-const { isLoggedIn } = storeToRefs(authStore);
+const { isLoggedIn, user } = storeToRefs(authStore);
 const router = useRouter();
 const searchQuery = ref("");
 const mypageModActive = ref(false);
@@ -34,6 +34,13 @@ const handleOutsideClick = (event) => {
     mypageModActive.value = false;
   }
 };
+
+const getProfileImageUrl = (name) => {
+  if (name == "none") return new URL(`/src/assets/img/mypage/profile-image.png`, import.meta.url).href;
+  else return name;
+  console.log(name);
+};
+
 onMounted(() => {
   document.addEventListener("click", handleOutsideClick);
 });
@@ -94,7 +101,7 @@ onBeforeUnmount(() => {
         </div>
       </router-link>
       <div v-if="isLoggedIn" class="profile-button" @click="toggleMpMod($event)">
-        <img class="profile" src="../../../assets/img/profile.png" alt="" />
+        <img class="profile" :src="getProfileImageUrl(user.logo)" alt="" />
       </div>
       <div v-if="!isLoggedIn" class="move-to-login">
         <router-link :to="{ name: 'Login' }" style="color: #e6e5ea"
