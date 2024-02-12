@@ -396,15 +396,6 @@ onMounted(() => {
                 ></div>
                 <div class="notice-date">{{ notice.createdDate }}</div>
               </div>
-              <div class="notice-manage-button">
-                <div class="notice-edit-button">수정</div>
-                <div
-                  class="notice-delete-button"
-                  @click="doNoticeDelete(notice.broadcastStationNoticeNo)"
-                >
-                  삭제
-                </div>
-              </div>
             </div>
             <div class="notice-title">
               {{ notice.broadcastStationNoticeTitle }}
