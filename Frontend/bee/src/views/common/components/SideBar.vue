@@ -34,15 +34,15 @@ const getImageUrl = (index) => {
 
 const followChannels = ref([]);
 const getFollowChannel = () => {
-  followChannel(accessToken.value,
-  ({data}) => {
-    followChannels.value = data.data.subscribeList;
-    console.log(followChannels.value);
-  },
-  (error) => {
-
-  });
-}
+  followChannel(
+    accessToken.value,
+    ({ data }) => {
+      followChannels.value = data.data.subscribeList;
+      console.log(followChannels.value);
+    },
+    (error) => {}
+  );
+};
 
 onMounted(() => {
   getFollowChannel();
@@ -56,8 +56,16 @@ onMounted(() => {
     :class="{ expanded: isExpanded }"
   >
     <div class="expand-button" @click="expand">
-      <img v-if="!isExpanded" src="../../../assets/img/common/expand-on.png" alt="">
-      <img v-if="isExpanded" src="../../../assets/img/common/expand-off.png" alt="">
+      <img
+        v-if="!isExpanded"
+        src="../../../assets/img/common/expand-on.png"
+        alt=""
+      />
+      <img
+        v-if="isExpanded"
+        src="../../../assets/img/common/expand-off.png"
+        alt=""
+      />
     </div>
     <div v-if="isLoggedIn" class="follow-channel">
       <div
@@ -98,13 +106,19 @@ onMounted(() => {
               :src="follow.profileUrl"
               alt=""
             />
-            
-
           </div>
           <div v-if="isExpanded" class="streamer-name">
             {{ follow.streamerName }}
           </div>
-          <div style="position: absolute; display: flex; right: 30px; width: 70px; height:">
+          <div
+            style="
+              position: absolute;
+              display: flex;
+              right: 30px;
+              width: 70px;
+              height: ;
+            "
+          >
             <div
               v-if="isExpanded"
               style="margin-right: 4px; display: flex; align-items: center"

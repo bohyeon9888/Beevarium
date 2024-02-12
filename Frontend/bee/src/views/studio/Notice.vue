@@ -1,16 +1,16 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
-import { noticeList } from "@/api/notice";
+// import StudioInfo from "./components/StudioInfo.vue";
+import { noticeDelete, noticeList } from "@/api/notice";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { useRouter, useRoute } from "vue-router";
 
+const router = useRouter();
+const route = useRoute();
+const prop = defineProps(["studioInfo"]);
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
-const streamer = ref({
-  name: "LCK_KR",
-  id: "bvlol",
-});
 // const Notices = [
 //   {
 //     title: "[안내] 2024 LCK SPRING 일정 안내",
@@ -253,7 +253,6 @@ const streamer = ref({
 //     content: "[1월 17일 수요일 오후 5시]...",
 //   },
 // ];
-
 const Notices = ref([]);
 
 const currentPage = ref(1);
@@ -312,6 +311,18 @@ const changePage = (page) => {
   }
 };
 
+const doNoticeDelete = (noticeNo) => {
+  noticeDelete(
+    accessToken.value,
+    noticeNo,
+    ({ data }) => {
+      console.log(data.message);
+      router.go(0);
+    },
+    () => {}
+  );
+};
+
 onMounted(() => {
   noticeList(
     accessToken.value,
@@ -327,112 +338,117 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="notice-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
-    <div class="notice-content-container">
-      <div class="notice-content-box">
-        <div class="notice-content-head">공지사항</div>
-        <div class="notice-content">
-          <div class="notice-count-box">
-            <div class="notice-count">{{ Notices.length }}</div>
-            <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">
-              개의 글
-            </div>
+  <!-- <div class="notice-container"> -->
+  <div class="notice-content-container">
+    <div class="notice-content-box">
+      <div class="notice-content-head">공지사항</div>
+      <div class="notice-content">
+        <div class="notice-count-box">
+          <div class="notice-count">{{ Notices.length }}</div>
+          <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">
+            개의 글
           </div>
-          <ul class="notice-list">
-            <router-link :to="{ name: 'NoticeDetail' }">
-              <li v-for="(notice, index) in paginatedNotices" class="notice">
+        </div>
+        <ul class="notice-list">
+          <li
+            v-for="(notice, index) in paginatedNotices"
+            class="notice"
+            @click="
+              router.push({ path: `/studio/${route.params.streamerId}/notice/${notice.broadcastStationNoticeNo}` })
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 1420px;
+                height: 33px;
+                margin-bottom: 23px;
+              "
+            >
+              <div style="display: flex; align-items: center">
+                <div class="streamer-logo-box">
+                  <img
+                    src="../../assets/img/studio/studio-logo.png"
+                    alt=""
+                    class="streamer-logo"
+                  />
+                </div>
+                <div class="streamer-name-box">
+                  <div class="streamer-name">{{ prop.studioInfo.userName }}</div>
+                  <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
+                </div>
                 <div
                   style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    width: 1420px;
-                    height: 33px;
-                    margin-bottom: 23px;
+                    width: 1px;
+                    height: 14px;
+                    margin: 0 8px;
+                    background: #636363;
                   "
-                >
-                  <div style="display: flex; align-items: center">
-                    <div class="streamer-logo-box">
-                      <img
-                        src="../../assets/img/studio/studio-logo.png"
-                        alt=""
-                        class="streamer-logo"
-                      />
-                    </div>
-                    <div class="streamer-name-box">
-                      <div class="streamer-name">{{ streamer.name }}</div>
-                      <div class="streamer-id">({{ streamer.id }})</div>
-                    </div>
-                    <div
-                      style="
-                        width: 1px;
-                        height: 14px;
-                        margin: 0 8px;
-                        background: #636363;
-                      "
-                    ></div>
-                    <div class="notice-date">{{ notice.date }}</div>
-                    <div
-                      style="
-                        width: 1px;
-                        height: 14px;
-                        margin: 0 8px;
-                        background: #636363;
-                      "
-                    ></div>
-                    <div class="notice-views">조회수 {{ notice.views }}회</div>
-                  </div>
-                  <div class="notice-manage-button">
-                    <div class="notice-edit-button">수정</div>
-                    <div class="notice-delete-button">삭제</div>
-                  </div>
-                </div>
-                <div class="notice-title">{{ notice.title }}</div>
-                <div class="notice-body">{{ notice.content }}</div>
-              </li>
-            </router-link>
-          </ul>
-          <div class="pagination-container">
-            <div class="prev-button-box" @click="changePage(currentPage - 1)">
-              <img
-                src="../../assets/img/common/prev-button.png"
-                alt=""
-                class="prev-button"
-              />
-            </div>
-            <div class="pagination-button-box">
-              <div
-                v-for="page in visiblePages"
-                :key="page"
-                class="pagination-button"
-                :class="{ active: page === currentPage }"
-                @click="changePage(page)"
-              >
-                {{ page }}
+                ></div>
+                <div class="notice-date">{{ notice.createdDate }}</div>
+                <div
+                  style="
+                    width: 1px;
+                    height: 14px;
+                    margin: 0 8px;
+                    background: #636363;
+                  "
+                ></div>
+                <div class="notice-views">조회수 {{ notice.views }}회</div>
+              </div>
+              <div class="notice-manage-button">
+                <div class="notice-edit-button">수정</div>
+                <div class="notice-delete-button" @click="doNoticeDelete(notice.broadcastStationNoticeNo)">삭제</div>
               </div>
             </div>
-            <div class="next-button-box" @click="changePage(currentPage + 1)">
-              <img
-                src="../../assets/img/common/next-button.png"
-                alt=""
-                class="next-button"
-              />
+            <div class="notice-title">
+              {{ notice.broadcastStationNoticeTitle }}
             </div>
+            <div class="notice-body">
+              {{ notice.broadcastStationNoticeContent }}
+            </div>
+          </li>
+        </ul>
+        <div class="pagination-container">
+          <div class="prev-button-box" @click="changePage(currentPage - 1)">
+            <img
+              src="../../assets/img/common/prev-button.png"
+              alt=""
+              class="prev-button"
+            />
+          </div>
+          <div class="pagination-button-box">
+            <div
+              v-for="page in visiblePages"
+              :key="page"
+              class="pagination-button"
+              :class="{ active: page === currentPage }"
+              @click="changePage(page)"
+            >
+              {{ page }}
+            </div>
+          </div>
+          <div class="next-button-box" @click="changePage(currentPage + 1)">
+            <img
+              src="../../assets/img/common/next-button.png"
+              alt=""
+              class="next-button"
+            />
           </div>
         </div>
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.notice-container {
+/* .notice-container {
   display: flex;
   width: 1899px;
-}
+} */
 .notice-content-container {
   display: flex;
   justify-content: center;
@@ -481,6 +497,7 @@ onMounted(() => {
   height: 149px;
   border-bottom: 1px solid #434343;
   padding: 16px 0;
+  cursor: pointer;
 }
 .streamer-logo-box {
   width: 33px;
@@ -496,7 +513,6 @@ onMounted(() => {
 .streamer-name-box {
   display: flex;
   align-items: center;
-  width: 94px;
   height: 19px;
 }
 .streamer-name {

@@ -21,6 +21,7 @@ import Replay from "../views/studio/Replay.vue";
 import ReplayDetail from "../views/studio/ReplayDetail.vue";
 import BanListManagement from "../views/studio/BanListManagement.vue";
 import StudioMain from "../views/studio/StudioMain.vue";
+import Studio from "../views/studio/Studio.vue";
 import StudioSetting from "../views/studio/StudioSetting.vue";
 import AuthCallBack from "../views/auth/AuthCallBack.vue";
 import OpenVIdutest from "@/views/openvidu/OpenVIdutest.vue";
@@ -104,54 +105,62 @@ const router = createRouter({
       ],
     },
     {
-      path: "/studio/clip",
-      name: "Clip",
-      component: Clip,
-    },
-    {
-      path: "/studio/clip-detail",
-      name: "ClipDetail",
-      component: ClipDetail,
-    },
-    {
-      path: "/studio/notice",
-      name: "Notice",
-      component: Notice,
-    },
-    {
-      path: "/studio/notice-detail",
-      name: "NoticeDetail",
-      component: NoticeDetail,
-    },
-    {
-      path: "/studio/notice-write",
-      name: "NoticeWrite",
-      component: NoticeWrite,
-    },
-    {
-      path: "/studio/replay",
-      name: "Replay",
-      component: Replay,
-    },
-    {
-      path: "/studio/replay-detail",
-      name: "ReplayDetail",
-      component: ReplayDetail,
-    },
-    {
-      path: "/studio/banlist-management",
-      name: "BanListManagement",
-      component: BanListManagement,
-    },
-    {
-      path: "/studio/studio-main/:streamerId",
-      name: "StudioMain",
-      component: StudioMain,
-    },
-    {
-      path: "/studio/setting",
-      name: "StudioSetting",
-      component: StudioSetting,
+      path: "/studio/:streamerId",
+      name: "Studio",
+      component: Studio,
+      redirect: { name: "StudioMain" },
+      children: [
+        {
+          path: "studio-main",
+          name: "StudioMain",
+          component: StudioMain,
+        },
+        {
+          path: "notice",
+          name: "Notice",
+          component: Notice,
+        },
+        {
+          path: "notice/:noticeNo",
+          name: "NoticeDetail",
+          component: NoticeDetail,
+        },
+        {
+          path: "notice/write",
+          name: "NoticeWrite",
+          component: NoticeWrite,
+        },
+        {
+          path: "replay",
+          name: "Replay",
+          component: Replay,
+        },
+        {
+          path: "replay/:replayNo",
+          name: "ReplayDetail",
+          component: ReplayDetail,
+        },
+        {
+          path: "clip",
+          name: "Clip",
+          component: Clip,
+        },
+        {
+          path: "clip/:clipNo",
+          name: "ClipDetail",
+          component: ClipDetail,
+        },
+        {
+          path: "banlist",
+          name: "BanListManagement",
+          component: BanListManagement,
+        },
+        {
+          path: "setting",
+          name: "StudioSetting",
+          component: StudioSetting,
+        },
+      ],
     },
     {
       path: "/oauth/callback/google",

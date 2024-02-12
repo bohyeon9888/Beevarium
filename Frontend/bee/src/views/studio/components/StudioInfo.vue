@@ -1,38 +1,24 @@
 <script setup>
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { ref } from "vue";
 
-const prop = defineProps(["studioInfo", "streamer"]);
+const prop = defineProps(["studioInfo"]);
 
 const router = useRouter();
-
-const streamer = ref({
-  logo: "studio-logo",
-  name: "LCK_KR",
-  id: "bvlol",
-  follower: "34.8만",
-});
+const route = useRoute();
 
 const stream = ref({
   watcher: "1579",
   title: "[KT vs BRO] 2024 LCK Spring Spl Final",
 });
 
-const studio = ref({
-  intro: "공식 LOL 리그 방송국 입니다. ",
-});
-
 const isLive = ref(true);
 
 const moveToNoticeWrite = () => {
   router.push({ name: "NoticeWrite" });
-}
+};
 const moveToStudioSetting = () => {
   router.push({ name: "StudioSetting" });
-;}
-
-const getStudioUrl = (name) => {
-  return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
 };
 </script>
 
@@ -43,7 +29,7 @@ const getStudioUrl = (name) => {
         <router-link :to="{ name: 'StudioMain' }">
           <div class="streamer-logo-box">
             <img
-              :src="getStudioUrl(streamer.logo)"
+              :src="prop.studioInfo.stationImg"
               alt=""
               class="streamer-logo"
             />
@@ -69,13 +55,25 @@ const getStudioUrl = (name) => {
       </div>
       <div class="streamer-name-container">
         <div class="streamer-name-box">
-          <div class="streamer-name">{{ streamer.name }}</div>
-          <div class="streamer-id">({{ streamer.id }})</div>
+          <div class="streamer-name">{{ prop.studioInfo.userName }}</div>
+          <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
         </div>
       </div>
-      <div class="follower-count">팔로워 {{ streamer.follower }}명</div>
-      <div v-if="prop.studioInfo.isMine" class="write-button" @click="moveToNoticeWrite">글쓰기</div>
-      <div v-if="prop.studioInfo.isMine" class="studio-setting-button" @click="moveToStudioSetting">방송국 설정</div>
+      <div class="follower-count">팔로워 {{ prop.studioInfo.followCount }}명</div>
+      <div
+        v-if="prop.studioInfo.isMine"
+        class="write-button"
+        @click="moveToNoticeWrite"
+      >
+        글쓰기
+      </div>
+      <div
+        v-if="prop.studioInfo.isMine"
+        class="studio-setting-button"
+        @click="moveToStudioSetting"
+      >
+        방송국 설정
+      </div>
       <div class="stream-live-thumbnail-box">
         <router-link :to="{ name: 'LiveStream' }">
           <img

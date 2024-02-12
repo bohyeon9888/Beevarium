@@ -1,8 +1,9 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
+// import StudioInfo from "./components/StudioInfo.vue";
 import { replayList } from "@/api/replay";
 
+const prop = defineProps(["studioInfo"]);
 const currentPage = ref(1);
 const ReplaysPerPage = 15;
 
@@ -527,10 +528,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="replay-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
+  <!-- <div class="replay-container"> -->
     <div class="replay-content-container">
       <div class="replay-content-box">
         <div style="height: 36px; font-size: 20px; font-weight: 600">
@@ -588,14 +586,14 @@ onMounted(() => {
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.replay-container {
+/* .replay-container {
   display: flex;
   width: 1899px;
-}
+} */
 .replay-content-container {
   display: flex;
   justify-content: center;

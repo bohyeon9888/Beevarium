@@ -18,7 +18,7 @@ const toggleMpMod = () => {
 };
 const moveToStudioMain = () => {
   streamerStore.selectStreamer(user.value.name, user.value.id);
-  router.push({ path: `/studio/studio-main/${user.value.id}` });
+  router.push({ path: `/studio/${user.value.id}` });
 };
 const moveToMypage = () => {
   router.push({ name: "MyPage" });

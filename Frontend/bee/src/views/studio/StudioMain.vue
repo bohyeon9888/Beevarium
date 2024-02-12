@@ -1,15 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
 import { studio } from "@/api/studio";
 import { useAuthStore } from "@/stores/user";
-import { useStreamerStore } from "@/stores/streamer";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const authStore = useAuthStore();
-const streamerStore = useStreamerStore();
 const { accessToken } = storeToRefs(authStore);
-const { streamer } = storeToRefs(streamerStore);
+const prop = defineProps(["studioInfo", "streamer"]);
 
 // const replays = ref([
 //   {
@@ -81,7 +81,7 @@ const studioInfo = ref({});
 const getStudio = () => {
   studio(
     accessToken.value,
-    streamer.value.id,
+    route.params.streamerId,
     ({ data }) => {
       studioInfo.value = data.data.stationInfo;
       console.log(studioInfo.value);
@@ -96,10 +96,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="studiomain-container">
-    <div class="studio-info">
-      <StudioInfo :studioInfo="studioInfo" :streamer="streamer"/>
-    </div>
+  <!-- <div class="studiomain-container"> -->
     <div class="studiomain-content-container">
       <div class="studiomain-content-box">
         <div class="studio-banner-container">
@@ -107,10 +104,10 @@ onMounted(() => {
         </div>
         <div class="studio-notice-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ name: 'Notice' }">공지사항</router-link>
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/notice` }">공지사항</router-link>
           </div>
           <div class="notice-container">
-            <router-link :to="{ name: 'NoticeDetail' }">
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/notice/1` }">
               <div class="notice-content-box"></div>
             </router-link>
             <div class="notice-banner-box">
@@ -120,11 +117,11 @@ onMounted(() => {
         </div>
         <div class="studio-replay-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ name: 'Replay' }">다시보기</router-link>
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/replay` }">다시보기</router-link>
           </div>
           <div class="replay-container">
             <ul>
-              <router-link :to="{ name: 'ReplayDetail' }" class="replay-list">
+              <router-link :to="{ path: `/studio/${route.params.streamerId}/replay/1` }" class="replay-list">
                 <li v-for="(replay, index) in studioInfo.replayList" :key="index" class="replay">
                   <div class="replay-thumbnail-box">
                     <img :src="getReplayUrl(replay.thumbnail)" alt="" class="replay-thumbnail" />
@@ -156,11 +153,11 @@ onMounted(() => {
         </div>
         <div class="studio-clip-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ name: 'Clip' }">유저 클립</router-link>
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/clip` }">유저 클립</router-link>
           </div>
           <div class="clip-container">
             <ul>
-              <router-link :to="{ name: 'ClipDetail' }" class="clip-list">
+              <router-link :to="{ path: `/studio/${route.params.streamerId}/clip/1` }" class="clip-list">
                 <li v-for="(clip, index) in studioInfo.clipList" :key="index" class="clip">
                   <div class="clip-thumbnail-box">
                     <img :src="getReplayUrl(clip.thumbnail)" alt="" class="clip-thumbnail" />
@@ -177,14 +174,14 @@ onMounted(() => {
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.studiomain-container {
+/* .studiomain-container {
   display: flex;
   width: 1899px;
-}
+} */
 .studio-info {
   width: 320px;
 }
