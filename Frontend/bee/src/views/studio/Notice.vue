@@ -5,11 +5,13 @@ import { noticeDelete, noticeList } from "@/api/notice";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
+import { useStudioStore } from "@/stores/studio";
 
 const router = useRouter();
 const route = useRoute();
-const prop = defineProps(["studioInfo"]);
 const authStore = useAuthStore();
+const studioStore = useStudioStore();
+const { studioInfo } = storeToRefs(studioStore);
 const { accessToken } = storeToRefs(authStore);
 // const Notices = [
 //   {
@@ -326,12 +328,13 @@ const doNoticeDelete = (noticeNo) => {
 onMounted(() => {
   noticeList(
     accessToken.value,
-    5,
+    studioInfo.value.stationNo,
     ({ data }) => {
       Notices.value = data.data;
+      console.log(Notices.value);
     },
     (error) => {
-      console.log("?");
+      console.log("noticeList 오류");
     }
   );
 });
@@ -379,9 +382,9 @@ onMounted(() => {
                 </div>
                 <div class="streamer-name-box">
                   <div class="streamer-name">
-                    {{ prop.studioInfo.userName }}
+                    {{ studioInfo.userName }}
                   </div>
-                  <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
+                  <div class="streamer-id">({{ studioInfo.userId }})</div>
                 </div>
                 <div
                   style="
@@ -392,15 +395,6 @@ onMounted(() => {
                   "
                 ></div>
                 <div class="notice-date">{{ notice.createdDate }}</div>
-              </div>
-              <div class="notice-manage-button">
-                <div class="notice-edit-button">수정</div>
-                <div
-                  class="notice-delete-button"
-                  @click="doNoticeDelete(notice.broadcastStationNoticeNo)"
-                >
-                  삭제
-                </div>
               </div>
             </div>
             <div class="notice-title">

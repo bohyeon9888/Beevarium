@@ -97,83 +97,123 @@ onMounted(() => {
 
 <template>
   <!-- <div class="studiomain-container"> -->
-    <div class="studiomain-content-container">
-      <div class="studiomain-content-box">
-        <div class="studio-banner-container">
-          <img src="../../assets/img/studio/studio-banner.png" alt="" class="studio-banner" />
+  <div class="studiomain-content-container">
+    <div class="studiomain-content-box">
+      <div class="studio-banner-container">
+        <img
+          src="../../assets/img/studio/studio-banner.png"
+          alt=""
+          class="studio-banner"
+        />
+      </div>
+      <div class="studio-notice-container">
+        <div style="height: 36px; font-size: 20px; font-weight: 600">
+          <router-link
+            :to="{ path: `/studio/${route.params.streamerId}/notice` }"
+            >공지사항</router-link
+          >
         </div>
-        <div class="studio-notice-container">
-          <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ path: `/studio/${route.params.streamerId}/notice` }">공지사항</router-link>
-          </div>
-          <div class="notice-container">
-            <router-link :to="{ path: `/studio/${route.params.streamerId}/notice/1` }">
-              <div class="notice-content-box"></div>
-            </router-link>
-            <div class="notice-banner-box">
-              <img src="../../assets/img/studio/notice-banner.png" alt="" class="notice-banner" />
-            </div>
-          </div>
-        </div>
-        <div class="studio-replay-container">
-          <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ path: `/studio/${route.params.streamerId}/replay` }">다시보기</router-link>
-          </div>
-          <div class="replay-container">
-            <ul>
-              <router-link :to="{ path: `/studio/${route.params.streamerId}/replay/1` }" class="replay-list">
-                <li v-for="(replay, index) in studioInfo.replayList" :key="index" class="replay">
-                  <div class="replay-thumbnail-box">
-                    <img :src="getReplayUrl(replay.thumbnail)" alt="" class="replay-thumbnail" />
-                    <div
-                      style="
-                        position: absolute;
-                        top: 12px;
-                        left: 12px;
-                        width: 69px;
-                        height: 25px;
-                        font-size: 14px;
-                        font-weight: 700;
-                        background-color: #e89900;
-                        border-radius: 8px;
-                        padding: 4px 10px;
-                      "
-                    >
-                      다시보기
-                    </div>
-                  </div>
-                  <div class="replay-info-box">
-                    <div class="replay-title">{{ replay.title }}</div>
-                    <div class="replay-date">{{ replay.date }}</div>
-                  </div>
-                </li>
-              </router-link>
-            </ul>
-          </div>
-        </div>
-        <div class="studio-clip-container">
-          <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ path: `/studio/${route.params.streamerId}/clip` }">유저 클립</router-link>
-          </div>
-          <div class="clip-container">
-            <ul>
-              <router-link :to="{ path: `/studio/${route.params.streamerId}/clip/1` }" class="clip-list">
-                <li v-for="(clip, index) in studioInfo.clipList" :key="index" class="clip">
-                  <div class="clip-thumbnail-box">
-                    <img :src="getReplayUrl(clip.thumbnail)" alt="" class="clip-thumbnail" />
-                  </div>
-                  <div class="clip-info-box">
-                    <div class="clip-title">{{ clip.title }}</div>
-                    <div class="clip-username">{{ clip.username }}</div>
-                    <div class="clip-date">{{ clip.date }}</div>
-                  </div>
-                </li>
-              </router-link>
-            </ul>
+        <div class="notice-container">
+          <router-link
+            :to="{ path: `/studio/${route.params.streamerId}/notice/1` }"
+          >
+            <div class="notice-content-box"></div>
+          </router-link>
+          <div class="notice-banner-box">
+            <img
+              src="../../assets/img/studio/notice-banner.png"
+              alt=""
+              class="notice-banner"
+            />
           </div>
         </div>
       </div>
+      <div class="studio-replay-container">
+        <div style="height: 36px; font-size: 20px; font-weight: 600">
+          <router-link
+            :to="{ path: `/studio/${route.params.streamerId}/replay` }"
+            >다시보기</router-link
+          >
+        </div>
+        <div class="replay-container">
+          <ul>
+            <router-link
+              :to="{ path: `/studio/${route.params.streamerId}/replay/1` }"
+              class="replay-list"
+            >
+              <li
+                v-for="(replay, index) in studioInfo.replayList"
+                :key="index"
+                class="replay"
+              >
+                <div class="replay-thumbnail-box">
+                  <img
+                    :src="getReplayUrl(replay.thumbnail)"
+                    alt=""
+                    class="replay-thumbnail"
+                  />
+                  <div
+                    style="
+                      position: absolute;
+                      top: 12px;
+                      left: 12px;
+                      width: 69px;
+                      height: 25px;
+                      font-size: 14px;
+                      font-weight: 700;
+                      background-color: #e89900;
+                      border-radius: 8px;
+                      padding: 4px 10px;
+                    "
+                  >
+                    다시보기
+                  </div>
+                </div>
+                <div class="replay-info-box">
+                  <div class="replay-title">{{ replay.title }}</div>
+                  <div class="replay-date">{{ replay.date }}</div>
+                </div>
+              </li>
+            </router-link>
+          </ul>
+        </div>
+      </div>
+      <div class="studio-clip-container">
+        <div style="height: 36px; font-size: 20px; font-weight: 600">
+          <router-link :to="{ path: `/studio/${route.params.streamerId}/clip` }"
+            >유저 클립</router-link
+          >
+        </div>
+        <div class="clip-container">
+          <ul>
+            <router-link
+              :to="{ path: `/studio/${route.params.streamerId}/clip/1` }"
+              class="clip-list"
+            >
+              <li
+                v-for="(clip, index) in studioInfo.clipList"
+                :key="index"
+                class="clip"
+              >
+                <div class="clip-thumbnail-box">
+                  <img
+                    :src="getReplayUrl(clip.thumbnail)"
+                    alt=""
+                    class="clip-thumbnail"
+                  />
+                </div>
+                <div class="clip-info-box">
+                  <div class="clip-title">{{ clip.title }}</div>
+                  <div class="clip-username">{{ clip.username }}</div>
+                  <div class="clip-date">{{ clip.date }}</div>
+                </div>
+              </li>
+            </router-link>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
   <!-- </div> -->
 </template>
 

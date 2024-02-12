@@ -1,6 +1,6 @@
 <script setup>
 import { useRouter, useRoute } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 
 const prop = defineProps(["studioInfo"]);
 
@@ -20,6 +20,10 @@ const moveToNoticeWrite = () => {
 const moveToStudioSetting = () => {
   router.push({ name: "StudioSetting" });
 };
+
+onMounted(() => {
+  console.log(prop.studioInfo);
+});
 </script>
 
 <template>
@@ -59,7 +63,9 @@ const moveToStudioSetting = () => {
           <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
         </div>
       </div>
-      <div class="follower-count">팔로워 {{ prop.studioInfo.followCount }}명</div>
+      <div class="follower-count">
+        팔로워 {{ prop.studioInfo.followCount }}명
+      </div>
       <div
         v-if="prop.studioInfo.isMine"
         class="write-button"
@@ -189,7 +195,6 @@ const moveToStudioSetting = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 65px;
   height: 42px;
 }
 .streamer-name {

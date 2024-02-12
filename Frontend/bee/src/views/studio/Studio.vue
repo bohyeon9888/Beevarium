@@ -5,17 +5,18 @@ import { studio } from "@/api/studio";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { RouterView, useRoute } from "vue-router";
+import { useStudioStore } from "@/stores/studio";
 
+const studioStore = useStudioStore();
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
+const { studioInfo } = storeToRefs(studioStore);
 const route = useRoute();
 
 
 const getReplayUrl = (name) => {
   return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
 };
-
-const studioInfo = ref({});
 
 const getStudio = () => {
   studio(
@@ -39,7 +40,7 @@ onMounted(() => {
     <div class="studio-info">
       <StudioInfo :studioInfo="studioInfo" />
     </div>
-    <RouterView :studioInfo="studioInfo" />
+    <RouterView />
   </div>
 </template>
 

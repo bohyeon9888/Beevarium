@@ -14,12 +14,15 @@ const noticeList = async (accessToken, stationNo, success, fail) => {
 };
 
 const noticeDetail = async (noticeNo, success, fail) => {
-  await local.get(`/notice/broadcasting/board/${noticeNo}`).then(success).catch(fail);
+  await local
+    .get(`/notice/broadcasting/board/${noticeNo}`)
+    .then(success)
+    .catch(fail);
 };
 
 const noticeCreate = async (accessToken, noticeData, success, fail) => {
   await local
-    .post(`/notice/broadcasting/board/create`, noticeData, {
+    .post(`/notice/broadcasting/create`, noticeData, {
       headers: {
         Authorization: accessToken,
       },
