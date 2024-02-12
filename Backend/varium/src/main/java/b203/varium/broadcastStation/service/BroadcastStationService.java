@@ -62,6 +62,7 @@ public class BroadcastStationService {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         MyStationRespDTO respDTO = new MyStationRespDTO();
+        UserEntity streamer = userRepository.findByUserId(streamerId);
 
         if (!stationRepository.existsByUser_UserId(streamerId)) {
             data.put("msg", "존재하지 않는 방송국입니다.");
@@ -77,7 +78,7 @@ public class BroadcastStationService {
             boolean isMine = Objects.equals(username, Optional.ofNullable(station).map(s -> s.getUser()).map(u -> u.getUsername()).orElse(null));
             respDTO.setIsMine(isMine);
 
-            respDTO.setStationImg("none");
+            respDTO.setStationImg(streamer.getProfileUrl());
             respDTO.setNoticeList(stationNoticeService.findNoticesByStationId(station.getId()));
             respDTO.setReplayList(replayVideoService.getReplayVideos(streamerId));
             respDTO.setClipList(clipVideoService.getClipVideos(streamerId));
