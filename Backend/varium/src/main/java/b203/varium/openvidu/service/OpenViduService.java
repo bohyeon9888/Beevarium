@@ -212,4 +212,8 @@ public class OpenViduService {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
+    public ResponseEntity<String> stopRecordings(String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+        openvidu.stopRecording(recordingId);
+        return new ResponseEntity<>("stop recordings", HttpStatus.OK);
+    }
 }
