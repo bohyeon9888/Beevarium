@@ -1,16 +1,16 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
-import { noticeList } from "@/api/notice";
+// import StudioInfo from "./components/StudioInfo.vue";
+import { noticeDelete, noticeList } from "@/api/notice";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { useRouter, useRoute } from "vue-router";
 
+const router = useRouter();
+const route = useRoute();
+const prop = defineProps(["studioInfo"]);
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
-const streamer = ref({
-  name: "LCK_KR",
-  id: "bvlol",
-});
 // const Notices = [
 //   {
 //     title: "[안내] 2024 LCK SPRING 일정 안내",
@@ -253,7 +253,6 @@ const streamer = ref({
 //     content: "[1월 17일 수요일 오후 5시]...",
 //   },
 // ];
-
 const Notices = ref([]);
 
 const currentPage = ref(1);
@@ -312,6 +311,18 @@ const changePage = (page) => {
   }
 };
 
+const doNoticeDelete = (noticeNo) => {
+  noticeDelete(
+    accessToken.value,
+    noticeNo,
+    ({ data }) => {
+      console.log(data.message);
+      router.go(0);
+    },
+    () => {}
+  );
+};
+
 onMounted(() => {
   noticeList(
     accessToken.value,
@@ -344,17 +355,23 @@ onMounted(() => {
           <ul class="notice-list">
             <router-link :to="{ name: 'NoticeDetail' }">
               <li v-for="(notice, index) in paginatedNotices" class="notice">
-                <div style="
+                <div
+                  style="
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     width: 1420px;
                     height: 33px;
                     margin-bottom: 23px;
-                  ">
+                  "
+                >
                   <div style="display: flex; align-items: center">
                     <div class="streamer-logo-box">
-                      <img src="../../assets/img/studio/studio-logo.png" alt="" class="streamer-logo" />
+                      <img
+                        src="../../assets/img/studio/studio-logo.png"
+                        alt=""
+                        class="streamer-logo"
+                      />
                     </div>
                     <div class="streamer-name-box">
                       <div class="streamer-name">{{ streamer.name }}</div>
@@ -398,8 +415,13 @@ onMounted(() => {
               />
             </div>
             <div class="pagination-button-box">
-              <div v-for="page in visiblePages" :key="page" class="pagination-button"
-                :class="{ active: page === currentPage }" @click="changePage(page)">
+              <div
+                v-for="page in visiblePages"
+                :key="page"
+                class="pagination-button"
+                :class="{ active: page === currentPage }"
+                @click="changePage(page)"
+              >
                 {{ page }}
               </div>
             </div>
@@ -418,11 +440,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.notice-container {
+/* .notice-container {
   display: flex;
   width: 1899px;
 }
-
 .notice-content-container {
   display: flex;
   justify-content: center;
@@ -478,6 +499,7 @@ onMounted(() => {
   height: 149px;
   border-bottom: 1px solid #434343;
   padding: 16px 0;
+  cursor: pointer;
 }
 
 .streamer-logo-box {
@@ -496,7 +518,6 @@ onMounted(() => {
 .streamer-name-box {
   display: flex;
   align-items: center;
-  width: 94px;
   height: 19px;
 }
 

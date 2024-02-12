@@ -8,7 +8,13 @@ export const useStreamerStore = defineStore(
       id: "",
       name: "",
     });
-    return { streamer };
+
+    const selectStreamer = (streamerName, streamerId) => {
+      streamer.value.id = streamerId;
+      streamer.value.name = streamerName;
+    }
+
+    return { streamer, selectStreamer };
   },
   {
     persist: {

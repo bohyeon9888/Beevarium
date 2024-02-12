@@ -2,8 +2,9 @@
 import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
 import StudioInfo from "./components/StudioInfo.vue";
-import { replayDetail } from "@/api/replay";
+// import { replayDetail } from "@/api/replay";
 
+const prop = defineProps(["studioInfo"]);
 const replay = ref({
   title: "다시보기 방송 제목입니다.",
   tags: ["한국어", "게임", "방송"],
@@ -28,10 +29,7 @@ const replay = ref({
 </script>
 
 <template>
-  <div class="replay-detail-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
+  <!-- <div class="replay-detail-container"> -->
     <div class="replay-detail-content-container">
       <div class="back-to-replay-button">
         <router-link
@@ -123,14 +121,14 @@ const replay = ref({
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.replay-detail-container {
+/* .replay-detail-container {
   display: flex;
   width: 1899px;
-}
+} */
 .replay-detail-content-container {
   display: flex;
   flex-direction: column;

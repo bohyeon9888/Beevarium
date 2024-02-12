@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
+// import StudioInfo from "./components/StudioInfo.vue";
 import { useRouter } from "vue-router";
 import { noticeCreate } from "@/api/notice";
 import { useAuthStore } from "@/stores/user";
@@ -9,23 +9,23 @@ import { storeToRefs } from "pinia";
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 
+const prop = defineProps(["studioInfo"]);
 const router = useRouter();
 
 const noticeData = ref({
-  broadcastStationNo: "5",
+  broadcastStationNo: prop.studioInfo.stationNo,
   broadcastStationNoticeTitle: "",
   broadcastStationNoticeContent: "",
 });
 const noticeWrite = () => {
   noticeCreate(
+    console.log(noticeData.value),
     accessToken.value,
     noticeData.value,
     ({ data }) => {
       console.log(data.message);
     },
-    (error) => {
-      console.log(error.data.msg);
-    }
+    (error) => {}
   );
 };
 const goBack = () => {
@@ -34,50 +34,52 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="notice-write-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
-    <div class="notice-write-content-container">
-      <div class="notice-write-content-box">
-        <div
-          style="
-            width: 1420px;
-            height: 30px;
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 30px;
-          "
-        >
-          공지사항
-        </div>
-        <input
-          class="notice-title-input"
-          type="text"
-          placeholder="제목을 입력해 주세요"
-          v-model="noticeData.broadcastStationNoticeTitle"
-        />
-        <div
-          style="width: 1420px; height: 2px; background-color: #434343; border-radius: 8px"
-        ></div>
-        <textarea
-          class="notice-content-input"
-          v-model="noticeData.broadcastStationNoticeContent"
-        ></textarea>
-        <div class="notice-write-cancel-button-box">
-          <div class="notice-write-button" @click="noticeWrite">등록</div>
-          <div class="notice-cancel-button" @click="goBack">취소</div>
-        </div>
+  <!-- <div class="notice-write-container"> -->
+  <div class="notice-write-content-container">
+    <div class="notice-write-content-box">
+      <div
+        style="
+          width: 1420px;
+          height: 30px;
+          font-size: 20px;
+          font-weight: 700;
+          margin-bottom: 30px;
+        "
+      >
+        공지사항
+      </div>
+      <input
+        class="notice-title-input"
+        type="text"
+        placeholder="제목을 입력해 주세요"
+        v-model="noticeData.broadcastStationNoticeTitle"
+      />
+      <div
+        style="
+          width: 1420px;
+          height: 2px;
+          background-color: #434343;
+          border-radius: 8px;
+        "
+      ></div>
+      <textarea
+        class="notice-content-input"
+        v-model="noticeData.broadcastStationNoticeContent"
+      ></textarea>
+      <div class="notice-write-cancel-button-box">
+        <div class="notice-write-button" @click="noticeWrite">등록</div>
+        <div class="notice-cancel-button" @click="goBack">취소</div>
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.notice-write-container {
+/* .notice-write-container {
   display: flex;
   width: 1899px;
-}
+} */
 .notice-write-content-container {
   display: flex;
   flex-direction: column;

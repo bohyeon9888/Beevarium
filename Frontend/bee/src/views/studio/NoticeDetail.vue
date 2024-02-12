@@ -1,86 +1,126 @@
 <script setup>
-import { ref } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
+import { ref, onMounted } from "vue";
+// import StudioInfo from "./components/StudioInfo.vue";
+import { noticeDelete, noticeDetail } from "@/api/notice";
+import { useRoute } from "vue-router";
+import { useAuthStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
+import router from "@/router";
 
-const streamer = ref({
-  name: "LCK_KR",
-  id: "bvlol",
-});
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
+const route = useRoute();
 
-const notice = ref({
-  title: "[안내] 2024 LCK SPRING 일정 안내",
-  date: "24.01.09",
-  views: 1353,
-  content:
-    "[1월 17일 수요일 오후 5시] 새로운 LCK의 2024 시즌을 시작합니다. 여러분의 많은 시청 부탁드립니다!",
+const prop = defineProps(["studioInfo"]);
+
+const notice = ref({});
+
+const getNoticeDetail = () => {
+  noticeDetail(
+    route.params.noticeNo,
+    ({ data }) => {
+      notice.value = data.data;
+      console.log(notice.value);
+    },
+    () => {}
+  );
+};
+
+const doNoticeDelete = () => {
+  noticeDelete(
+    accessToken.value,
+    route.params.noticeNo,
+    ({ data }) => {
+      console.log(data.message);
+      router.push({ path: `/studio/${route.params.streamerId}/notice` });
+    },
+    () => {}
+  );
+};
+
+onMounted(() => {
+  getNoticeDetail();
 });
 </script>
 
 <template>
-  <div class="notice-detail-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
-    <div class="notice-detail-content-container">
-      <div class="back-to-notice-button">
-        <router-link
-          :to="{ name: 'Notice' }"
-          style="display: flex; align-items: center; width: 96px; height: 24px"
+  <!-- <div class="notice-detail-container"> -->
+  <div class="notice-detail-content-container">
+    <div class="back-to-notice-button">
+      <router-link
+        :to="{ path: `/studio/${route.params.streamerId}/notice` }"
+        style="display: flex; align-items: center; width: 96px; height: 24px"
+      >
+        <img
+          src="../../assets/img/common/prev-button.png"
+          alt=""
+          class="back-to-notice"
+        />
+        <div
+          style="width: 75px; height: 24px; font-size: 20px; font-weight: 600"
         >
-          <img src="../../assets/img/common/prev-button.png" alt="" class="back-to-notice" />
-          <div style="width: 75px; height: 24px; font-size: 20px; font-weight: 600">공지사항</div>
-        </router-link>
-      </div>
-      <div class="notice-detail-content-box">
-        <div class="notice-title">{{ notice.title }}</div>
-        <div class="notice-detail-content">
-          <div class="notice-username-date-views-box">
-            <div class="notice-username-box">
-              <div class="streamer-logo-box">
-                <img src="../../assets/img/studio/studio-logo.png" alt="" class="streamer-logo" />
-              </div>
-              <div class="streamer-name-id-box">
-                <div class="streamer-name">{{ streamer.name }}</div>
-                <div class="streamer-id">({{ streamer.id }})</div>
-              </div>
+          공지사항
+        </div>
+      </router-link>
+    </div>
+    <div class="notice-detail-content-box">
+      <div class="notice-title">{{ notice.broadcastStationNoticeTitle }}</div>
+      <div class="notice-detail-content">
+        <div class="notice-username-date-views-box">
+          <div class="notice-username-box">
+            <div class="streamer-logo-box">
+              <img
+                src="../../assets/img/studio/studio-logo.png"
+                alt=""
+                class="streamer-logo"
+              />
             </div>
-            <div
-              style="
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                width: 180px;
-                height: 19px;
-              "
-            >
-              <div class="notice-date">{{ notice.date }}</div>
-              <div style="width: 1px; height: 14px; background: #636363"></div>
-              <div class="notice-views">
-                <div style="font-size: 16px; font-weight: 400; color: #a0a0a0; margin-right: 4px">
-                  조회수
-                </div>
-                {{ notice.views }}회
-              </div>
+            <div class="streamer-name-id-box">
+              <div class="streamer-name">{{ prop.studioInfo.userName }}</div>
+              <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
             </div>
           </div>
-          <div class="notice-content">{{ notice.content }}</div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              height: 19px;
+            "
+          >
+            <div class="notice-date">{{ notice.createdDate }}</div>
+            <div
+              style="
+                width: 1px;
+                height: 14px;
+                background: #636363;
+                margin: 0 8px;
+              "
+            ></div>
+          </div>
         </div>
-        <div class="notice-detail-manage-button-box">
-          <div class="notice-detail-manage-button">
-            <div class="notice-detail-edit-button">수정</div>
-            <div class="notice-detail-delete-button">삭제</div>
+        <div class="notice-content">
+          {{ notice.broadcastStationNoticeContent }}
+        </div>
+      </div>
+      <div class="notice-detail-manage-button-box">
+        <div class="notice-detail-manage-button">
+          <div class="notice-detail-edit-button">수정</div>
+          <div class="notice-detail-delete-button" @click="doNoticeDelete">
+            삭제
           </div>
         </div>
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.notice-detail-container {
+/* .notice-detail-container {
   display: flex;
   width: 1899px;
-}
+} */
 .notice-detail-content-container {
   display: flex;
   flex-direction: column;

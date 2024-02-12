@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
+// import StudioInfo from "./components/StudioInfo.vue";
 
+const prop = defineProps(["studioInfo"]);
 const currentPage = ref(1);
 const banlistsPerPage = 10;
 
@@ -381,10 +382,7 @@ const changePage = (page) => {
 </script>
 
 <template>
-  <div class="banlist-management-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
+  <!-- <div class="banlist-management-container"> -->
     <div class="banlist-management-content-container">
       <div class="banlist-management-content-box">
         <div class="banlist-management-content-head">밴리스트 관리</div>
@@ -443,7 +441,7 @@ const changePage = (page) => {
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>

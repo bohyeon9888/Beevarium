@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
+// import StudioInfo from "./components/StudioInfo.vue";
 
 // 프로필 배너 사진 선택
+const prop = defineProps(["studioInfo"]);
 const getProfileBannerImageUrl = () => {
   return new URL("/src/assets/img/mypage/profile-image.png", import.meta.url)
     .href;
@@ -26,10 +27,6 @@ const changeImage = (event) => {
 </script>
 
 <template>
-  <div class="studio-setting-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
     <div class="studio-setting-content-container">
       <div class="studio-setting-head">방송국 설정</div>
       <div class="studio-banner-setting-container">
@@ -132,14 +129,13 @@ const changeImage = (event) => {
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <style scoped>
-.studio-setting-container {
+/* .studio-setting-container {
   display: flex;
   width: 1899px;
-}
+} */
 .studio-setting-content-container {
   display: flex;
   flex-direction: column;
