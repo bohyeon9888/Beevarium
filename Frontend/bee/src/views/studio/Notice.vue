@@ -338,105 +338,110 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="notice-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
-    <div class="notice-content-container">
-      <div class="notice-content-box">
-        <div class="notice-content-head">공지사항</div>
-        <div class="notice-content">
-          <div class="notice-count-box">
-            <div class="notice-count">{{ Notices.length }}</div>
-            <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">
-              개의 글
-            </div>
+  <!-- <div class="notice-container"> -->
+  <div class="notice-content-container">
+    <div class="notice-content-box">
+      <div class="notice-content-head">공지사항</div>
+      <div class="notice-content">
+        <div class="notice-count-box">
+          <div class="notice-count">{{ Notices.length }}</div>
+          <div style="font-size: 16px; font-weight: 600; color: #e6e5ea">
+            개의 글
           </div>
-          <ul class="notice-list">
-            <router-link :to="{ name: 'NoticeDetail' }">
-              <li v-for="(notice, index) in paginatedNotices" class="notice">
+        </div>
+        <ul class="notice-list">
+          <li
+            v-for="(notice, index) in paginatedNotices"
+            class="notice"
+            @click="
+              router.push({
+                path: `/studio/${route.params.streamerId}/notice/${notice.broadcastStationNoticeNo}`,
+              })
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 1420px;
+                height: 33px;
+                margin-bottom: 23px;
+              "
+            >
+              <div style="display: flex; align-items: center">
+                <div class="streamer-logo-box">
+                  <img
+                    src="../../assets/img/studio/studio-logo.png"
+                    alt=""
+                    class="streamer-logo"
+                  />
+                </div>
+                <div class="streamer-name-box">
+                  <div class="streamer-name">
+                    {{ prop.studioInfo.userName }}
+                  </div>
+                  <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
+                </div>
                 <div
                   style="
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    width: 1420px;
-                    height: 33px;
-                    margin-bottom: 23px;
+                    width: 1px;
+                    height: 14px;
+                    margin: 0 8px;
+                    background: #636363;
                   "
+                ></div>
+                <div class="notice-date">{{ notice.createdDate }}</div>
+              </div>
+              <div class="notice-manage-button">
+                <div class="notice-edit-button">수정</div>
+                <div
+                  class="notice-delete-button"
+                  @click="doNoticeDelete(notice.broadcastStationNoticeNo)"
                 >
-                  <div style="display: flex; align-items: center">
-                    <div class="streamer-logo-box">
-                      <img
-                        src="../../assets/img/studio/studio-logo.png"
-                        alt=""
-                        class="streamer-logo"
-                      />
-                    </div>
-                    <div class="streamer-name-box">
-                      <div class="streamer-name">{{ streamer.name }}</div>
-                      <div class="streamer-id">({{ streamer.id }})</div>
-                    </div>
-                    <div
-                      style="
-                        width: 1px;
-                        height: 14px;
-                        margin: 0 8px;
-                        background: #636363;
-                      "
-                    ></div>
-                    <div class="notice-date">{{ notice.date }}</div>
-                    <div
-                      style="
-                        width: 1px;
-                        height: 14px;
-                        margin: 0 8px;
-                        background: #636363;
-                      "
-                    ></div>
-                    <div class="notice-views">조회수 {{ notice.views }}회</div>
-                  </div>
-                  <div class="notice-manage-button">
-                    <div class="notice-edit-button">수정</div>
-                    <div class="notice-delete-button">삭제</div>
-                  </div>
+                  삭제
                 </div>
-                <div class="notice-title">{{ notice.title }}</div>
-                <div class="notice-body">{{ notice.content }}</div>
-              </li>
-            </router-link>
-          </ul>
-          <div class="pagination-container">
-            <div class="prev-button-box" @click="changePage(currentPage - 1)">
-              <img
-                src="../../assets/img/common/prev-button.png"
-                alt=""
-                class="prev-button"
-              />
-            </div>
-            <div class="pagination-button-box">
-              <div
-                v-for="page in visiblePages"
-                :key="page"
-                class="pagination-button"
-                :class="{ active: page === currentPage }"
-                @click="changePage(page)"
-              >
-                {{ page }}
               </div>
             </div>
-            <div class="next-button-box" @click="changePage(currentPage + 1)">
-              <img
-                src="../../assets/img/common/next-button.png"
-                alt=""
-                class="next-button"
-              />
+            <div class="notice-title">
+              {{ notice.broadcastStationNoticeTitle }}
             </div>
+            <div class="notice-body">
+              {{ notice.broadcastStationNoticeContent }}
+            </div>
+          </li>
+        </ul>
+        <div class="pagination-container">
+          <div class="prev-button-box" @click="changePage(currentPage - 1)">
+            <img
+              src="../../assets/img/common/prev-button.png"
+              alt=""
+              class="prev-button"
+            />
+          </div>
+          <div class="pagination-button-box">
+            <div
+              v-for="page in visiblePages"
+              :key="page"
+              class="pagination-button"
+              :class="{ active: page === currentPage }"
+              @click="changePage(page)"
+            >
+              {{ page }}
+            </div>
+          </div>
+          <div class="next-button-box" @click="changePage(currentPage + 1)">
+            <img
+              src="../../assets/img/common/next-button.png"
+              alt=""
+              class="next-button"
+            />
           </div>
         </div>
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
@@ -450,12 +455,10 @@ onMounted(() => {
   align-items: center;
   width: 1579px;
 }
-
 .notice-content-box {
   width: 1519px;
   height: 890px;
 }
-
 .notice-content-head {
   width: 1519px;
   height: 24px;
@@ -463,7 +466,6 @@ onMounted(() => {
   font-weight: 600;
   margin-bottom: 24px;
 }
-
 .notice-content {
   position: relative;
   display: flex;
@@ -475,25 +477,21 @@ onMounted(() => {
   background-color: #1e1e1e;
   border-radius: 16px;
 }
-
 .notice-count-box {
   display: flex;
   width: 1420px;
   height: 31px;
   border-bottom: 1px solid #434343;
 }
-
 .notice-count {
   font-size: 16px;
   font-weight: 600;
   color: #ffcf40;
 }
-
 .notice-list {
   width: 1420px;
   height: 633px;
 }
-
 .notice {
   width: 1420px;
   height: 149px;
@@ -501,54 +499,45 @@ onMounted(() => {
   padding: 16px 0;
   cursor: pointer;
 }
-
 .streamer-logo-box {
   width: 33px;
   height: 33px;
   border-radius: 10rem;
   margin-right: 8px;
 }
-
 .streamer-logo {
   width: 33px;
   height: 33px;
   border-radius: 10rem;
 }
-
 .streamer-name-box {
   display: flex;
   align-items: center;
   height: 19px;
 }
-
 .streamer-name {
   font-size: 16px;
   font-weight: 600;
 }
-
 .streamer-id {
   font-size: 14px;
   font-weight: 400;
   color: #a0a0a0;
 }
-
 .notice-date {
   font-size: 16px;
   font-weight: 600;
 }
-
 .notice-views {
   font-size: 16px;
   font-weight: 400;
 }
-
 .notice-manage-button {
   display: flex;
   justify-content: space-between;
   width: 122px;
   height: 33px;
 }
-
 .notice-edit-button,
 .notice-delete-button {
   display: flex;
@@ -562,7 +551,6 @@ onMounted(() => {
   font-weight: 600;
   cursor: pointer;
 }
-
 .notice-title {
   width: 1420px;
   height: 21px;
@@ -571,14 +559,12 @@ onMounted(() => {
   color: #dcdcdc;
   margin-bottom: 16px;
 }
-
 .notice-body {
   width: 1420px;
   height: 24px;
   font-size: 16px;
   font-weight: 600;
 }
-
 .pagination-container {
   position: absolute;
   bottom: 30px;
@@ -588,7 +574,6 @@ onMounted(() => {
   height: 40px;
   margin-top: 20px;
 }
-
 .prev-button-box {
   display: flex;
   justify-content: center;
@@ -597,7 +582,6 @@ onMounted(() => {
   height: 40px;
   cursor: pointer;
 }
-
 .next-button-box {
   display: flex;
   justify-content: center;
@@ -606,14 +590,12 @@ onMounted(() => {
   height: 40px;
   cursor: pointer;
 }
-
 .pagination-button-box {
   display: flex;
   justify-content: space-between;
   width: 232px;
   height: 40px;
 }
-
 .pagination-button {
   display: flex;
   justify-content: center;
