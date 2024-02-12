@@ -6,12 +6,14 @@ import { useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import router from "@/router";
+import { useStudioStore } from "@/stores/studio";
+const studioStore = useStudioStore();
+const { studioInfo } = storeToRefs(studioStore);
 
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 const route = useRoute();
 
-const prop = defineProps(["studioInfo"]);
 
 const notice = ref({});
 
@@ -76,8 +78,8 @@ onMounted(() => {
               />
             </div>
             <div class="streamer-name-id-box">
-              <div class="streamer-name">{{ prop.studioInfo.userName }}</div>
-              <div class="streamer-id">({{ prop.studioInfo.userId }})</div>
+              <div class="streamer-name">{{ studioInfo.userName }}</div>
+              <div class="streamer-id">({{ studioInfo.userId }})</div>
             </div>
           </div>
           <div

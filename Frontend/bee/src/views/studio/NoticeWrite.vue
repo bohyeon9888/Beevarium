@@ -1,29 +1,33 @@
 <script setup>
 import { ref } from "vue";
 // import StudioInfo from "./components/StudioInfo.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { noticeCreate } from "@/api/notice";
 import { useAuthStore } from "@/stores/user";
+import { useStudioStore } from "@/stores/studio";
 import { storeToRefs } from "pinia";
+const studioStore = useStudioStore();
+const { studioInfo } = storeToRefs(studioStore);
 
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 
-const prop = defineProps(["studioInfo"]);
 const router = useRouter();
+const route = useRoute();
 
 const noticeData = ref({
-  broadcastStationNo: prop.studioInfo.stationNo,
+  broadcastStationNo: studioInfo.value.stationNo,
   broadcastStationNoticeTitle: "",
   broadcastStationNoticeContent: "",
 });
 const noticeWrite = () => {
+  console.log(studioInfo.value.stationNo);
   noticeCreate(
-    console.log(noticeData.value),
     accessToken.value,
     noticeData.value,
     ({ data }) => {
-      console.log(data.message);
+      console.log(data);
+      router.push({ path: `/studio/${route.params.streamerId}/notice` });
     },
     (error) => {}
   );

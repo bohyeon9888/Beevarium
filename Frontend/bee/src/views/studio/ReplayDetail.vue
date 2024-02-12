@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { RouterLink } from "vue-router";
-import StudioInfo from "./components/StudioInfo.vue";
 // import { replayDetail } from "@/api/replay";
 
 const prop = defineProps(["studioInfo"]);
@@ -30,97 +29,93 @@ const replay = ref({
 
 <template>
   <!-- <div class="replay-detail-container"> -->
-    <div class="replay-detail-content-container">
-      <div class="back-to-replay-button">
-        <router-link
-          :to="{ name: 'Replay' }"
-          style="display: flex; align-items: center; width: 91px; height: 24px"
+  <div class="replay-detail-content-container">
+    <div class="back-to-replay-button">
+      <router-link
+        :to="{ name: 'Replay' }"
+        style="display: flex; align-items: center; width: 91px; height: 24px"
+      >
+        <img
+          src="../../assets/img/common/prev-button.png"
+          alt=""
+          class="back-to-replay"
+        />
+        <div
+          style="width: 70px; height: 24px; font-size: 20px; font-weight: 600"
         >
-          <img
-            src="../../assets/img/common/prev-button.png"
-            alt=""
-            class="back-to-replay"
-          />
-          <div
-            style="width: 70px; height: 24px; font-size: 20px; font-weight: 600"
-          >
-            다시보기
-          </div>
-        </router-link>
-      </div>
-      <div class="replay-detail-content-box">
-        <div class="replay-screen-box">
-          <img
-            src="../../assets/img/stream/stream-display.png"
-            alt=""
-            class="replay-screen"
-          />
+          다시보기
         </div>
-        <div class="progressbar-container"></div>
-        <div class="replay-info-container">
-          <div class="replay-info-box">
-            <div class="replay-title-box">
-              {{ replay.title }}
+      </router-link>
+    </div>
+    <div class="replay-detail-content-box">
+      <div class="replay-screen-box">
+        <img
+          src="../../assets/img/stream/stream-display.png"
+          alt=""
+          class="replay-screen"
+        />
+      </div>
+      <div class="progressbar-container"></div>
+      <div class="replay-info-container">
+        <div class="replay-info-box">
+          <div class="replay-title-box">
+            {{ replay.title }}
+          </div>
+          <div class="replay-tag-box">
+            <ul class="tag-list">
+              <li v-for="(tag, index) in replay.tags" :key="index" class="tag">
+                {{ tag }}
+              </li>
+            </ul>
+          </div>
+          <div class="replay-views-date-box">
+            <div>조회수 {{ replay.views }}회</div>
+            <div
+              style="
+                width: 1px;
+                height: 14px;
+                margin: 0 10px;
+                background: #636363;
+              "
+            ></div>
+            <div>{{ replay.date }}</div>
+          </div>
+        </div>
+        <div class="clip-setting-container">
+          <div class="clip-checkpoint-button-box">
+            <div class="clip-startpoint-button">
+              <img
+                src="../../assets/img/studio/clip/clip-startpoint.png"
+                alt=""
+                class="clip-startpoint"
+              />
+              <div style="font-size: 14px; font-weight: 700">클립 체크</div>
             </div>
-            <div class="replay-tag-box">
-              <ul class="tag-list">
-                <li
-                  v-for="(tag, index) in replay.tags"
-                  :key="index"
-                  class="tag"
-                >
-                  {{ tag }}
-                </li>
-              </ul>
-            </div>
-            <div class="replay-views-date-box">
-              <div>조회수 {{ replay.views }}회</div>
-              <div
-                style="
-                  width: 1px;
-                  height: 14px;
-                  margin: 0 10px;
-                  background: #636363;
-                "
-              ></div>
-              <div>{{ replay.date }}</div>
+            <div class="clip-endpoint-button">
+              <div style="font-size: 14px; font-weight: 700">클립 해제</div>
+              <img
+                src="../../assets/img/studio/clip/clip-endpoint.png"
+                alt=""
+                class="clip-endpoint"
+              />
             </div>
           </div>
-          <div class="clip-setting-container">
-            <div class="clip-checkpoint-button-box">
-              <div class="clip-startpoint-button">
-                <img
-                  src="../../assets/img/studio/clip/clip-startpoint.png"
-                  alt=""
-                  class="clip-startpoint"
-                />
-                <div style="font-size: 14px; font-weight: 700">클립 체크</div>
+          <div class="clip-save-button-box">
+            <div class="clip-save-button">
+              <div style="font-size: 14px; font-weight: 700; color: #121212">
+                클립 저장
               </div>
-              <div class="clip-endpoint-button">
-                <div style="font-size: 14px; font-weight: 700">클립 해제</div>
-                <img
-                  src="../../assets/img/studio/clip/clip-endpoint.png"
-                  alt=""
-                  class="clip-endpoint"
-                />
-              </div>
-            </div>
-            <div class="clip-save-button-box">
-              <div class="clip-save-button">
-                <div style="font-size: 14px; font-weight: 700; color: #121212">
-                  클립 저장
-                </div>
-                <img
-                  src="../../assets/img/studio/clip/clip-save.png"
-                  alt=""
-                  class="clip-save"
-                />
-              </div>
+              <img
+                src="../../assets/img/studio/clip/clip-save.png"
+                alt=""
+                class="clip-save"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
   <!-- </div> -->
 </template>
 
