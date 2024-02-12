@@ -4,6 +4,7 @@ import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.broadcasting.dto.EnterRespDTO;
 import b203.varium.broadcasting.dto.ListRespDTO;
+import b203.varium.broadcasting.dto.StationLiveDTO;
 import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.broadcasting.repository.BroadcastingRepository;
 import b203.varium.follow.dto.FollowRespDTO;
@@ -115,6 +116,24 @@ public class BroadcastingService {
         return resp;
     }
 
+    public StationLiveDTO getStationBroadcasting(int stationNo) {
+        StationLiveDTO liveDTO = new StationLiveDTO();
+
+        if (!broadcastingRepository.existsByBroadcastStation_Id(stationNo)) {
+            liveDTO.setLive(false);
+            return liveDTO;
+        }
+
+        Broadcasting broadcasting = broadcastingRepository.findByBroadcastStation_Id(stationNo);
+
+        liveDTO.setLive(true);
+        liveDTO.setBroadcastingNo(broadcasting.getId());
+        liveDTO.setBroadcastingThumbnail("https://b203-beevairum.s3.ap-northeast-2.amazonaws.com/thumbnail/none.png");
+        liveDTO.setViewers(broadcasting.getBroadcastingViewers());
+        liveDTO.setBroadcastingTitle(broadcasting.getBroadcastingTitle());
+        return liveDTO;
+    }
+
     public ListRespDTO setRespDTO(BroadcastStation station) {
         ListRespDTO data = new ListRespDTO();
         int stationId = station.getId();
@@ -172,13 +191,16 @@ public class BroadcastingService {
             return resp;
         }
 
+        int nowV = broadcasting.getBroadcastingViewers();
+        broadcasting.setBroadcastingViewers(nowV + 1);
+
         respDTO.setStreamerId(streamerId);
         respDTO.setStreamerName(station.getUser().getUsername());
         respDTO.setStreamerProfile(station.getUser().getProfileUrl());
         respDTO.setViewers(broadcasting.getBroadcastingViewers()+1);
         respDTO.setUsername(username);
-
         respDTO.setTags(getTags(broadcasting.getId()));
+        broadcastingRepository.save(broadcasting);
 
         resp.put("data", respDTO);
         resp.put("status", "success");

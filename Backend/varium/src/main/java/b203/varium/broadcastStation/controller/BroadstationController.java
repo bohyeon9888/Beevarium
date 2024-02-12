@@ -1,8 +1,6 @@
 package b203.varium.broadcastStation.controller;
 
-import b203.varium.broadcastStation.dto.MyStationReqDTO;
 import b203.varium.broadcastStation.service.BroadcastStationService;
-import com.amazonaws.Response;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

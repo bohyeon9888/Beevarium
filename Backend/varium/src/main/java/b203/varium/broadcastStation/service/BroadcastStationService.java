@@ -1,10 +1,12 @@
 package b203.varium.broadcastStation.service;
 
 
+import b203.varium.board.dto.BroadcastStationNoticeDto;
 import b203.varium.board.service.BroadcastStationNoticeService;
 import b203.varium.broadcastStation.dto.MyStationRespDTO;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
+import b203.varium.broadcasting.service.BroadcastingService;
 import b203.varium.user.entity.UserEntity;
 import b203.varium.user.repository.UserRepository;
 import b203.varium.video.service.ClipVideoService;
@@ -14,10 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.hibernate.query.sqm.tree.SqmNode.log;
 
@@ -31,7 +30,7 @@ public class BroadcastStationService {
     private final UserRepository userRepository;
     private final BroadcastStationNoticeService stationNoticeService;
     private final ReplayVideoService replayVideoService;
-    private final ClipVideoService clipVideoService;
+    private final BroadcastingService broadcastingService;
 
     public BroadcastStation getBroadcastStationWithDetails(int stationId) {
 
@@ -74,14 +73,21 @@ public class BroadcastStationService {
             respDTO.setStationNo(station.getId());
             respDTO.setStationTitle(station.getBroadcastStationTitle());
             respDTO.setUserId(streamerId);
+            respDTO.setUserName(streamer.getUsername());
+            respDTO.setStationFollower(station.getBroadcastStationFollowNum());
 //            respDTO.setIsMine(username.equals(station.getUser().getUsername()));
             boolean isMine = Objects.equals(username, Optional.ofNullable(station).map(s -> s.getUser()).map(u -> u.getUsername()).orElse(null));
             respDTO.setIsMine(isMine);
 
             respDTO.setStationImg(streamer.getProfileUrl());
-            respDTO.setNoticeList(stationNoticeService.findNoticesByStationId(station.getId()));
+            List<BroadcastStationNoticeDto> noticeList = stationNoticeService.findNoticesByStationId(station.getId());
+            if (noticeList.size() <= 0) {
+                respDTO.setFirstNotice(null);
+            } else {
+                respDTO.setFirstNotice(noticeList.get(0));
+            }
             respDTO.setReplayList(replayVideoService.getReplayVideos(streamerId));
-            respDTO.setClipList(clipVideoService.getClipVideos(streamerId));
+            respDTO.setLiveInfo(broadcastingService.getStationBroadcasting(station.getId()));
 
             data.put("stationInfo", respDTO);
             result.put("data", data);

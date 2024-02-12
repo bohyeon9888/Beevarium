@@ -1,12 +1,14 @@
 package b203.varium.broadcastStation.dto;
 
 import b203.varium.board.dto.BroadcastStationNoticeDto;
+import b203.varium.broadcasting.dto.StationLiveDTO;
 import b203.varium.video.dto.ClipVideoDTO;
 import b203.varium.video.dto.ReplayVideoDTO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.SimpleTimeZone;
 
 @Data
 @RequiredArgsConstructor
@@ -16,8 +18,11 @@ public class MyStationRespDTO {
     private String stationTitle;
     private String stationImg;
     private String userId;
+    private String userName;
+    private int stationFollower;
     // 방송국 공지사항, 방송국 다시보기 비디오, 방송국 클립 비디오
-    private List<BroadcastStationNoticeDto> noticeList;
+    private BroadcastStationNoticeDto firstNotice;
     private List<ReplayVideoDTO> replayList;
-    private List<ClipVideoDTO> clipList;
+    private StationLiveDTO liveInfo;
+
 }
