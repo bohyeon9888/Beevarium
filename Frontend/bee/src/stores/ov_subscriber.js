@@ -21,12 +21,18 @@ export const useOVSStore = defineStore(
     let connectId = "";
 
     const messagee = ref("");
+    const subtitle = ref("");
 
     // 메시지를 추가하는 함수
     const addMessage = (message) => {
       console.log("몇번 호출?");
       messagee.value = message;
       console.log(messagee.value);
+    };
+
+    const addSubtitle = (signal) => {
+      subtitle.value = signal;
+      console.log(subtitle.value);
     };
 
     // 세션 연결 - 방송 참여자
@@ -58,6 +64,11 @@ export const useOVSStore = defineStore(
           console.log(event.data);
           console.log(event.name); // Message
           addMessage(event.data); // The type of message
+        });
+
+        session.on("signal:subtitles", (event) => {
+          console.log("Received subtitle signal:", event.data);
+          addSubtitle(event.data);
         });
 
         // 세션에 연결할 토큰 가져오기
@@ -144,10 +155,11 @@ export const useOVSStore = defineStore(
       sendMessage1,
       receiveMessage,
       closeSession,
-      messagee,
       addMessage,
+      messagee,
       sessionId,
       connectId,
+      subtitle,
     };
   },
   {

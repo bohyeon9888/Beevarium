@@ -10,8 +10,8 @@ export const useOVPStore = defineStore(
   () => {
     const authStore = useAuthStore();
     const { user } = storeToRefs(authStore);
-    var session;
     var OV = new OpenVidu();
+    var session;
     var mainstreamer;
     axios.defaults.headers.post["Content-Type"] = "application/json";
 
@@ -30,6 +30,11 @@ export const useOVPStore = defineStore(
     const openSession = async () => {
       try {
         // 성공적으로 통신시 클라이언트측 세션 초기화
+        if (session && session.connection) {
+          await session.disconnect(); // 이전 세션 연결 해제
+          OV = new OpenVidu(); // OpenVidu 객체 초기화
+        }
+        // 새 세션을 초기화합니다.
         session = OV.initSession();
         const response = await axios.post(
           `${API_SERVER_URL}openvidu/api/sessions`,
@@ -216,11 +221,16 @@ export const useOVPStore = defineStore(
     // 세션 닫기
     const closeSession = async () => {
       try {
+        if (session && session.connection) {
+          await session.disconnect(); // 세션 연결 해제
+          session = null; // 세션 객체 초기화
+        }
+
         await axios.delete(
           `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
         );
         console.log("세션 닫힘");
-        //클라이언트측 세션 닫기 -> 필요없나??
+        //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
         console.error("Error", error);
       }
