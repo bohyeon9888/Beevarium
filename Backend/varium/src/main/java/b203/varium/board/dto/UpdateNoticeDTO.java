@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class UpdateNoticeDTO {
+    private int broadcastStationNoticeNo;
 //    @NotNull(message = "broadcastStationNo 값은 널이 될 수 없습니다")
     private int broadcastStationNo;
     private String broadcastStationNoticeTitle;

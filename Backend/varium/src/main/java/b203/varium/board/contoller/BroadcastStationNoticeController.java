@@ -1,6 +1,7 @@
 package b203.varium.board.contoller;
 
 import b203.varium.board.dto.BroadcastStationNoticeDto;
+import b203.varium.board.dto.StationNoticeDTO;
 import b203.varium.board.dto.UpdateNoticeDTO;
 import b203.varium.board.service.BroadcastStationNoticeService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class BroadcastStationNoticeController {
     @GetMapping("/{broadcast_station_no}")
     public ResponseEntity<Map<String, Object>> getBroadcastStationNotices(@PathVariable("broadcast_station_no") Integer broadcastStationNo) {
         log.info("broadcastStationNo = {}", broadcastStationNo);
-        List<BroadcastStationNoticeDto> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
+        List<StationNoticeDTO> notices = broadcastStationNoticeService.findNoticesByStationId(broadcastStationNo);
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("data", notices);
@@ -55,7 +56,7 @@ public class BroadcastStationNoticeController {
     // 방송국 공지사항 게시글 조회
     @GetMapping("/board/{broadcasting_station_notice_no}")
     public ResponseEntity<Map<String, Object>> getBroadcastStationNotice(@PathVariable("broadcasting_station_notice_no") Integer noticeNo) {
-        BroadcastStationNoticeDto notice = broadcastStationNoticeService.findBroadcastStationNoticeById(noticeNo);
+        StationNoticeDTO notice = broadcastStationNoticeService.findBroadcastStationNoticeById(noticeNo);
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("data", notice);

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface BroadcastStationNoticeRepository extends JpaRepository<BroadcastStationNotice, Integer> {
     // Spring Data JPA 기본 CRUD 메소드들이 자동으로 제공됩니다.
 //    List<BroadcastStationNotice> findByBroadcastStationNo( broadcastStationNo);
-
+    BroadcastStationNotice findByBroadcastStationNoticeNo(Integer id);
 }

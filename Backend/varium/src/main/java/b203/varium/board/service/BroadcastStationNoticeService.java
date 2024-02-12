@@ -2,6 +2,7 @@
 package b203.varium.board.service;
 
 import b203.varium.board.dto.BroadcastStationNoticeDto;
+import b203.varium.board.dto.StationNoticeDTO;
 import b203.varium.board.dto.UpdateNoticeDTO;
 import b203.varium.board.entity.BroadcastStationNotice;
 import b203.varium.board.repository.BroadcastStationNoticeCustomRepository;
@@ -62,24 +63,30 @@ public class BroadcastStationNoticeService {
         broadcastStationNoticeRepository.deleteById(id);
     }
 
-    public BroadcastStationNoticeDto findBroadcastStationNoticeById(Integer noticeNo) {
-        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(noticeNo)
-                .orElseThrow(() -> new RuntimeException("BroadcastStationNotice not found with id: " + noticeNo));
+    public StationNoticeDTO findBroadcastStationNoticeById(Integer noticeNo) {
 
-        return new BroadcastStationNoticeDto(
-                broadcastStationNotice.getBroadcastStation().getId(),
-                broadcastStationNotice.getBroadcastStationNoticeTitle(),
-                broadcastStationNotice.getBroadcastStationNoticeContent());
+        BroadcastStationNotice notice = broadcastStationNoticeRepository.findByBroadcastStationNoticeNo(noticeNo);
+
+        return new StationNoticeDTO(
+                notice.getBroadcastStationNoticeNo(),
+                notice.getBroadcastStation().getId(),
+                notice.getBroadcastStationNoticeTitle(),
+                notice.getBroadcastStationNoticeContent(),
+                notice.getCreatedDate(),
+                notice.getUpdatedDate());
     }
 
-    public List<BroadcastStationNoticeDto> findNoticesByStationId(Integer broadcastStationNo) {
+    public List<StationNoticeDTO> findNoticesByStationId(Integer broadcastStationNo) {
         List<BroadcastStationNotice> notices = broadcastStationNoticeCustomRepository.findNoticesByStationId(broadcastStationNo);
-        List<BroadcastStationNoticeDto> broadcastStationNoticeDtos = new ArrayList<>();
+        List<StationNoticeDTO> broadcastStationNoticeDtos = new ArrayList<>();
         for (BroadcastStationNotice notice : notices) {
-            broadcastStationNoticeDtos.add(new BroadcastStationNoticeDto(
+            broadcastStationNoticeDtos.add(new StationNoticeDTO(
+                    notice.getBroadcastStationNoticeNo(),
                     notice.getBroadcastStation().getId(),
                     notice.getBroadcastStationNoticeTitle(),
-                    notice.getBroadcastStationNoticeContent()));
+                    notice.getBroadcastStationNoticeContent(),
+                    notice.getCreatedDate(),
+                    notice.getUpdatedDate()));
         }
         return broadcastStationNoticeDtos;
     }
@@ -90,7 +97,7 @@ public class BroadcastStationNoticeService {
     public void updateBroadcastStationNotice(UpdateNoticeDTO updateNoticeDTO) {
         log.info("broadcastStationNoticeDto={}", updateNoticeDTO);
         //optional null 값 체크
-        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(updateNoticeDTO.getBroadcastStationNo())
+        BroadcastStationNotice broadcastStationNotice = broadcastStationNoticeRepository.findById(updateNoticeDTO.getBroadcastStationNoticeNo())
                 .orElseThrow(() -> new RuntimeException("BroadcastStation not found with id: " + updateNoticeDTO.getBroadcastStationNo()));
         log.info("broadcastStationNotice = {}", broadcastStationNotice);
 

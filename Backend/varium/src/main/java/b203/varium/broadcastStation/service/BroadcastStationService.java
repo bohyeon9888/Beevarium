@@ -2,6 +2,7 @@ package b203.varium.broadcastStation.service;
 
 
 import b203.varium.board.dto.BroadcastStationNoticeDto;
+import b203.varium.board.dto.StationNoticeDTO;
 import b203.varium.board.service.BroadcastStationNoticeService;
 import b203.varium.broadcastStation.dto.MyStationRespDTO;
 import b203.varium.broadcastStation.entity.BroadcastStation;
@@ -80,7 +81,7 @@ public class BroadcastStationService {
             respDTO.setIsMine(isMine);
 
             respDTO.setStationImg(streamer.getProfileUrl());
-            List<BroadcastStationNoticeDto> noticeList = stationNoticeService.findNoticesByStationId(station.getId());
+            List<StationNoticeDTO> noticeList = stationNoticeService.findNoticesByStationId(station.getId());
             if (noticeList.size() <= 0) {
                 respDTO.setFirstNotice(null);
             } else {
