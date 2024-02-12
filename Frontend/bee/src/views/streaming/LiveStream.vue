@@ -12,6 +12,7 @@ const sidebarStore = useSidebarStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 const ovsStore = useOVSStore();
 const ovpStore = useOVPStore();
+const { subtitle } = storeToRefs(ovsStore);
 
 const isSubOn = ref(false);
 const isFilterOn = ref(false);
@@ -75,7 +76,7 @@ onMounted(() => {
         :class="{ expanded: !isExpanded }"
       >
         <div class="screen" id="subscriber-video">
-          <div v-if="isSubOn" class="subtitle">자막</div>
+          <div v-if="isSubOn" class="subtitle">{{ subtitle }}</div>
         </div>
       </div>
       <div
@@ -255,7 +256,7 @@ onMounted(() => {
   height: 60px;
   font-size: 18px;
   font-weight: 600;
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 #screen-container.expanded {
   width: 1470px;

@@ -143,7 +143,9 @@ watchEffect(() => {
 });
 
 onMounted(() => {
-  ovpStore.closeSession();
+  if (ovpStore.sessionId) {
+    ovpStore.closeSession();
+  }
 });
 </script>
 

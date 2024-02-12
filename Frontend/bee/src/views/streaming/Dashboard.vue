@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
@@ -13,6 +13,16 @@ const streamerId = ref("김싸피");
 const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습니다.");
 const tagInput = ref("");
 const tagList = ref(new Set());
+const audioInputDevices = ref([]);
+const selectedMicrophoneId = ref("");
+
+const loadAudioInputDevices = async () => {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  audioInputDevices.value = devices.filter(
+    (device) => device.kind === "audioinput"
+  );
+};
+
 const onTag = function (event, input) {
   if (input && input.trim() !== "") {
     tagList.value.add(input);
@@ -60,8 +70,14 @@ const doStreamingEnd = () => {
   streamingEnd(
     accessToken.value,
     (onAir.value = false),
-    ({ data }) => {
+    async ({ data }) => {
       console.log(data.msg);
+      try {
+        await axios.post("/api/chatlog", { chatlog: messages.value });
+        console.log("chatlog sent successfully");
+      } catch (error) {
+        console.error("Error sending messages:", error);
+      }
     },
     (error) => {
       console.log(error.data.msg);
@@ -71,6 +87,17 @@ const doStreamingEnd = () => {
 const streamingButtonText = computed(() => {
   return onAir.value ? "On Air" : "방송 시작";
 });
+
+onMounted(() => {
+  loadAudioInputDevices();
+});
+
+const openSessionWithSelectedMic = async () => {
+  if (selectedMicrophoneId.value) {
+    // connectSession 함수에 선택된 마이크 ID를 전달합니다.
+    await ovpStore.connectSession(selectedMicrophoneId.value);
+  }
+};
 
 // 테스트
 addNewsFeedItem("아재개더", "3,000");
@@ -131,6 +158,18 @@ addNewsFeedItem("아재개더", "3,000");
         </div>
 
         <div class="streaming-option">
+          <select class="mic-select" v-model="selectedMicrophoneId">
+            <option
+              v-for="device in audioInputDevices"
+              :key="device.deviceId"
+              :value="device.deviceId"
+            >
+              {{ device.label }}
+            </option>
+          </select>
+          <button class="mic-button" @click="openSessionWithSelectedMic">
+            마이크 선택 및 세션 시작
+          </button>
           <button
             class="streaming-start-btn"
             @click="[doStreamingStart(), ovpStore.openSession()]"
@@ -433,5 +472,30 @@ button:hover {
 .streaming-start-btn[disabled]:hover {
   background: #434343;
   color: #777777;
+}
+.mic-select {
+  display: inline-flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: #434343;
+  font-size: 15px;
+  line-height: normal;
+  margin-right: 15px;
+}
+.mic-button {
+  display: inline-flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: #434343;
+  border: none;
+  font-size: 15px;
+  line-height: normal;
+  margin-right: 15px;
 }
 </style>

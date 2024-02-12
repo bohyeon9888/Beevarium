@@ -10,10 +10,9 @@ export const useOVPStore = defineStore(
   () => {
     const authStore = useAuthStore();
     const { user } = storeToRefs(authStore);
-    var session;
     var OV = new OpenVidu();
+    var session;
     var mainstreamer;
-
     axios.defaults.headers.post["Content-Type"] = "application/json";
 
     const API_SERVER_URL = import.meta.env.VITE_OPENVIDU_API_URL;
@@ -21,7 +20,6 @@ export const useOVPStore = defineStore(
     let connectId = "";
 
     const messagee = ref("");
-
     // 메시지를 추가하는 함수
     const addMessage = (message) => {
       console.log("몇번 호출?");
@@ -32,6 +30,11 @@ export const useOVPStore = defineStore(
     const openSession = async () => {
       try {
         // 성공적으로 통신시 클라이언트측 세션 초기화
+        if (session && session.connection) {
+          await session.disconnect(); // 이전 세션 연결 해제
+          OV = new OpenVidu(); // OpenVidu 객체 초기화
+        }
+        // 새 세션을 초기화합니다.
         session = OV.initSession();
         const response = await axios.post(
           `${API_SERVER_URL}openvidu/api/sessions`,
@@ -62,7 +65,7 @@ export const useOVPStore = defineStore(
       }
     };
 
-    const connectSession = async (role = "PUBLISHER") => {
+    const connectSession = async (selectedMicrophoneId) => {
       try {
         const response = await axios.post(
           `${API_SERVER_URL}openvidu/api/sessions/${sessionId}/connection`,
@@ -96,6 +99,16 @@ export const useOVPStore = defineStore(
               videoSource: "screen",
               // videoDimensions: '{"width":890, "height":493}',
               // 카메라와 화면 공유 설정
+              audioSource: selectedMicrophoneId.value,
+              publishAudio: true, // 오디오 발행 활성화
+              publishVideo: true, // 비디오 발행 활성화
+            });
+            publisher.on("accessAllowed", () => {
+              //발행한 스트림에 오디오트랙이 포함되어 있는지 확인
+              const audioTracks = publisher.stream
+                .getMediaStream()
+                .getAudioTracks();
+              console.log("오디오 트랙 정보", audioTracks);
             });
 
             publisher.on("videoElementCreated", (event) => {
@@ -113,7 +126,71 @@ export const useOVPStore = defineStore(
               .publish(publisher)
               .then(() => {
                 console.log("화면 및 카메라 공유 스트림 발생 성공", sessionId);
+                session
+                  .subscribeToSpeechToText(publisher.stream, "ko-KR")
+                  .then(() => {
+                    console.log("Speech-to-Text 구독 성공");
+                    // STT 구독이 성공적이라면
+                    // session.on("speechToTextMessage", (event) => {
+                    //   console.log("음성 변환 인식됨");
+                    //   console.log(event);
+                    // axios
+                    //   .post(`https://2778-112-166-150-139.ngrok-free.app`, {
+                    //     prompt: event.text,
+                    //   })
+                    //   .then((response) => {
+                    //     console.log(response);
+                    //   })
+                    //   .catch((error) => {
+                    //     console.error("변환 실패", error);
+                    //   });
+                    // });
+                    const subtitleBuffer = ref("");
+                    let subtitleTimeout;
+                    session.on("speechToTextMessage", (event) => {
+                      console.log(event);
+                      subtitleBuffer.value = event.text;
+                      if (subtitleTimeout) {
+                        clearTimeout(subtitleTimeout);
+                      }
+                      subtitleTimeout = setTimeout(async () => {
+                        // async 키워드 추가
+                        if (subtitleBuffer.value.trim().length > 0) {
+                          try {
+                            const res = await session.signal({
+                              data: subtitleBuffer.value.trim(),
+                              type: "subtitles",
+                            });
+                            console.log(subtitleBuffer.value.trim());
+                            const response = await axios.post(
+                              // await 키워드 사용
+                              `https://0937-14-51-29-92.ngrok-free.app`,
+                              {
+                                prompt: subtitleBuffer.value.trim(),
+                              },
+                              {
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                              }
+                            );
+                            subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
+                            console.log(
+                              "Subtitles signal sent successfully.",
+                              response.data
+                            );
+                          } catch (error) {
+                            console.error("변환 실패", error);
+                          }
+                        }
+                      }, 1000);
+                    });
+                  })
+                  .catch((error) => {
+                    console.error("Speech-to-Text 구독 실패:", error);
+                  });
               })
+
               .catch((error) => {
                 console.error("화면 및 카메라 공유 스트림 발행 실패", error);
               });
@@ -135,11 +212,16 @@ export const useOVPStore = defineStore(
     // 세션 닫기
     const closeSession = async () => {
       try {
+        if (session && session.connection) {
+          await session.disconnect(); // 세션 연결 해제
+          session = null; // 세션 객체 초기화
+        }
+
         await axios.delete(
           `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
         );
         console.log("세션 닫힘");
-        //클라이언트측 세션 닫기 -> 필요없나??
+        //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
         console.error("Error", error);
       }
