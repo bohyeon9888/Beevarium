@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from "vue";
 import { RouterLink } from "vue-router";
-import StudioInfo from "./components/StudioInfo.vue";
+// import StudioInfo from "./components/StudioInfo.vue";
 
+const prop = defineProps(["studioInfo"]);
 const clip = ref({
   title: "모든 길은 결국 저를 통합니다_페이커 [T1 vs JDG]",
   thumbnail: "clip-detail1",
@@ -13,10 +14,7 @@ const clip = ref({
 </script>
 
 <template>
-  <div class="clip-detail-container">
-    <div class="studio-info">
-      <StudioInfo />
-    </div>
+  <!-- <div class="clip-detail-container"> -->
     <div class="clip-detail-content-container">
       <div class="back-to-clip-button">
         <router-link
@@ -58,14 +56,14 @@ const clip = ref({
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.clip-detail-container {
+/* .clip-detail-container {
   display: flex;
   width: 1899px;
-}
+} */
 .clip-detail-content-container {
   display: flex;
   flex-direction: column;

@@ -24,4 +24,13 @@ const streamingEnd = async (accessToken, success, fail) => {
     .catch(fail);
 };
 
-export { streamingStart, streamingEnd };
+const streamingEnter = async (accessToken, streamerId, success, fail) => {
+  await local
+    .get(`/live/enter/${streamerId}`, {
+      headers: { Authorization: accessToken },
+    })
+    .then(success)
+    .catch(fail);
+};
+
+export { streamingStart, streamingEnd, streamingEnter };

@@ -1,11 +1,14 @@
 <script setup>
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { useSidebarStore } from "@/stores/sidebar";
+import { useStreamerStore } from "@/stores/streamer";
 import { storeToRefs } from "pinia";
 import CardCarousel from "./CardCarousel.vue";
 
+const router = useRouter();
 const sidebarStore = useSidebarStore();
+const streamerStore = useStreamerStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 
 const livestreams = ref([
@@ -82,25 +85,47 @@ const livestreams = ref([
     watcher: "1579",
   },
 ]);
+
+const moveToStudio = (streamerId) => {
+  router.push({ path: `/studio/studio-main/${streamerId}` });
+};
+
 const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
 };
 const getThumbnailUrl = (name) => {
-  return new URL(`/src/assets/img/home/hotlive/${name}.png`, import.meta.url).href;
+  return new URL(`/src/assets/img/home/hotlive/${name}.png`, import.meta.url)
+    .href;
 };
 </script>
 
 <template>
-  <div id="home-container" class="home-container" :class="{ expanded: !isExpanded }">
+  <div
+    id="home-container"
+    class="home-container"
+    :class="{ expanded: !isExpanded }"
+  >
     <div class="carousel-container">
       <CardCarousel />
     </div>
-    <div id="slogan-container" class="slogan-container" :class="{ expanded: !isExpanded }">
+    <div
+      id="slogan-container"
+      class="slogan-container"
+      :class="{ expanded: !isExpanded }"
+    >
       <img class="slogan" src="../../assets/img/slogan.png" alt="" />
     </div>
-    <div id="hotlive-container" class="hotlive-container" :class="{ expanded: !isExpanded }">
+    <div
+      id="hotlive-container"
+      class="hotlive-container"
+      :class="{ expanded: !isExpanded }"
+    >
       <div style="font-size: 20px; font-weight: 600">인기 라이브</div>
-      <ul id="hotlive-list" class="hotlive-list" :class="{ expanded: !isExpanded }">
+      <ul
+        id="hotlive-list"
+        class="hotlive-list"
+        :class="{ expanded: !isExpanded }"
+      >
         <li
           id="hotlive"
           class="hotlive"
@@ -141,7 +166,15 @@ const getThumbnailUrl = (name) => {
             class="livestream-image-box"
             :class="{ expanded: !isExpanded }"
           >
-            <router-link :to="{ path: `/streaming/live-stream/${livestream.streamerId}` }">
+            <router-link
+              :to="{ path: `/streaming/live-stream/${livestream.streamerId}` }"
+              @click="
+                streamerStore.selectStreamer(
+                  livestream.streamerName,
+                  livestream.streamerId
+                )
+              "
+            >
               <img
                 id="livestream-image"
                 class="livestream-image"
@@ -157,7 +190,11 @@ const getThumbnailUrl = (name) => {
             :class="{ expanded: !isExpanded }"
           >
             <div class="streamer-logo-box">
-              <img class="streamer-logo-image" :src="getImageUrl(livestream.streamerLogo)" alt="" />
+              <img
+                class="streamer-logo-image"
+                :src="getImageUrl(livestream.streamerLogo)"
+                alt=""
+              />
             </div>
             <div
               id="livestream-info-box"
@@ -165,9 +202,14 @@ const getThumbnailUrl = (name) => {
               :class="{ expanded: !isExpanded }"
             >
               <div class="livestream-title">{{ livestream.title }}</div>
-              <div class="streamer-name">{{ livestream.streamerName }}</div>
+              <div class="streamer-name" @click="moveToStudio(livestream.streamerId)">
+                {{ livestream.streamerName }}
+              </div>
               <ul class="livestream-tag-list">
-                <li class="livestream-tag" v-for="(tag, index) in livestream.tags">
+                <li
+                  class="livestream-tag"
+                  v-for="(tag, index) in livestream.tags"
+                >
                   {{ tag }}
                 </li>
               </ul>
@@ -300,6 +342,7 @@ const getThumbnailUrl = (name) => {
   font-size: 14px;
   font-weight: 400;
   color: #b6b6b6;
+  cursor: pointer;
 }
 .livestream-tag-list {
   display: flex;

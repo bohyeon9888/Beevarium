@@ -1,76 +1,76 @@
 <script setup>
-import { ref } from "vue";
-import StudioInfo from "./components/StudioInfo.vue";
+import { ref, onMounted } from "vue";
 import { studio } from "@/api/studio";
 import { useAuthStore } from "@/stores/user";
-import { useStreamerStore } from "@/stores/streamer";
 import { storeToRefs } from "pinia";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
 
 const authStore = useAuthStore();
-const streamerStore = useStreamerStore();
 const { accessToken } = storeToRefs(authStore);
-const { streamer } = storeToRefs(streamerStore);
+const prop = defineProps(["studioInfo", "streamer"]);
 
-const replays = ref([
-  {
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },
-]);
+// const replays = ref([
+//   {
+//     thumbnail: "replay1",
+//     title: "전체보기 / 2024 시즌 오프닝",
+//     date: "24.01.09",
+//   },
+//   {
+//     thumbnail: "replay2",
+//     title: "2023 LCK AWARDS",
+//     date: "23.12.13",
+//   },
+//   {
+//     thumbnail: "replay3",
+//     title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
+//     date: "23.10.28",
+//   },
+//   {
+//     thumbnail: "replay4",
+//     title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
+//     date: "23.10.28",
+//   },
+//   {
+//     thumbnail: "replay5",
+//     title: "[KT vs T1] 1세트 / 2023 LCK Summer",
+//     date: "23.08.06",
+//   },
+// ]);
 
-const clips = ref([
-  {
-    thumbnail: "clip1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-    username: "user1",
-  },
-  {
-    thumbnail: "clip2",
-    title: "2023 LCK AWARDS",
-    date: "24.01.09",
-    username: "user2",
-  },
-  {
-    thumbnail: "clip3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "24.01.09",
-    username: "user3",
-  },
-  {
-    thumbnail: "clip4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "24.01.09",
-    username: "user4",
-  },
-  {
-    thumbnail: "clip5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "24.01.09",
-    username: "user4",
-  },
-]);
+// const clips = ref([
+//   {
+//     thumbnail: "clip1",
+//     title: "전체보기 / 2024 시즌 오프닝",
+//     date: "24.01.09",
+//     username: "user1",
+//   },
+//   {
+//     thumbnail: "clip2",
+//     title: "2023 LCK AWARDS",
+//     date: "24.01.09",
+//     username: "user2",
+//   },
+//   {
+//     thumbnail: "clip3",
+//     title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
+//     date: "24.01.09",
+//     username: "user3",
+//   },
+//   {
+//     thumbnail: "clip4",
+//     title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
+//     date: "24.01.09",
+//     username: "user4",
+//   },
+//   {
+//     thumbnail: "clip5",
+//     title: "[KT vs T1] 1세트 / 2023 LCK Summer",
+//     date: "24.01.09",
+//     username: "user4",
+//   },
+// ]);
 
 const getReplayUrl = (name) => {
   return new URL(`/src/assets/img/studio/${name}.png`, import.meta.url).href;
@@ -81,20 +81,22 @@ const studioInfo = ref({});
 const getStudio = () => {
   studio(
     accessToken.value,
-    streamer.value.id,
+    route.params.streamerId,
     ({ data }) => {
       studioInfo.value = data.data.stationInfo;
+      console.log(studioInfo.value);
     },
     (error) => {}
   );
 };
+
+onMounted(() => {
+  getStudio();
+});
 </script>
 
 <template>
-  <div class="studiomain-container">
-    <div class="studio-info">
-      <StudioInfo :studioInfo="studioInfo" :streamer="streamer"/>
-    </div>
+  <!-- <div class="studiomain-container"> -->
     <div class="studiomain-content-container">
       <div class="studiomain-content-box">
         <div class="studio-banner-container">
@@ -102,10 +104,10 @@ const getStudio = () => {
         </div>
         <div class="studio-notice-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ name: 'Notice' }">공지사항</router-link>
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/notice` }">공지사항</router-link>
           </div>
           <div class="notice-container">
-            <router-link :to="{ name: 'NoticeDetail' }">
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/notice/1` }">
               <div class="notice-content-box"></div>
             </router-link>
             <div class="notice-banner-box">
@@ -115,12 +117,12 @@ const getStudio = () => {
         </div>
         <div class="studio-replay-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ name: 'Replay' }">다시보기</router-link>
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/replay` }">다시보기</router-link>
           </div>
           <div class="replay-container">
             <ul>
-              <router-link :to="{ name: 'ReplayDetail' }" class="replay-list">
-                <li v-for="(replay, index) in replays" :key="index" class="replay">
+              <router-link :to="{ path: `/studio/${route.params.streamerId}/replay/1` }" class="replay-list">
+                <li v-for="(replay, index) in studioInfo.replayList" :key="index" class="replay">
                   <div class="replay-thumbnail-box">
                     <img :src="getReplayUrl(replay.thumbnail)" alt="" class="replay-thumbnail" />
                     <div
@@ -151,12 +153,12 @@ const getStudio = () => {
         </div>
         <div class="studio-clip-container">
           <div style="height: 36px; font-size: 20px; font-weight: 600">
-            <router-link :to="{ name: 'Clip' }">유저 클립</router-link>
+            <router-link :to="{ path: `/studio/${route.params.streamerId}/clip` }">유저 클립</router-link>
           </div>
           <div class="clip-container">
             <ul>
-              <router-link :to="{ name: 'ClipDetail' }" class="clip-list">
-                <li v-for="(clip, index) in clips" :key="index" class="clip">
+              <router-link :to="{ path: `/studio/${route.params.streamerId}/clip/1` }" class="clip-list">
+                <li v-for="(clip, index) in studioInfo.clipList" :key="index" class="clip">
                   <div class="clip-thumbnail-box">
                     <img :src="getReplayUrl(clip.thumbnail)" alt="" class="clip-thumbnail" />
                   </div>
@@ -172,14 +174,14 @@ const getStudio = () => {
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.studiomain-container {
+/* .studiomain-container {
   display: flex;
   width: 1899px;
-}
+} */
 .studio-info {
   width: 320px;
 }
