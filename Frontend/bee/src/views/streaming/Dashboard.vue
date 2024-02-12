@@ -70,8 +70,14 @@ const doStreamingEnd = () => {
   streamingEnd(
     accessToken.value,
     (onAir.value = false),
-    ({ data }) => {
+    async ({ data }) => {
       console.log(data.msg);
+      try {
+        await axios.post("/api/chatlog", { chatlog: messages.value });
+        console.log("chatlog sent successfully");
+      } catch (error) {
+        console.error("Error sending messages:", error);
+      }
     },
     (error) => {
       console.log(error.data.msg);

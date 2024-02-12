@@ -153,44 +153,35 @@ export const useOVPStore = defineStore(
                       if (subtitleTimeout) {
                         clearTimeout(subtitleTimeout);
                       }
-                      subtitleTimeout = setTimeout(() => {
+                      subtitleTimeout = setTimeout(async () => {
+                        // async 키워드 추가
                         if (subtitleBuffer.value.trim().length > 0) {
-                          session
-                            .signal({
+                          try {
+                            const res = await session.signal({
                               data: subtitleBuffer.value.trim(),
                               type: "subtitles",
-                            })
-                            .then((res) => {
-                              console.log(subtitleBuffer.value.trim());
-                              axios
-                                .post(
-                                  `https://0937-14-51-29-92.ngrok-free.app`,
-                                  {
-                                    prompt: subtitleBuffer.value.trim(),
-                                  },
-                                  {
-                                    headers: {
-                                      "Content-Type": "application/json",
-                                    },
-                                  }
-                                )
-                                .then((response) => {
-                                  subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
-                                  console.log(
-                                    "Subtitles signal sent successfully.",
-                                    response.data
-                                  );
-                                })
-                                .catch((error) => {
-                                  console.error("변환 실패", error);
-                                });
-                            })
-                            .catch((error) => {
-                              console.error(
-                                "Error sending subtitles signal:",
-                                error
-                              );
                             });
+                            console.log(subtitleBuffer.value.trim());
+                            const response = await axios.post(
+                              // await 키워드 사용
+                              `https://0937-14-51-29-92.ngrok-free.app`,
+                              {
+                                prompt: subtitleBuffer.value.trim(),
+                              },
+                              {
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                              }
+                            );
+                            subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
+                            console.log(
+                              "Subtitles signal sent successfully.",
+                              response.data
+                            );
+                          } catch (error) {
+                            console.error("변환 실패", error);
+                          }
                         }
                       }, 1000);
                     });
