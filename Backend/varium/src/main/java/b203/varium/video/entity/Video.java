@@ -35,7 +35,4 @@ public abstract class Video extends Record {
 
     @Column(name = "code_name")
     private String codeName;
-
-    @OneToOne(mappedBy = "video")
-    private VideoFile file;
 }
