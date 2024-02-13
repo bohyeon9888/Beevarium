@@ -14,7 +14,6 @@ import java.util.*;
 public class ChatService {
 
     private final MongoTemplate mongoTemplate;
-    private final ChatRepository chatRepository;
 
     public Map<String, Object> saveChatting(String streamerId, List<ChatDTO> chatting) {
         Map<String, Object> resp = new HashMap<>();
@@ -24,7 +23,7 @@ public class ChatService {
 
         for (ChatDTO chat : chatting) {
             ChatEntity data = new ChatEntity();
-            data.setId(streamerId);
+            data.setStreamerId(streamerId);
             data.setUsername(chat.getName());
             data.setMessage(chat.getMessage());
             data.setTime(chat.getTime());

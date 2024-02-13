@@ -6,6 +6,5 @@ import java.util.List;
 
 @Data
 public class SaveReqDTO {
-    private String streamerId;
     private List<ChatDTO> chatting;
 }

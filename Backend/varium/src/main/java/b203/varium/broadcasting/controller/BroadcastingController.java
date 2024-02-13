@@ -3,6 +3,7 @@ package b203.varium.broadcasting.controller;
 import b203.varium.broadcasting.dto.ListRespDTO;
 import b203.varium.broadcasting.dto.ReqDTO;
 import b203.varium.broadcasting.service.BroadcastingService;
+import b203.varium.chatting.dto.SaveReqDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -46,10 +47,10 @@ public class BroadcastingController {
     }
 
 
-    @GetMapping("/end")
-    public ResponseEntity<Map<String, String>> deleteBroadcasting() {
+    @PostMapping("/end")
+    public ResponseEntity<Map<String, Object>> deleteBroadcasting(@RequestBody SaveReqDTO saveReqDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return ResponseEntity.ok(broadcastingService.endBroadcasting(auth.getName()));
+        return ResponseEntity.ok(broadcastingService.endBroadcasting(auth.getName(), saveReqDTO.getChatting()));
     }
 
     // 생방송 화면 들어갈 때 팔로우 여부, 스트리머정보

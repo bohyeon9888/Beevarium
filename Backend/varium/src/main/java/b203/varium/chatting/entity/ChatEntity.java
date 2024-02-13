@@ -8,10 +8,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Getter
 @Setter
-@Document(collection = "notification")
+@Document(collection = "chatting")
 public class ChatEntity {
-    @Id
-    private String id; // 방송국 id
+
+    @Field(name = "streamerId")
+    private String streamerId;
 
     @Field(name = "name")
     private String username;
