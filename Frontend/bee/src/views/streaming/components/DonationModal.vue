@@ -3,10 +3,11 @@ import { ref, watch } from "vue";
 // Props 및 Emits 정의
 const props = defineProps({
   donModActive: Boolean,
+  myPoint: Number,
 });
 const emit = defineEmits(["close"]);
 const donationAmount = ref(1000);
-const myHoney = ref(100000);
+const myHoney = ref(props.myPoint);
 const donationMessage = ref("");
 const isHoneyLack = ref(false);
 

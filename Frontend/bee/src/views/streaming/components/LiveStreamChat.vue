@@ -4,11 +4,15 @@ import { useOVSStore } from "@/stores/ov_subscriber";
 import { ref, onMounted, onUpdated, reactive, watchEffect } from "vue";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { useAuthStore } from "@/stores/user";
+import { getPoint, donatePoint } from "@/api/point";
+import { storeToRefs } from "pinia";
 
 const ovsStore = useOVSStore();
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
 const chatBoxRef = ref(null);
+const { accessToken } = storeToRefs(authStore);
+const myPoint = ref(0);
 
 const isModalOpened = ref(false);
 const messages = ref([]);
@@ -34,7 +38,6 @@ function generateColorForUsername(username) {
 }
 
 const openModal = () => {
-  
   isModalOpened.value = true;
 };
 
@@ -84,6 +87,19 @@ watchEffect(() => {
     messages.value.push(newMessages);
   }
 });
+
+const PointGet = () => {
+  getPoint(
+    accessToken.value,
+    ({ data }) => {
+      console.log(data);
+      myPoint.value = data.point;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
 </script>
 
 <template>
@@ -138,7 +154,7 @@ watchEffect(() => {
           src="../../../assets/img/stream/donation.png"
           alt=""
           class="donation-button"
-          @click="openModal"
+          @click="[PointGet(), openModal()]"
         />
       </div>
       <div class="livestream-chat-button">
@@ -150,7 +166,7 @@ watchEffect(() => {
       class="donation-modal"
       :class="{ modalOpen: isModalOpened }"
     >
-      <DonationModal @close="closeModal" />
+      <DonationModal @close="closeModal" :myPoint="myPoint" />
     </div>
   </div>
 </template>

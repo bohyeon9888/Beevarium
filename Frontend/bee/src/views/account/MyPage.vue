@@ -9,7 +9,6 @@ const router = useRouter();
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 
-
 // 페이지 이동 관련 함수
 const moveToProfile = () => {
   router.push({ name: "Profile" });
