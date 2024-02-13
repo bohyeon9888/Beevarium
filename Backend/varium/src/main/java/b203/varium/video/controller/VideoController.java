@@ -23,7 +23,6 @@ public class VideoController {
 
     private final AmazonS3 amazonS3;
     private final ReplayVideoService replayVideoService;
-    private final ClipVideoService clipVideoService;
 
     @GetMapping("/list/replay/{streamerId}")
     public void viewReplayList(@PathVariable String streamerId) {

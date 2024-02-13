@@ -1,5 +1,6 @@
 package b203.varium.video.service;
 
+import b203.varium.board.entity.BroadcastStationNotice;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
 import b203.varium.video.dto.VideoFileDTO;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,6 +52,8 @@ public class ReplayVideoService {
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
 
+        Timestamp nowT = new Timestamp(System.currentTimeMillis());
+
         log.info(formatter.format(date));
         String[] path = filePath.split("/");
         String folderName = path[path.length -2];
@@ -63,6 +67,8 @@ public class ReplayVideoService {
         replay.setCodeName("V1");
         replay.setReplayVideoNo(replayVideoRepository.findMaxReplayVideoNo()+1);
         replay.setReplayVideoUrl(filePath);
+        replay.setCreatedDate(nowT);
+        replay.setUpdatedDate(nowT);
 
         replayVideoRepository.save(replay);
     }
