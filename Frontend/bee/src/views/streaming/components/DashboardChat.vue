@@ -11,11 +11,30 @@ import {
 } from "vue";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { useAuthStore } from "@/stores/user";
+import { getChatLog } from "@/api/chat";
+import { storeToRefs } from "pinia";
 
 const emits = defineEmits(["sendMessages"]);
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
 const infoModalActive = ref(false);
+const { accessToken } = storeToRefs(authStore);
+const userInfo = ref({});
+
+const ChatLogGet = () => {
+  getChatLog(
+    accessToken.value,
+    selectedUsername.value,
+    ({ data }) => {
+      console.log(data.status);
+      userInfo.value = data.data.userInfo;
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+};
+
 const toggleInfo = () => {
   infoModalActive.value = !infoModalActive.value;
 };
@@ -113,9 +132,10 @@ function generateColorForUsername(username) {
   const saturation = 70;
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
-const selectUser = (username) => {
+const selectUser = async (username) => {
   selectedUsername.value = username;
-  toggleInfo();
+  await ChatLogGet();
+  await toggleInfo();
 };
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();

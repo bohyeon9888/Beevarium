@@ -6,6 +6,7 @@ import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
 import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
+import { getChatLog } from "@/api/chat";
 
 const recordStore = useRecordStore();
 const ovpStore = useOVPStore();
@@ -88,7 +89,7 @@ const doStreamingEnd1 = () => {
       console.log(error.data.msg);
     }
   );
-}
+};
 
 const doStreamingEnd = () => {
   onAir.value = false;

@@ -4,7 +4,7 @@ const local = localAxios();
 
 const getChatLog = async (accessToken, username, success, fail) => {
   await local
-    .get(`/chat/show/${username}/`, {
+    .get(`/chat/show/${username}`, {
       headers: {
         Authorization: accessToken,
       },
