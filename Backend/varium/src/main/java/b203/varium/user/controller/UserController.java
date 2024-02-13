@@ -2,17 +2,21 @@ package b203.varium.user.controller;
 
 import b203.varium.user.dto.JoinDTO;
 import b203.varium.user.dto.NameReqDTO;
+import b203.varium.user.dto.PointRequestDTO;
 import b203.varium.user.dto.PwReqDTO;
 import b203.varium.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -77,4 +81,16 @@ public class UserController {
         return ResponseEntity.ok(userService.updatePassword(auth.getName(), pwReqDTO.getPassword()));
     }
 
+    @GetMapping("/point")
+    public ResponseEntity<Map<String, Object>> getPointByUserName() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(userService.getPointByUserName(auth.getName()));
+    }
+
+    @PostMapping("/point")
+    public ResponseEntity<Map<String, Object>> sendPointByUserName(@Validated @RequestBody PointRequestDTO pointRequestDTO) {
+        log.info("point = {}", pointRequestDTO);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return ResponseEntity.ok(userService.sendPointByUserName(auth.getName(), pointRequestDTO));
+    }
 }

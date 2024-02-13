@@ -1,9 +1,12 @@
 package b203.varium.relation.repository;
 
 import b203.varium.relation.domain.PointRelationEntity;
-import org.springframework.http.ResponseEntity;
+import b203.varium.user.entity.UserEntity;
 
 public interface IRelationRepository {
 
-    ResponseEntity<String> saveRelation(PointRelationEntity pointRelationEntity);
+    void saveRelation(PointRelationEntity pointRelationEntity);
+
+
+    void savePoint(UserEntity userEntity, Integer price);
 }

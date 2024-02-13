@@ -12,8 +12,6 @@ public class RelationDtoResponse {
 
     @NotNull(message = "받는 사람이 비어 있을 수 는 없습니다")
     private Integer broadcastStationNo;
-    @NotNull(message = "보내는 사람이 비어 있을 수는 없습니다")
-    private Integer sender;
     @NotNull(message = "보내는 금액이 비어 있을 수는 없습니다")
     private Integer price;
 }
