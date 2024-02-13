@@ -1,8 +1,6 @@
 // VideoService.java
 package b203.varium.video.service;
 
-import b203.varium.broadcastStation.repository.BroadcastStationRepository;
-import b203.varium.video.entity.VideoFile;
 import b203.varium.video.repository.VideoFileRepository;
 import b203.varium.video.repository.VideoRepository;
 import com.amazonaws.services.s3.AmazonS3;
