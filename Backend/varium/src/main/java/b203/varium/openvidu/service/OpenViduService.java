@@ -216,4 +216,14 @@ public class OpenViduService {
         openvidu.stopRecording(recordingId);
         return new ResponseEntity<>("stop recordings", HttpStatus.OK);
     }
+
+    public ResponseEntity<String> getRecording(String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+        Recording recording = openvidu.getRecording(recordingId);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(recording);
+
+        log.info("json = {}", json);
+        return new ResponseEntity<>(json, HttpStatus.OK);
+    }
 }
