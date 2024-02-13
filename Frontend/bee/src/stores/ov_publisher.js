@@ -162,18 +162,20 @@ export const useOVPStore = defineStore(
                               type: "subtitles",
                             });
                             console.log(subtitleBuffer.value.trim());
-                            const response = await axios.post(
-                              // await 키워드 사용
-                              `https://0937-14-51-29-92.ngrok-free.app`,
-                              {
-                                prompt: subtitleBuffer.value.trim(),
-                              },
-                              {
-                                headers: {
-                                  "Content-Type": "application/json",
+                            const response = await axios
+                              .post(
+                                // await 키워드 사용
+                                `https://11ec-14-50-47-163.ngrok-free.app`,
+                                {
+                                  prompt: subtitleBuffer.value.trim(),
                                 },
-                              }
-                            );
+                                {
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                }
+                              )
+                              .then(console.log("sent subtitles"));
                             subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
                             console.log(
                               "Subtitles signal sent successfully.",

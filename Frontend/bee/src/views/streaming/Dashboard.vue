@@ -15,6 +15,12 @@ const tagInput = ref("");
 const tagList = ref(new Set());
 const audioInputDevices = ref([]);
 const selectedMicrophoneId = ref("");
+const receivedMessages = ref([]);
+
+function handleMessages(newMessages) {
+  console.log("Received messages from child component:", newMessages);
+  receivedMessages.value = newMessages;
+}
 
 const loadAudioInputDevices = async () => {
   const devices = await navigator.mediaDevices.enumerateDevices();
@@ -49,17 +55,16 @@ const addNewsFeedItem = (user, action) => {
 
 const streamData = ref({
   broadcastingTitle: "",
-  broadcastingImgUrl: "",
-  tagList: [],
+  tagList: tagList.value,
 });
 const doStreamingStart = () => {
   console.dir(streamData.value);
+  onAir.value = true;
   streamingStart(
     accessToken.value,
-    (onAir.value = true),
     streamData.value,
     ({ data }) => {
-      console.log(data.msg);
+      console.log(data.status);
     },
     (error) => {
       console.log(error.data.msg);
@@ -67,17 +72,12 @@ const doStreamingStart = () => {
   );
 };
 const doStreamingEnd = () => {
+  onAir.value = false;
   streamingEnd(
     accessToken.value,
-    (onAir.value = false),
+    { chatting: receivedMessages.value },
     async ({ data }) => {
       console.log(data.msg);
-      try {
-        await axios.post("/api/chatlog", { chatlog: messages.value });
-        console.log("chatlog sent successfully");
-      } catch (error) {
-        console.error("Error sending messages:", error);
-      }
     },
     (error) => {
       console.log(error.data.msg);
@@ -116,6 +116,7 @@ addNewsFeedItem("아재개더", "3,000");
           <textarea
             class="title-input"
             placeholder="방송 제목을 입력해주세요."
+            v-model="streamData.broadcastingTitle"
           ></textarea>
         </div>
         <div class="stream-alarm">
@@ -205,7 +206,7 @@ addNewsFeedItem("아재개더", "3,000");
       </div>
       <div class="chat-container">
         <div class="dashboard-header">방송 채팅</div>
-        <DashboardChat class="chat" />
+        <DashboardChat class="chat" @sendMessages="handleMessages" />
       </div>
     </div>
   </div>

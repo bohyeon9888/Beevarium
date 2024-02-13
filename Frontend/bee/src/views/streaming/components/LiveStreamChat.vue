@@ -34,6 +34,7 @@ function generateColorForUsername(username) {
 }
 
 const openModal = () => {
+  
   isModalOpened.value = true;
 };
 
