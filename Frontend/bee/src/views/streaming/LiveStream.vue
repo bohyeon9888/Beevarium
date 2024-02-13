@@ -17,6 +17,7 @@ const ovsStore = useOVSStore();
 const ovpStore = useOVPStore();
 const { subtitle } = storeToRefs(ovsStore);
 const route = useRoute();
+const streamerId = ref("");
 
 const isSubOn = ref(false);
 const isFilterOn = ref(false);
@@ -52,18 +53,19 @@ const stream = ref({
 const streamInfo = ref({});
 
 const doStreamingEnter = () => {
-  streamingEnter(
-    accessToken.value,
-    route.params.streamerId,
-    ({ data }) => {
-      streamInfo.value = data.data;
-    },
-    (error) => {}
-  );
+  (streamerId.value = route.params.streamerId),
+    streamingEnter(
+      accessToken.value,
+      streamerId.value,
+      ({ data }) => {
+        streamInfo.value = data.data;
+      },
+      (error) => {}
+    );
 };
 onMounted(() => {
-  ovsStore.subscribeToSession();
   doStreamingEnter();
+  ovsStore.subscribeToSession();
 });
 </script>
 
@@ -218,7 +220,7 @@ onMounted(() => {
       </div>
     </div>
     <div class="chat-container">
-      <LiveStreamChat />
+      <LiveStreamChat :streamerId="streamerId" />
     </div>
   </div>
 </template>

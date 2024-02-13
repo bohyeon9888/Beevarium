@@ -4,7 +4,7 @@ import { useOVSStore } from "@/stores/ov_subscriber";
 import { ref, onMounted, onUpdated, reactive, watchEffect } from "vue";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { useAuthStore } from "@/stores/user";
-import { getPoint, donatePoint } from "@/api/point";
+import { getPoint } from "@/api/point";
 import { storeToRefs } from "pinia";
 
 const ovsStore = useOVSStore();
@@ -13,6 +13,9 @@ const authStore = useAuthStore();
 const chatBoxRef = ref(null);
 const { accessToken } = storeToRefs(authStore);
 const myPoint = ref(0);
+const props = defineProps({
+  streamerId: String,
+});
 
 const isModalOpened = ref(false);
 const messages = ref([]);
@@ -92,8 +95,8 @@ const PointGet = () => {
   getPoint(
     accessToken.value,
     ({ data }) => {
-      console.log(data);
-      myPoint.value = data.point;
+      console.log(data.data.point);
+      myPoint.value = data.data.point;
     },
     (error) => {
       console.log(error);
@@ -166,7 +169,11 @@ const PointGet = () => {
       class="donation-modal"
       :class="{ modalOpen: isModalOpened }"
     >
-      <DonationModal @close="closeModal" :myPoint="myPoint" />
+      <DonationModal
+        @close="closeModal"
+        :myPoint="myPoint"
+        :streamerId="streamerId"
+      />
     </div>
   </div>
 </template>

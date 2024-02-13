@@ -108,6 +108,7 @@ const recordUrl = () => {
     accessToken.value,
     recordStore.recordUrl,
     ({ data }) => {
+      console.log(data);
       console.log(data.msg);
     },
     (error) => {

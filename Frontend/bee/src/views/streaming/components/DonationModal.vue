@@ -1,15 +1,38 @@
 <script setup>
 import { ref, watch } from "vue";
+import { donatePoint } from "@/api/point";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "@/stores/user";
 // Props 및 Emits 정의
 const props = defineProps({
   donModActive: Boolean,
   myPoint: Number,
+  streamerId: String,
 });
+
+const authStore = useAuthStore();
+const { accessToken } = storeToRefs(authStore);
 const emit = defineEmits(["close"]);
 const donationAmount = ref(1000);
 const myHoney = ref(props.myPoint);
 const donationMessage = ref("");
 const isHoneyLack = ref(false);
+
+const donateAct = () => {
+  donatePoint(
+    accessToken.value,
+    { 
+      userId: props.streamerId,
+      price: donationAmount.value,
+    },
+    ({ data }) => {
+      console.log(data.status);
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+};
 
 const close = () => {
   donationAmount.value = 0;
@@ -21,6 +44,13 @@ const addAmount = (amount) => {
 };
 
 const honeyAlert = ref("");
+watch(
+  () => props.myPoint,
+  (newVal) => {
+    myHoney.value = newVal;
+  },
+  { immediate: true }
+);
 
 watch(
   () => donationAmount.value,
@@ -142,7 +172,14 @@ watch(
           v-model="donationMessage"
         ></textarea>
       </div>
-      <div class="donation-button" @click="close">후원하기</div>
+      <div
+        class="donation-button"
+        :disabled="myHoney < donationAmount"
+        @click="[donateAct(), close()]"
+        :class="{ 'disabled-button': myHoney < donationAmount }"
+      >
+        후원하기
+      </div>
     </div>
   </div>
 
@@ -294,5 +331,15 @@ watch(
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
+}
+.disabled-button {
+  background-color: #ccc; /* 비활성화 상태의 배경색 */
+  color: #666; /* 비활성화 상태의 텍스트 색상 */
+  cursor: not-allowed; /* 커서를 not-allowed로 변경 */
+}
+
+/* 비활성화 상태일 때 클릭 효과를 없애기 위한 추가 스타일 */
+.donation-button:disabled {
+  pointer-events: none;
 }
 </style>
