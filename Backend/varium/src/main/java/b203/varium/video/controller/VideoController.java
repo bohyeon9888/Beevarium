@@ -26,14 +26,15 @@ public class VideoController {
     private final ClipVideoService clipVideoService;
 
     @GetMapping("/list/replay/{streamerId}")
-    public ResponseEntity<List<ReplayVideoDTO>> viewReplayList(@PathVariable String streamerId) {
-        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
+    public void viewReplayList(@PathVariable String streamerId) {
+
+//        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
     }
 
-    @GetMapping("/list/clip/{streamerId}")
-    public ResponseEntity<List<ClipVideoDTO>> viewClipList(@PathVariable String streamerId) {
-        return ResponseEntity.ok(clipVideoService.getClipVideos(streamerId));
-    }
+//    @GetMapping("/list/clip/{streamerId}")
+//    public ResponseEntity<List<ClipVideoDTO>> viewClipList(@PathVariable String streamerId) {
+//        return ResponseEntity.ok(clipVideoService.getClipVideos(streamerId));
+//    }
 
     @PostMapping("/upload/clip")
     public void uploadClip(@RequestBody ClipReqDTO clipReqDTO, @RequestParam(value = "videoclip", required = false) MultipartFile file
@@ -49,7 +50,7 @@ public class VideoController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        replayVideoService.saveReplayInfo(infoDTO.getFilePath(), infoDTO.getSaveName(), username);
+        replayVideoService.saveReplayInfo(infoDTO.getFilePath(), username);
     }
 
 }

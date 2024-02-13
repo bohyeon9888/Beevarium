@@ -15,8 +15,8 @@ public class ReplayVideo extends Video {
     @Column(name = "replay_video_no")
     private int replayVideoNo;
 
-    @Column(name = "replay_video_text_url")
-    private String replayVideoTextUrl;
+    @Column(name = "replay_video_url")
+    private String replayVideoUrl;
 
     // Constructors, getters and setters
 }

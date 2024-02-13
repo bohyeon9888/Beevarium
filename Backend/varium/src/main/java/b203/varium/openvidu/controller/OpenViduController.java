@@ -118,7 +118,6 @@ public class OpenViduController {
         ResponseEntity<String> errorMessage = getStringResponseEntity(result);
         if (errorMessage != null) return errorMessage;
 
-        log.info("레코딩 엔티티");
         log.info("sessionId = {}", sessionId);
         log.info("recordingProperties = {}", recordingPropertiesDto);
         return openViduService.startRecordings(sessionId, recordingPropertiesDto);
@@ -132,9 +131,15 @@ public class OpenViduController {
     }
 
     @DeleteMapping("/recordings/{recordingId}")
-    public ResponseEntity<String> stopRecordings( @PathVariable String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+    public ResponseEntity<String> stopRecordings(@PathVariable String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
         log.info("recordingId = {}", recordingId);
         return openViduService.stopRecordings(recordingId);
+    }
+
+    @GetMapping("/recordings/{recordingId}")
+    public ResponseEntity<String> getRecording(@PathVariable String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+        log.info("recordingId = {}", recordingId);
+        return openViduService.getRecording(recordingId);
     }
 
 }
