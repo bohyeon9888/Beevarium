@@ -49,14 +49,6 @@ const stream = ref({
   tags: ["한국어", "게임", "수다"],
 });
 
-function applyVideoStyles() {
-  var videoElements = document.querySelectorAll("video");
-  videoElements.forEach(function (video) {
-    video.style.width = "1280px";
-    video.style.height = "720px";
-  });
-}
-
 const streamInfo = ref({});
 
 const doStreamingEnter = () => {
@@ -66,14 +58,11 @@ const doStreamingEnter = () => {
     ({ data }) => {
       streamInfo.value = data.data;
     },
-    (error) => {
-
-    }
+    (error) => {}
   );
 };
 onMounted(() => {
   ovsStore.subscribeToSession();
-  applyVideoStyles();
   doStreamingEnter();
 });
 </script>
@@ -123,7 +112,7 @@ onMounted(() => {
             <div class="streamer-logo-container">
               <div class="streamer-logo-box">
                 <img
-                  :src=streamInfo.streamerProfile
+                  :src="streamInfo.streamerProfile"
                   alt=""
                   class="streamer-logo"
                 />

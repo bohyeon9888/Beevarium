@@ -38,11 +38,14 @@ export const useOVSStore = defineStore(
     // 세션 연결 - 방송 참여자
     // ssesionID = opensession 하면 전역변수로 생김
     const subscribeToSession = async () => {
+      if (session && session.connection) {
+        await session.disconnect(); // 이전 세션 연결 해제
+        OV = new OpenVidu(); // OpenVidu 객체 초기화
+      }
       try {
         // 세션 생성
         session = OV.initSession();
         messagee.value = "";
-
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
           const subscriber = session.subscribe(
@@ -54,8 +57,8 @@ export const useOVSStore = defineStore(
             var videoElement = event.element;
 
             // 비디오 엘리먼트의 크기를 고정된 값으로 설정
-            videoElement.style.width = "1280px"; // 너비를 640픽셀로 설정
-            videoElement.style.height = "720px"; // 높이를 480픽셀로 설정
+            videoElement.style.width = "1280px";
+            videoElement.style.height = "720px";
           });
           console.log("새로운 스트림 구독 시작");
         });

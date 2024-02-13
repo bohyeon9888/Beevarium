@@ -27,7 +27,7 @@ watch(
     if (newValue <= myHoney.value) {
       isHoneyLack.value = false;
     } else {
-      honeyAlert.value = "허니가 부족합니다"
+      honeyAlert.value = "허니가 부족합니다";
       isHoneyLack.value = true;
     }
     if (newValue < 1000) {
@@ -98,7 +98,7 @@ watch(
               margin-right: 6px;
             "
           >
-            {{ myHoney.toLocaleString('ko-KR') }}
+            {{ myHoney.toLocaleString("ko-KR") }}
           </div>
           <img
             src="../../../assets/img/donation/reset.png"
@@ -113,7 +113,13 @@ watch(
           alt=""
           class="honey-image"
         />
-        <input id="honey-input" type="number" class="honey-input" :class="{ honeyLack: isHoneyLack }" v-model="donationAmount" />
+        <input
+          id="honey-input"
+          type="number"
+          class="honey-input"
+          :class="{ honeyLack: isHoneyLack }"
+          v-model="donationAmount"
+        />
       </div>
       <div class="honey-add-box">
         <div class="honey-add-button" @click="addAmount(1000)">1,000</div>
@@ -121,7 +127,13 @@ watch(
         <div class="honey-add-button" @click="addAmount(10000)">10,000</div>
         <div class="honey-add-button" @click="addAmount(50000)">50,000</div>
       </div>
-      <div id="honey-lack-alert" class="honey-lack-alert" :class="{ honeyLack: !isHoneyLack}">{{ honeyAlert }}</div>
+      <div
+        id="honey-lack-alert"
+        class="honey-lack-alert"
+        :class="{ honeyLack: !isHoneyLack }"
+      >
+        {{ honeyAlert }}
+      </div>
       <div class="donation-message-box">
         <textarea
           class="donation-message"
@@ -218,7 +230,7 @@ watch(
   margin-left: 8px;
 }
 #honey-input.honeyLack {
-  color:#eb3a3a;
+  color: #eb3a3a;
 }
 .honey-add-box {
   display: flex;

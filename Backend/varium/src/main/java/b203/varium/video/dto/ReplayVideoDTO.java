@@ -11,7 +11,6 @@ public class ReplayVideoDTO {
     private int viewers;
     private String imgUrl;
     private Timestamp createdDate;
-    private VideoFileDTO fileInfo;
-    private String replayVideoTextUrl; // 리플레이 비디오 전용 필드
+    private String replayVideoUrl; // 리플레이 비디오 전용 필드
 }
 

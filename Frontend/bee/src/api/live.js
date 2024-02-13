@@ -13,9 +13,9 @@ const streamingStart = async (accessToken, streamData, success, fail) => {
     .catch(fail);
 };
 
-const streamingEnd = async (accessToken, success, fail) => {
+const streamingEnd = async (accessToken, chatting, success, fail) => {
   await local
-    .get(`/live/end`, {
+    .post(`/live/end`, chatting, {
       headers: {
         Authorization: accessToken,
       },

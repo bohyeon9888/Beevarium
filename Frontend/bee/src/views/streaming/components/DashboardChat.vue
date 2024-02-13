@@ -1,9 +1,18 @@
 <script setup>
 import UserInfoModal from "./UserInfoModal.vue";
-import { ref, onUpdated, onMounted, reactive, watchEffect } from "vue";
+import {
+  ref,
+  onUpdated,
+  onMounted,
+  reactive,
+  watchEffect,
+  watch,
+  defineEmits,
+} from "vue";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { useAuthStore } from "@/stores/user";
 
+const emits = defineEmits(["sendMessages"]);
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
 const infoModalActive = ref(false);
@@ -117,6 +126,14 @@ const sendMessage = () => {
 };
 
 const usernameColors = reactive({});
+watch(
+  messages,
+  (newMessages, oldMessages) => {
+    // 변경이 감지될 때마다 메시지 목록을 부모 컴포넌트로 전송
+    emits("sendMessages", newMessages);
+  },
+  { deep: true }
+); // deep 옵션으로 중첩된 객체의 변경까지 감지
 
 watchEffect(() => {
   messages.value.forEach((message) => {
