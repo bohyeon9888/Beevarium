@@ -25,32 +25,25 @@ public class ClipVideoService {
     private final VideoService videoService;
     private final UserRepository userRepository;
 
-    public List<ClipVideoDTO> getClipVideos(String streamerid) {
-        int stationId = broadcastStationRepository.findByUser_UserId(streamerid).getId();
-        List<ClipVideo> list = clipVideoRepository.findAllByBroadcastStation_Id(stationId);
-        List<ClipVideoDTO> result = new ArrayList<>();
+    public void getClipVideos(String streamerid) {
+//        int stationId = broadcastStationRepository.findByUser_UserId(streamerid).getId();
+//        List<ClipVideo> list = clipVideoRepository.findAllByBroadcastStation_Id(stationId);
+//        List<ClipVideoDTO> result = new ArrayList<>();
+//
+//        for (ClipVideo clip : list) {
+//            ClipVideoDTO videoDTO = new ClipVideoDTO();
+//            videoDTO.setId(clip.getId());
+//            videoDTO.setStationId(stationId);
+//            videoDTO.setTitle(clip.getVideoTitle());
+//            videoDTO.setViewers(clip.getVideoViewers());
+//            videoDTO.setCreatedDate(clip.getCreatedDate());
+//
+//            videoDTO.setFileInfo(null);
+//            System.out.println(videoDTO);
+//            result.add(videoDTO);
+//        }
 
-        for (ClipVideo clip : list) {
-            ClipVideoDTO videoDTO = new ClipVideoDTO();
-            videoDTO.setId(clip.getId());
-            videoDTO.setStationId(stationId);
-            videoDTO.setTitle(clip.getVideoTitle());
-            videoDTO.setViewers(clip.getVideoViewers());
-            videoDTO.setCreatedDate(clip.getCreatedDate());
-
-            // video service에 따로 빼자
-            VideoFile file = clip.getFile();
-            VideoFileDTO fileData = new VideoFileDTO();
-            fileData.setFilepath(file.getFilePath());
-            fileData.setOriginFileName(file.getOriginName());
-            fileData.setSaveFileName(file.getSavedName());
-
-            videoDTO.setFileInfo(fileData);
-            System.out.println(videoDTO);
-            result.add(videoDTO);
-        }
-
-        return result;
+//        return result;
     }
 
     public void saveClipVideo(String username, String streamerId, String title, MultipartFile video, MultipartFile imgFile) {

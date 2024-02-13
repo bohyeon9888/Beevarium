@@ -25,25 +25,23 @@ public class ReplayVideoService {
     private final ReplayVideoRepository replayVideoRepository;
     private final BroadcastStationRepository broadcastStationRepository;
 
-    public void getReplayVideos(String streamerId) {
-//        int stationId = broadcastStationRepository.findByUser_UserId(streamerId).getId();
-//        List<ReplayVideo> list = replayVideoRepository.findAllByBroadcastStation_Id(stationId);
-//        List<ReplayVideoDTO> result = new ArrayList<>();
-//
-//        for (ReplayVideo replay : list) {
-//            ReplayVideoDTO videoDTO = new ReplayVideoDTO();
-//            videoDTO.setId(replay.getId());
-//            videoDTO.setTitle(replay.getVideoTitle());
-//            videoDTO.setViewers(replay.getVideoViewers());
-//            videoDTO.setReplayVideoTextUrl("none");
-//            videoDTO.setCreatedDate(replay.getCreatedDate());
-//
-//
-//            videoDTO.setFileInfo(fileData);
-//            result.add(videoDTO);
-//        }
-//
-//        return result;
+    public List<ReplayVideoDTO> getReplayVideos(String streamerId) {
+        int stationId = broadcastStationRepository.findByUser_UserId(streamerId).getId();
+        List<ReplayVideo> list = replayVideoRepository.findAllByBroadcastStation_Id(stationId);
+        List<ReplayVideoDTO> result = new ArrayList<>();
+
+        for (ReplayVideo replay : list) {
+            ReplayVideoDTO videoDTO = new ReplayVideoDTO();
+            videoDTO.setId(replay.getId());
+            videoDTO.setTitle(replay.getVideoTitle());
+            videoDTO.setViewers(replay.getVideoViewers());
+            videoDTO.setReplayVideoUrl(replay.getReplayVideoUrl());
+            videoDTO.setCreatedDate(replay.getCreatedDate());
+
+            result.add(videoDTO);
+        }
+
+        return result;
     }
 
     @Transactional

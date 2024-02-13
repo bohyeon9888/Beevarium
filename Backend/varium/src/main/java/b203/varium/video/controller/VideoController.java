@@ -31,10 +31,10 @@ public class VideoController {
 //        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
     }
 
-    @GetMapping("/list/clip/{streamerId}")
-    public ResponseEntity<List<ClipVideoDTO>> viewClipList(@PathVariable String streamerId) {
-        return ResponseEntity.ok(clipVideoService.getClipVideos(streamerId));
-    }
+//    @GetMapping("/list/clip/{streamerId}")
+//    public ResponseEntity<List<ClipVideoDTO>> viewClipList(@PathVariable String streamerId) {
+//        return ResponseEntity.ok(clipVideoService.getClipVideos(streamerId));
+//    }
 
     @PostMapping("/upload/clip")
     public void uploadClip(@RequestBody ClipReqDTO clipReqDTO, @RequestParam(value = "videoclip", required = false) MultipartFile file
