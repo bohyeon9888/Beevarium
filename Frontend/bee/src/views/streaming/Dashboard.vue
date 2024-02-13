@@ -59,8 +59,9 @@ const addNewsFeedItem = (user, action) => {
 
 const streamData = computed(() => ({
   broadcastingTitle: broadcastingTitle.value,
-  tagList: tagList.value,
+  tagList: Array.from(tagList.value),
 }));
+
 const doStreamingStart = () => {
   console.dir(streamData.value);
   onAir.value = true;
