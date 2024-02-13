@@ -8,7 +8,6 @@ import b203.varium.user.repository.UserRepository;
 import b203.varium.video.dto.ClipVideoDTO;
 import b203.varium.video.dto.VideoFileDTO;
 import b203.varium.video.entity.ClipVideo;
-import b203.varium.video.entity.VideoFile;
 import b203.varium.video.repository.ClipVideoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
