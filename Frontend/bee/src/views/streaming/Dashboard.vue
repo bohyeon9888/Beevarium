@@ -50,7 +50,7 @@ const addNewsFeedItem = (user, action) => {
 const streamData = ref({
   broadcastingTitle: "",
   broadcastingImgUrl: "",
-  tagList: "",
+  tagList: [],
 });
 const doStreamingStart = () => {
   console.dir(streamData.value);

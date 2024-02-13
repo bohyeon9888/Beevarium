@@ -1,18 +1,22 @@
 <script setup>
-import Screen from "./components/Screen.vue";
 import LiveStreamChat from "./components/LiveStreamChat.vue";
 import { ref, onMounted } from "vue";
-import LanguageSelectorModal from "./components/LanguageSelectorModal.vue";
 import { useSidebarStore } from "@/stores/sidebar";
+import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { useOVSStore } from "@/stores/ov_subscriber";
 import { useOVPStore } from "@/stores/ov_publisher";
+import { streamingEnter } from "@/api/live";
+import { useRoute } from "vue-router";
 
+const authStore = useAuthStore();
 const sidebarStore = useSidebarStore();
+const { accessToken } = storeToRefs(authStore);
 const { isExpanded } = storeToRefs(sidebarStore);
 const ovsStore = useOVSStore();
 const ovpStore = useOVPStore();
 const { subtitle } = storeToRefs(ovsStore);
+const route = useRoute();
 
 const isSubOn = ref(false);
 const isFilterOn = ref(false);
@@ -53,9 +57,24 @@ function applyVideoStyles() {
   });
 }
 
+const streamInfo = ref({});
+
+const doStreamingEnter = () => {
+  streamingEnter(
+    accessToken.value,
+    route.params.streamerId,
+    ({ data }) => {
+      streamInfo.value = data.data;
+    },
+    (error) => {
+
+    }
+  );
+};
 onMounted(() => {
   ovsStore.subscribeToSession();
   applyVideoStyles();
+  doStreamingEnter();
 });
 </script>
 
@@ -94,7 +113,7 @@ onMounted(() => {
             class="livestream-title"
             :class="{ expanded: !isExpanded }"
           >
-            {{ stream.title }}
+            {{ streamInfo.title }}
           </div>
           <div
             id="streamer-info-container"
@@ -104,7 +123,7 @@ onMounted(() => {
             <div class="streamer-logo-container">
               <div class="streamer-logo-box">
                 <img
-                  src="../../assets/img/streamer_image_1.png"
+                  :src=streamInfo.streamerProfile
                   alt=""
                   class="streamer-logo"
                 />
@@ -120,7 +139,7 @@ onMounted(() => {
                 class="streamer-name"
                 :class="{ expanded: !isExpanded }"
               >
-                {{ stream.streamerName }}
+                {{ streamInfo.streamerName }}
               </div>
               <div class="watcher-tag-container">
                 <div class="watcher">
@@ -130,7 +149,7 @@ onMounted(() => {
                     class="live-watcher"
                   />
                   <div style="font-size: 16px; font-weight: 500">
-                    현재 {{ stream.liveWatcher }}명 시청 중
+                    현재 {{ streamInfo.viewers }}명 시청 중
                   </div>
                 </div>
                 <div
@@ -144,7 +163,7 @@ onMounted(() => {
                 <div class="tag-container">
                   <ul class="tag-list">
                     <li
-                      v-for="(tag, index) in stream.tags"
+                      v-for="(tag, index) in streamInfo.tags"
                       :key="index"
                       class="tag"
                     >
