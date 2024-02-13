@@ -13,7 +13,7 @@ const { isExpanded } = storeToRefs(sidebarStore);
 
 const livestreams = ref([
   {
-    streamerId: "streamer1",
+    streamerId: "admin00",
     thumbnail: "hotlive1",
     title: "방송 제목입니다.",
     streamerLogo: "streamer_image_1",
@@ -168,12 +168,6 @@ const getThumbnailUrl = (name) => {
           >
             <router-link
               :to="{ path: `/streaming/live-stream/${livestream.streamerId}` }"
-              @click="
-                streamerStore.selectStreamer(
-                  livestream.streamerName,
-                  livestream.streamerId
-                )
-              "
             >
               <img
                 id="livestream-image"
@@ -202,7 +196,10 @@ const getThumbnailUrl = (name) => {
               :class="{ expanded: !isExpanded }"
             >
               <div class="livestream-title">{{ livestream.title }}</div>
-              <div class="streamer-name" @click="moveToStudio(livestream.streamerId)">
+              <div
+                class="streamer-name"
+                @click="moveToStudio(livestream.streamerId)"
+              >
                 {{ livestream.streamerName }}
               </div>
               <ul class="livestream-tag-list">
