@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/videos")
@@ -25,9 +26,9 @@ public class VideoController {
     private final ReplayVideoService replayVideoService;
 
     @GetMapping("/list/replay/{streamerId}")
-    public void viewReplayList(@PathVariable String streamerId) {
+    public ResponseEntity<List<ReplayVideoDTO>> viewReplayList(@PathVariable String streamerId) {
 
-//        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
+        return ResponseEntity.ok(replayVideoService.getReplayVideos(streamerId));
     }
 
 //    @GetMapping("/list/clip/{streamerId}")
@@ -45,11 +46,11 @@ public class VideoController {
     }
 
     @PostMapping("/upload/replay")
-    public void uploadReplay(@RequestBody ReplayReqDTO infoDTO) {
+    public ResponseEntity<Map<String, Object>> uploadReplay(@RequestBody ReplayReqDTO infoDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
 
-        replayVideoService.saveReplayInfo(infoDTO.getFilePath(), username);
+        return ResponseEntity.ok(replayVideoService.saveReplayInfo(infoDTO.getFilePath(), username));
     }
 
 }

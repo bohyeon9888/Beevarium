@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -37,6 +35,7 @@ public class ReplayVideoService {
             videoDTO.setId(replay.getId());
             videoDTO.setTitle(replay.getVideoTitle());
             videoDTO.setViewers(replay.getVideoViewers());
+            videoDTO.setImgUrl(replay.getThumbnailUrl());
             videoDTO.setReplayVideoUrl(replay.getReplayVideoUrl());
             videoDTO.setCreatedDate(replay.getCreatedDate());
 
@@ -47,7 +46,7 @@ public class ReplayVideoService {
     }
 
     @Transactional
-    public void saveReplayInfo(String filePath, String username) {
+    public Map<String, Object> saveReplayInfo(String filePath, String username) {
         BroadcastStation station = broadcastStationRepository.findByUser_Username(username);
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd");
@@ -71,6 +70,14 @@ public class ReplayVideoService {
         replay.setUpdatedDate(nowT);
 
         replayVideoRepository.save(replay);
+
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("status", "success");
+        Map<String, String> msg = new HashMap<>();
+        msg.put("msg", "success to save replay");
+        resp.put("data", msg);
+
+        return resp;
     }
 }
 
