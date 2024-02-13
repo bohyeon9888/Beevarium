@@ -33,8 +33,7 @@ public class RelationService {
 
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
         PointRelationEntity pointRelationEntity = new PointRelationEntity();
-
-        BroadcastStation broadcastStation = broadcastStationRepository.findById(relationDtoResponse.getBroadcastStationNo()).orElseThrow(() -> new BroadcastStationMissingException("방송국을 찾을 수 없습니다."));
+        BroadcastStation broadcastStation = Optional.ofNullable(broadcastStationRepository.findByUser_UserId(relationDtoResponse.getUserId())).orElseThrow(() -> new BroadcastStationMissingException("방송국을 찾을 수 없습니다."));
         pointRelationEntity.setBroadcastStation(broadcastStation);
 
         UserEntity userEntity = Optional.ofNullable(userRepository.findByUsername(name)).orElseThrow(() -> new UserMissingException("사용자를 찾을 수 없습니다."));
@@ -45,7 +44,7 @@ public class RelationService {
         pointRelationEntity.setUpdatedDate(nowT);
         relationRepository.saveRelation(pointRelationEntity);
 
-        relationRepository.savePoint(broadcastStation.getUser(), relationDtoResponse.getPrice());
+        relationRepository.savePoint(userRepository.findByUserId(relationDtoResponse.getUserId()), relationDtoResponse.getPrice());
         result.put("status", "success");
         return result;
     }
