@@ -26,7 +26,7 @@ const addPoint = async (accessToken, success, fail) => {
 
 const donatePoint = async (accessToken, changeLog, success, fail) => {
   await local
-    .post(`/user/point`, changeLog, {
+    .post(`/relation/save`, changeLog, {
       headers: {
         Authorization: accessToken,
       },
