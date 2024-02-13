@@ -18,6 +18,7 @@ const tagList = ref(new Set());
 const audioInputDevices = ref([]);
 const selectedMicrophoneId = ref("");
 const receivedMessages = ref([]);
+const sessionId = ref("CUSTOM_SESSION_ID3");
 
 function handleMessages(newMessages) {
   console.log("Received messages from child component:", newMessages);
@@ -101,6 +102,41 @@ const openSessionWithSelectedMic = async () => {
   }
 };
 
+const recordUrl = () => {
+  console.log(recordStore.recordUrl);
+  recordStore.sendRecord(
+    accessToken.value,
+    recordStore.recordUrl,
+    ({ data }) => {
+      console.log(data.msg);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+
+const startStreaming = async () => {
+  await doStreamingStart();
+  await ovpStore.openSession();
+};
+
+const endStreaming = async () => {
+  await doStreamingEnd();
+  await recordStore.stopRecording(recordingId.value);
+  await ovpStore.closeSession();
+  await recordStore.retrieveRecord(recordingId.value);
+  await recordUrl();
+};
+
+const recordingId = ref("");
+
+const startRecording = async () => {
+  await recordStore.startRecording(sessionId.value);
+  recordingId.value = recordStore.recordingId;
+  console.log("컴포넌트에서", recordingId);
+};
+
 // 테스트
 addNewsFeedItem("아재개더", "3,000");
 addNewsFeedItem("컬쳐쇼크러블리", "팔로우");
@@ -175,16 +211,20 @@ addNewsFeedItem("아재개더", "3,000");
           </button>
           <button
             class="streaming-start-btn"
-            @click="[doStreamingStart(), ovpStore.openSession()]"
+            @click="startStreaming()"
             :disabled="onAir"
           >
             {{ streamingButtonText }}
           </button>
           <button
             class="streaming-end-btn"
-            @click="[doStreamingEnd(), ovpStore.closeSession()]"
+            @click="endStreaming()"
+            :disabled="!onAir"
           >
             방송 종료
+          </button>
+          <button class="streaming-start-btn" @click="startRecording()">
+            녹화 시작
           </button>
         </div>
         <div class="stream-setting"></div>
@@ -430,6 +470,16 @@ button:hover {
   font-size: 15px;
   line-height: normal;
   margin-right: 15px;
+}
+.streaming-end-btn[disabled] {
+  background: #434343;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.streaming-end-btn[disabled]:hover {
+  background: #434343;
+  color: #777777;
 }
 .streaming-option {
   display: flex;

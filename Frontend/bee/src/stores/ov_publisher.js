@@ -16,8 +16,8 @@ export const useOVPStore = defineStore(
     axios.defaults.headers.post["Content-Type"] = "application/json";
 
     const API_SERVER_URL = import.meta.env.VITE_OPENVIDU_API_URL;
-    let sessionId = "";
-    let connectId = "";
+    const sessionId = ref("");
+    const connectId = ref("");
 
     const messagee = ref("");
     // 메시지를 추가하는 함수
@@ -57,7 +57,8 @@ export const useOVPStore = defineStore(
           }
         );
         console.log("세션 생성됨", response.data);
-        sessionId = response.data;
+        sessionId.value = response.data;
+        console.log(sessionId.value);
         // 세션 열기 성공시, 자동으로 publisher로 연결
         await connectSession("PUBLISHER");
       } catch (error) {
@@ -68,7 +69,7 @@ export const useOVPStore = defineStore(
     const connectSession = async (selectedMicrophoneId) => {
       try {
         const response = await axios.post(
-          `${API_SERVER_URL}openvidu/api/sessions/${sessionId}/connection`,
+          `${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}/connection`,
           {
             type: "WEBRTC",
             data: "My Server Data",
@@ -84,7 +85,7 @@ export const useOVPStore = defineStore(
           }
         );
 
-        connectId = response.data.connectionId;
+        connectId.value = response.data.connectionId;
         console.log("세션 connection", response.data);
         const token = response.data.connectionToken;
 
@@ -125,7 +126,10 @@ export const useOVPStore = defineStore(
             session
               .publish(publisher)
               .then(() => {
-                console.log("화면 및 카메라 공유 스트림 발생 성공", sessionId);
+                console.log(
+                  "화면 및 카메라 공유 스트림 발생 성공",
+                  sessionId.value
+                );
                 session
                   .subscribeToSpeechToText(publisher.stream, "ko-KR")
                   .then(() => {
@@ -215,13 +219,11 @@ export const useOVPStore = defineStore(
     const closeSession = async () => {
       try {
         if (session && session.connection) {
-          await session.disconnect(); // 세션 연결 해제
+          await axios.delete(
+            `${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`
+          );
           session = null; // 세션 객체 초기화
         }
-
-        await axios.delete(
-          `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
-        );
         console.log("세션 닫힘");
         //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
