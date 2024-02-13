@@ -3,8 +3,10 @@ package b203.varium.user.service;
 import b203.varium.broadcastStation.service.BroadcastStationService;
 import b203.varium.follow.dto.FollowRespDTO;
 import b203.varium.follow.service.FollowRelationService;
+import b203.varium.relation.repository.RelationRepositoryImpl;
 import b203.varium.user.dto.JoinDTO;
 import b203.varium.user.dto.MyPageRespDTO;
+import b203.varium.user.dto.PointRequestDTO;
 import b203.varium.user.entity.UserEntity;
 import b203.varium.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +23,14 @@ import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bcryptEncoder;
     private final BroadcastStationService stationService;
     private final FollowRelationService followService;
+    private final RelationRepositoryImpl relationRepository;
 
     @Transactional
     public Map<String, String> joinUser(JoinDTO joinDTO) {
@@ -101,6 +105,7 @@ public class UserService {
         return respDTO;
     }
 
+    @Transactional
     public Map<String, String> existUsername(String nowName, String newName) {
         Map<String, String> result = new HashMap<>();
 
@@ -121,6 +126,7 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public Map<String, Object> updateName(String username, String newName) {
         Map<String, Object> result = new HashMap<>();
         Map<String, String> msg = new HashMap<>();
@@ -140,6 +146,7 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public Map<String, Object> updatePassword(String username, String password) {
         Map<String, Object> result = new HashMap<>();
         Map<String, String> msg = new HashMap<>();
@@ -151,6 +158,33 @@ public class UserService {
         result.put("status", "success");
 
         result.put("data", msg);
+        return result;
+    }
+
+    public Map<String, Object> getPointByUserName(String name) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Integer> data = new HashMap<>();
+        UserEntity userEntity = userRepository.findByUsername(name);
+
+        result.put("status", "success");
+        int point = userEntity.getPoint();
+        data.put("point", point);
+        result.put("data", data);
+        return result;
+    }
+
+    @Transactional
+    public Map<String, Object> sendPointByUserName(String name, PointRequestDTO pointRequestDTO) {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Integer> data = new HashMap<>();
+
+        UserEntity userEntity = userRepository.findByUsername(name);
+
+        relationRepository.savePoint(userEntity, pointRequestDTO.getPoint());
+        result.put("status", "success");
+
+        data.put("point", userEntity.getPoint());
+        result.put("data", data);
         return result;
     }
 }
