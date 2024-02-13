@@ -14,6 +14,7 @@ const { isLoggedIn, accessToken } = storeToRefs(authStore);
 const streamerId = ref("김싸피");
 const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습니다.");
 const tagInput = ref("");
+const broadcastingTitle = ref("");
 const tagList = ref(new Set());
 const audioInputDevices = ref([]);
 const selectedMicrophoneId = ref("");
@@ -56,10 +57,10 @@ const addNewsFeedItem = (user, action) => {
   newsFeed.value.unshift(item);
 };
 
-const streamData = ref({
-  broadcastingTitle: "",
+const streamData = computed(() => ({
+  broadcastingTitle: broadcastingTitle.value,
   tagList: tagList.value,
-});
+}));
 const doStreamingStart = () => {
   console.dir(streamData.value);
   onAir.value = true;
@@ -155,7 +156,7 @@ addNewsFeedItem("아재개더", "3,000");
           <textarea
             class="title-input"
             placeholder="방송 제목을 입력해주세요."
-            v-model="streamData.broadcastingTitle"
+            v-model="broadcastingTitle"
           ></textarea>
         </div>
         <div class="stream-alarm">
