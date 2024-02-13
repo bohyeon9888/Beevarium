@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
-import { streamingStart, streamingEnd } from "@/api/live.js";
+import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
 
 const recordStore = useRecordStore();
@@ -76,6 +76,20 @@ const doStreamingStart = () => {
     }
   );
 };
+
+const doStreamingEnd1 = () => {
+  onAir.value = false;
+  streamingEnd1(
+    accessToken.value,
+    async ({ data }) => {
+      console.log(data.msg);
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+}
+
 const doStreamingEnd = () => {
   onAir.value = false;
   streamingEnd(
@@ -125,7 +139,7 @@ const startStreaming = async () => {
 };
 
 const endStreaming = async () => {
-  await doStreamingEnd();
+  await doStreamingEnd1();
   await recordStore.stopRecording(recordingId.value);
   await ovpStore.closeSession();
   await recordStore.retrieveRecord(recordingId.value);
