@@ -143,6 +143,48 @@ export const useOVSStore = defineStore(
       }
     };
 
+    const sendDonate = async (point) => {
+      try {
+        const currentTime = new Date(); // 현재 시간 가져오기
+        const donateData = {
+          message: point,
+          name: user.value.name,
+          time: currentTime.toISOString(), // ISO 형식으로 시간을 문자열로 변환
+        };
+
+        // 메시지 브로드캐스트
+        await session.signal({
+          data: JSON.stringify(donateData),
+          to: [], // 모든 연결에게 브로드캐스트
+          type: "donate",
+        });
+        console.log("donate successfully sent");
+      } catch (error) {
+        console.error("Error sending donate:", error);
+      }
+    };
+
+    const sendfollow = async () => {
+      try {
+        const currentTime = new Date(); // 현재 시간 가져오기
+        const followData = {
+          message: "팔로우",
+          name: user.value.name,
+          time: currentTime.toISOString(), // ISO 형식으로 시간을 문자열로 변환
+        };
+
+        // 메시지 브로드캐스트
+        await session.signal({
+          data: JSON.stringify(followData),
+          to: [], // 모든 연결에게 브로드캐스트
+          type: "follow",
+        });
+        console.log("follow successfully sent");
+      } catch (error) {
+        console.error("Error sending follow:", error);
+      }
+    };
+
     // 채팅 메시지 수신하기
     const receiveMessage = () => {
       console.log("11");
@@ -159,7 +201,9 @@ export const useOVSStore = defineStore(
       sendMessage1,
       receiveMessage,
       closeSession,
+      sendDonate,
       addMessage,
+      sendfollow,
       messagee,
       sessionId,
       connectId,

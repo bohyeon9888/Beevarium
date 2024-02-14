@@ -51,12 +51,6 @@ const closeModal = () => {
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
-    const messageObject = {
-      id: Date.now(),
-      username: authStore.user.name,
-      content: trimmedMessage,
-      type: "normal",
-    };
     // messages.value.push(messageObject);
     ovsStore.sendMessage1(newMessage.value);
     newMessage.value = "";

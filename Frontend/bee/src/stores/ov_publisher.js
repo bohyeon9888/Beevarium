@@ -22,6 +22,19 @@ export const useOVPStore = defineStore(
     const connectId = ref("");
 
     const messagee = ref("");
+    const donation = ref("");
+    const follow = ref("");
+
+    const addDonate = (point) => {
+      donation.value = point;
+      console.log(donation.value);
+    };
+
+    const addFollow = (name) => {
+      follow.value = name;
+      console.log(follow.value);
+    };
+
     // 메시지를 추가하는 함수
     const addMessage = (message) => {
       console.log("몇번 호출?");
@@ -170,6 +183,7 @@ export const useOVPStore = defineStore(
                                 type: "subtitles",
                               });
                               console.log(finalText);
+                              console.log("send ai_messsage");
                               aIStore.ai_sendMessage(finalText);
                               lastSentMessage = finalText; // 마지막으로 전송된 메시지 업데이트
                               subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
@@ -218,6 +232,16 @@ export const useOVPStore = defineStore(
               console.log(event.data);
               console.log(event.name); // Message
               addMessage(event.data); // The type of message
+            });
+            session.on("signal:donate", (event) => {
+              console.log(event.data);
+              console.log(event.name); // Message
+              addDonate(event.data); // The type of message
+            });
+            session.on("signal:follow", (event) => {
+              console.log(event.data);
+              console.log(event.name); // Message
+              addFollow(event.data); // The type of message
             });
           })
           .catch((error) => {
@@ -285,6 +309,10 @@ export const useOVPStore = defineStore(
       sendMessage1,
       receiveMessage,
       addMessage,
+      addDonate,
+      addFollow,
+      donation,
+      follow,
       messagee,
       sessionId,
       connectId,

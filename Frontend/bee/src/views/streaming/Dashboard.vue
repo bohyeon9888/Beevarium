@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
@@ -60,7 +60,6 @@ const addNewsFeedItem = (user, action) => {
   };
   newsFeed.value.unshift(item);
 };
-
 const streamData = computed(() => ({
   broadcastingTitle: broadcastingTitle.value,
   tagList: Array.from(tagList.value),
@@ -74,19 +73,6 @@ const doStreamingStart = () => {
     streamData.value,
     ({ data }) => {
       console.log(data.status);
-    },
-    (error) => {
-      console.log(error.data.msg);
-    }
-  );
-};
-
-const doStreamingEnd1 = () => {
-  onAir.value = false;
-  streamingEnd1(
-    accessToken.value,
-    async ({ data }) => {
-      console.log(data.msg);
     },
     (error) => {
       console.log(error.data.msg);
@@ -114,6 +100,34 @@ const streamingButtonText = computed(() => {
 onMounted(() => {
   loadAudioInputDevices();
 });
+
+watch(
+  () => ovpStore.donation,
+  (newVal) => {
+    console.log(newVal);
+    let donationData = typeof newVal === "string" ? JSON.parse(newVal) : newVal;
+
+    if (donationData) {
+      // donationData에서 name과 message 값을 추출하여 addNewsFeedItem 함수에 전달
+      addNewsFeedItem(`${donationData.name}`, `${donationData.message}`);
+    }
+  },
+  { immediate: false }
+);
+
+// Follow 변화 감지
+watch(
+  () => ovpStore.follow,
+  (newVal) => {
+    console.log(newVal);
+    let followData = typeof newVal === "string" ? JSON.parse(newVal) : newVal;
+    if (newVal) {
+      addNewsFeedItem(`${followData.name}`, `${followData.message}`);
+      // 팔로우 정보를 초기화하거나 다른 처리를 할 수 있습니다.
+    }
+  },
+  { immediate: false }
+);
 
 const sendRecordUrl = () => {
   console.log(recordUrl.value);

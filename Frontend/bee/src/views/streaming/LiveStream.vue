@@ -74,6 +74,7 @@ const doSubscribe = () => {
     ({ data }) => {
       streamInfo.value.follow = true;
       console.log(data.msg);
+      ovsStore.sendfollow();
     },
     (error) => {}
   );

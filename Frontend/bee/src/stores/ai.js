@@ -16,7 +16,9 @@ export const useAiStore = defineStore(
           function (messageOutput) {
             console.log(messageOutput);
             ai_subtitle.value = JSON.parse(messageOutput.body).text;
-          }
+            console.log(ai_subtitle.value);
+          },
+          console.log("test")
         );
       });
     }
