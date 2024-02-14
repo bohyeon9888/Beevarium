@@ -8,6 +8,7 @@ import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
 
 const recordStore = useRecordStore();
+const { recordUrl, recordingId } = storeToRefs(recordStore);
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
@@ -112,14 +113,16 @@ onMounted(() => {
   loadAudioInputDevices();
 });
 
-const recordUrl = () => {
-  console.log(recordStore.recordUrl);
+const sendRecordUrl = () => {
+  console.log(recordUrl.value);
   recordStore.sendRecord(
     accessToken.value,
-    recordStore.recordUrl,
+    recordUrl.value,
     ({ data }) => {
       console.log(data);
-      console.log(data.msg);
+      recordingId.value = "";
+      recordUrl.value = "";
+      onRecord.value = false;
     },
     (error) => {
       console.log(error);
@@ -146,27 +149,23 @@ const endtest = async () => {
   recordUrl();
 };
 
-const recordingId = ref("");
-
 const startRecording = async () => {
   await recordStore.startRecording(sessionId.value);
-  recordingId.value = recordStore.recordingId;
   onRecord.value = true;
-  console.log("컴포넌트에서", recordingId);
+  console.log("컴포넌트에서", recordingId.value);
 };
 
 const endRecord = async () => {
-  recordStore.stopRecording(recordingId.value)
-  .then(() => {
-    return recordStore.retrieveRecord(recordingId.value)  
-  })
-  .then(() => {
-    recordUrl();
-    onRecord.value = false;
-  })
-  .catch(error => {
-    console.error("녹화 객체 반환 실패",error)
-  })
+  console.log(recordingId.value);
+  try {
+    await recordStore.stopRecording(recordingId.value);
+    await recordStore.retrieveRecord(recordingId.value);
+    console.log("recordUrl = " + recordUrl.value);
+    sendRecordUrl();
+    console.log("sendRecordUrl 호출 완료");
+  } catch (error) {
+    console.error("녹화 객체 반환 실패", error);
+  }
 };
 
 // 테스트

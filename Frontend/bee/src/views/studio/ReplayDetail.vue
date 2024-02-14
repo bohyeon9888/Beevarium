@@ -14,12 +14,17 @@ const replay = ref({});
 
 const route = useRoute();
 
+const getVideoUrl = (name) => {
+  return `${name}`;
+};
+
+
 onMounted(() => {
   replayDetail(
     route.params.replayNo,
     ({ data }) => {
       console.log(data);
-      replay.value = data.videoList;
+      replay.value = data.data.detail;
     },
     (error) => {
       console.log(error.data.msg);
@@ -50,7 +55,8 @@ onMounted(() => {
     </div>
     <div class="replay-detail-content-box">
       <div class="replay-screen-box">
-        <video :src="replay.replayVideoUrl" class="replay-screen"></video>
+        <video :src="getVideoUrl(replay.replayVideoUrl)" class="replay-screen" controls>
+        </video>
       </div>
       <div class="replay-info-container">
         <div class="replay-info-box">

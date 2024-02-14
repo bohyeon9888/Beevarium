@@ -44,20 +44,22 @@ export const useRecordStore = defineStore(
           const recordingObj = await axios.get(
             `${API_SERVER_URL}openvidu/api/recordings/${recordingId}`
           );
-          console.log(recordingObj.data)
+          console.log(recordingObj.data);
           if (recordingObj.data.status === "ready") {
-            recordUrl.value = recordingObj.data.url
+            recordUrl.value = recordingObj.data.url;
+            return; // Promise 완료
+          } else {
+            console.log("녹화 파일 준비 중...상태:", recordingObj.data.status);
+            await new Promise(resolve => setTimeout(resolve, 5000)); // 5초 후 재시도
+            return checkStatus(); // 재귀적으로 상태 확인
           }
-          else {
-            console.log("녹화 파일 준비 중...상태:", recordingObj.data.status)
-            setTimeout(checkStatus, 5000)
-          }
+        } catch (error) {
+          console.error("녹화 객체 반환 실패");
+          throw error; // 에러 처리
         }
-        catch (error) {
-          console.error("녹화 객체 반환 실패")
-        }
-      }
-      checkStatus()
+      };
+    
+      await checkStatus(); // 상태 확인 완료될 때까지 대기
     };
 
 
