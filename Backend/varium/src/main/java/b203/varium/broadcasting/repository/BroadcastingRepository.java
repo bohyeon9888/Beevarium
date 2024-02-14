@@ -14,5 +14,7 @@ public interface BroadcastingRepository extends JpaRepository<Broadcasting, Inte
 
     Broadcasting findById(int id);
 
+    Broadcasting findByBroadcastStation_User_Id(int userId);
+
     List<Broadcasting> findTop8ByOrderByBroadcastingViewersDesc();
 }

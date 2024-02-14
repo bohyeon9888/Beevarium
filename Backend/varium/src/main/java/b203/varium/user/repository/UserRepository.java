@@ -4,6 +4,8 @@ import b203.varium.user.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
@@ -20,4 +22,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findByUsername(String username);
 
     UserEntity findAllByEmailAndCodeName(String email, String codeName);
+
+    List<UserEntity> findAllByUserIdContaining(String keyword);
 }
