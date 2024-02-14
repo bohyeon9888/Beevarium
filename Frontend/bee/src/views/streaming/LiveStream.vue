@@ -1,6 +1,6 @@
 <script setup>
 import LiveStreamChat from "./components/LiveStreamChat.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -52,7 +52,9 @@ const stream = ref({
 });
 
 const streamInfo = ref({});
-
+const isFollow = computed(() => {
+  return streamInfo.value.follow;
+});
 const doStreamingEnter = () => {
   (streamerId.value = route.params.streamerId),
     streamingEnter(
@@ -64,16 +66,12 @@ const doStreamingEnter = () => {
       (error) => {}
     );
 };
-onMounted(() => {
-  doStreamingEnter();
-  ovsStore.subscribeToSession();
-});
-
 const doSubscribe = () => {
   subscribe(
     accessToken.value,
     streamInfo.value.stationNo,
     ({ data }) => {
+      streamInfo.value.follow = true;
       console.log(data.msg);
     },
     (error) => {}
@@ -81,15 +79,22 @@ const doSubscribe = () => {
 };
 
 const doUnSubsribe = () => {
+  console.log(streamInfo.value.stationNo);
   unSubscribe(
     accessToken.value,
     streamInfo.value.stationNo,
     ({ data }) => {
+      streamInfo.value.follow = false;
       console.log(data.msg);
     },
     (error) => {}
   );
 };
+onMounted(() => {
+  doStreamingEnter();
+  ovsStore.subscribeToSession();
+});
+
 </script>
 
 <template>
@@ -223,7 +228,7 @@ const doUnSubsribe = () => {
             </label>
           </div>
           <div class="follow-alarm-container">
-            <div v-if="streamInfo.follow" class="follow-button" @click="doSubscribe">
+            <div v-if="isFollow" class="follow-button" @click="doUnSubsribe">
               <img
                 src="../../assets/img/stream/follow.png"
                 alt=""
@@ -233,7 +238,7 @@ const doUnSubsribe = () => {
                 팔로우
               </div>
             </div>
-            <div v-if="!streamInfo.follow" class="unfollow-button" @click="doUnSubsribe">
+            <div v-if="!isFollow" class="unfollow-button" @click="doSubscribe">
               <img
                 src="../../assets/img/stream/follow.png"
                 alt=""

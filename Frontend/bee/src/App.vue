@@ -18,7 +18,7 @@ const invisiblePaths_navbar = [
 const invisiblePaths_sidebar = [
   "/studio",
   "/user",
-  "/streaming/dashboard",
+  "/streaming",
   "/admin"
 ];
 
