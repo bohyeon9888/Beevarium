@@ -45,7 +45,6 @@ export const useOVSStore = defineStore(
       try {
         // 세션 생성
         session = OV.initSession();
-        messagee.value = "";
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
           const subscriber = session.subscribe(
@@ -67,7 +66,6 @@ export const useOVSStore = defineStore(
           console.log(event.data);
           console.log(event.name); // Message
           addMessage(event.data);
-          messagee.value = ""; // The type of message
         });
 
         session.on("signal:subtitles", (event) => {
