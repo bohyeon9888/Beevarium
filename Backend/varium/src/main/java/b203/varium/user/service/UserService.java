@@ -55,7 +55,7 @@ public class UserService {
         data.setUsername(username);
         data.setPassword(bcryptEncoder.encode(password));
         data.setEmail(email);
-        data.setProfileUrl("none");
+        data.setProfileUrl("https://b203-beevairum.s3.ap-northeast-2.amazonaws.com/profile/basic.png");
         data.setPoint(500);
         data.setRole("ROLE_USER");
         data.setCodeName("U1");
