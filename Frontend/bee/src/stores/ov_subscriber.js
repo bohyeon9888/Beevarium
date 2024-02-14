@@ -47,10 +47,7 @@ export const useOVSStore = defineStore(
         session = OV.initSession();
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
-          const subscriber = session.subscribe(
-            event.stream,
-            "subscriber-video"
-          );
+          const subscriber = session.subscribe(event.stream, "subscriber-video");
           subscriber.on("videoElementCreated", (event) => {
             // 비디오 엘리먼트에 접근
             var videoElement = event.element;
@@ -110,9 +107,7 @@ export const useOVSStore = defineStore(
     };
     const closeSession = async () => {
       try {
-        await axios.delete(
-          `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
-        );
+        await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId}`);
         console.log("세션 닫힘");
         //클라이언트측 세션 닫기 -> 필요없나??
       } catch (error) {

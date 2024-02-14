@@ -58,9 +58,6 @@ const sendMessage = () => {
 };
 const usernameColors = reactive({});
 
-onMounted(() => {
-  ovsStore.closeSession();
-});
 
 watchEffect(() => {
   messages.value.forEach((message) => {
@@ -95,14 +92,19 @@ const PointGet = () => {
     (error) => {
       console.log(error);
     }
-  );
+    );
 };
+  
+onMounted(() => {
+  messages.value = [];
+  ovsStore.closeSession();
+});
 </script>
 
 <template>
   <div class="livestream-chat-container">
     <div
-      style="
+    style="
         display: flex;
         justify-content: center;
         align-items: center;

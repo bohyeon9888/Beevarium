@@ -51,26 +51,23 @@ export const useOVPStore = defineStore(
         }
         // 새 세션을 초기화합니다.
         session = OV.initSession();
-        const response = await axios.post(
-          `${API_SERVER_URL}openvidu/api/sessions`,
-          {
-            mediaMode: "ROUTED",
-            recordingMode: "MANUAL",
-            customSessionId: "CUSTOM_SESSION_ID3",
-            forcedVideoCodec: "VP8",
-            allowTranscoding: false,
-            defaultRecordingProperties: {
-              name: "MyRecording",
-              hasAudio: true,
-              hasVideo: true,
-              outputMode: "COMPOSED",
-              recordingLayout: "BEST_FIT",
-              resolution: "1280x720",
-              frameRate: 25,
-              shmSize: 536870912,
-            },
-          }
-        );
+        const response = await axios.post(`${API_SERVER_URL}openvidu/api/sessions`, {
+          mediaMode: "ROUTED",
+          recordingMode: "MANUAL",
+          customSessionId: "CUSTOM_SESSION_ID3",
+          forcedVideoCodec: "VP8",
+          allowTranscoding: false,
+          defaultRecordingProperties: {
+            name: "MyRecording",
+            hasAudio: true,
+            hasVideo: true,
+            outputMode: "COMPOSED",
+            recordingLayout: "BEST_FIT",
+            resolution: "1280x720",
+            frameRate: 25,
+            shmSize: 536870912,
+          },
+        });
         console.log("세션 생성됨", response.data);
         sessionId.value = response.data;
         console.log(sessionId.value);
@@ -115,9 +112,7 @@ export const useOVPStore = defineStore(
             });
             publisher.on("accessAllowed", () => {
               //발행한 스트림에 오디오트랙이 포함되어 있는지 확인
-              const audioTracks = publisher.stream
-                .getMediaStream()
-                .getAudioTracks();
+              const audioTracks = publisher.stream.getMediaStream().getAudioTracks();
               console.log("오디오 트랙 정보", audioTracks);
             });
 
@@ -135,10 +130,7 @@ export const useOVPStore = defineStore(
             session
               .publish(publisher)
               .then(() => {
-                console.log(
-                  "화면 및 카메라 공유 스트림 발생 성공",
-                  sessionId.value
-                );
+                console.log("화면 및 카메라 공유 스트림 발생 성공", sessionId.value);
                 session
                   .subscribeToSpeechToText(publisher.stream, "ko-KR")
                   .then(() => {
@@ -171,10 +163,7 @@ export const useOVPStore = defineStore(
                       subtitleTimeout = setTimeout(async () => {
                         const trimmedText = subtitleBuffer.value.trim();
                         const finalText = trimmedText.replace(/\.\s*$/, "");
-                        if (
-                          finalText.length > 0 &&
-                          lastSentMessage !== finalText
-                        ) {
+                        if (finalText.length > 0 && lastSentMessage !== finalText) {
                           // session 객체가 null이 아닌지 확인
                           if (session && session.connection) {
                             try {
@@ -216,9 +205,7 @@ export const useOVPStore = defineStore(
                       type: "ai_subtitles", // 신호 유형
                     })
                     .then(() => {
-                      console.log(
-                        "자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다."
-                      );
+                      console.log("자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다.");
                     })
                     .catch((error) => {
                       console.error("자막 데이터 공유 중 오류 발생:", error);
@@ -256,9 +243,7 @@ export const useOVPStore = defineStore(
     const closeSession = async () => {
       try {
         if (session && session.connection) {
-          await axios.delete(
-            `${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`
-          );
+          await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`);
           session = null; // 세션 객체 초기화
         }
         console.log("세션 닫힘");
