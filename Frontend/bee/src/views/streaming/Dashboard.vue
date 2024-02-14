@@ -6,7 +6,9 @@ import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
 import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
+import { useAiStore } from "@/stores/ai";
 
+const aIStore = useAiStore();
 const recordStore = useRecordStore();
 const { recordUrl, recordingId } = storeToRefs(recordStore);
 const ovpStore = useOVPStore();
@@ -255,7 +257,9 @@ addNewsFeedItem("아재개더", "3,000");
             </button>
           </div>
           <div class="streaming-option2">
-            <button class="record-start-btn" @click="endtest()">테스트</button>
+            <button class="record-start-btn" @click="aIStore.ai_disconnect()">
+              테스트
+            </button>
             <button
               class="record-start-btn"
               @click="startRecording()"

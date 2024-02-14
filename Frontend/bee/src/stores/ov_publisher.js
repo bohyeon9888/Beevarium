@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
@@ -145,8 +145,10 @@ export const useOVPStore = defineStore(
                     //     console.error("변환 실패", error);
                     //   });
                     // });
+                    let lastSentMessage = ""; // 마지막으로 전송된 메시지를 저장할 변수
                     const subtitleBuffer = ref("");
                     let subtitleTimeout;
+
                     session.on("speechToTextMessage", (event) => {
                       console.log(event);
                       subtitleBuffer.value = event.text;
@@ -154,21 +156,31 @@ export const useOVPStore = defineStore(
                         clearTimeout(subtitleTimeout);
                       }
                       subtitleTimeout = setTimeout(async () => {
-                        // async 키워드 추가
-                        if (subtitleBuffer.value.trim().length > 0) {
-                          try {
-                            const res = await session.signal({
-                              data: subtitleBuffer.value.trim(),
-                              type: "subtitles",
-                            });
-                            console.log(subtitleBuffer.value.trim());
-                            aIStore.ai_sendMessage(subtitleBuffer.value.trim());
-                            subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
-                          } catch (error) {
-                            console.error("변환 실패", error);
+                        const trimmedText = subtitleBuffer.value.trim();
+                        const finalText = trimmedText.replace(/\.\s*$/, "");
+                        if (
+                          finalText.length > 0 &&
+                          lastSentMessage !== finalText
+                        ) {
+                          // session 객체가 null이 아닌지 확인
+                          if (session && session.connection) {
+                            try {
+                              await session.signal({
+                                data: finalText,
+                                type: "subtitles",
+                              });
+                              console.log(finalText);
+                              aIStore.ai_sendMessage(finalText);
+                              lastSentMessage = finalText; // 마지막으로 전송된 메시지 업데이트
+                              subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
+                            } catch (error) {
+                              console.error("변환 실패", error);
+                            }
+                          } else {
+                            console.log("세션 연결이 유효하지 않습니다.");
                           }
                         }
-                      }, 700);
+                      }, 1000);
                     });
                   })
                   .catch((error) => {
@@ -179,6 +191,28 @@ export const useOVPStore = defineStore(
               .catch((error) => {
                 console.error("화면 및 카메라 공유 스트림 발행 실패", error);
               });
+
+            watch(
+              () => aIStore.ai_subtitle,
+              (newSubtitle, oldSubtitle) => {
+                if (session && session.connection) {
+                  session
+                    .signal({
+                      data: JSON.stringify({ text: newSubtitle }), // 변화된 자막 데이터
+                      type: "ai_subtitles", // 신호 유형
+                    })
+                    .then(() => {
+                      console.log(
+                        "자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다."
+                      );
+                    })
+                    .catch((error) => {
+                      console.error("자막 데이터 공유 중 오류 발생:", error);
+                    });
+                }
+              },
+              { immediate: true }
+            );
 
             session.on("signal:my-chat", (event) => {
               console.log(event.data);
@@ -205,7 +239,7 @@ export const useOVPStore = defineStore(
         }
         console.log("세션 닫힘");
         messagee.value = "";
-        aIStore.ai_disconnect();
+
         //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
         console.error("Error", error);
