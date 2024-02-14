@@ -106,6 +106,7 @@ export const useOVSStore = defineStore(
       }
     };
     const closeSession = async () => {
+      messagee.value = "";
       try {
         await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId}`);
         console.log("세션 닫힘");
