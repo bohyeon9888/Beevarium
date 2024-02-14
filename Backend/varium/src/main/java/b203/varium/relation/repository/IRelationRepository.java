@@ -9,4 +9,6 @@ public interface IRelationRepository {
 
 
     void savePoint(UserEntity userEntity, Integer price);
+
+    void sendPoint(UserEntity userEntity, Integer price);
 }
