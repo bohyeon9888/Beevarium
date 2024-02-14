@@ -4,11 +4,13 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useAuthStore } from "./user";
 import { storeToRefs } from "pinia";
+import { useAiStore } from "@/stores/ai";
 
 export const useOVPStore = defineStore(
   "OVPStore",
   () => {
     const authStore = useAuthStore();
+    const aIStore = useAiStore();
     const { user } = storeToRefs(authStore);
     var OV = new OpenVidu();
     var session;
@@ -61,6 +63,7 @@ export const useOVPStore = defineStore(
         console.log(sessionId.value);
         // 세션 열기 성공시, 자동으로 publisher로 연결
         await connectSession("PUBLISHER");
+        await aIStore.ai_connect();
       } catch (error) {
         console.error("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11", error);
       }
@@ -159,12 +162,13 @@ export const useOVPStore = defineStore(
                               type: "subtitles",
                             });
                             console.log(subtitleBuffer.value.trim());
+                            aIStore.ai_sendMessage(subtitleBuffer.value.trim());
                             subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
                           } catch (error) {
                             console.error("변환 실패", error);
                           }
                         }
-                      }, 1000);
+                      }, 700);
                     });
                   })
                   .catch((error) => {
@@ -201,6 +205,7 @@ export const useOVPStore = defineStore(
         }
         console.log("세션 닫힘");
         messagee.value = "";
+        aIStore.ai_disconnect();
         //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
         console.error("Error", error);

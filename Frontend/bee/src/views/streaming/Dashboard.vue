@@ -6,12 +6,11 @@ import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
 import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
-import { getChatLog } from "@/api/chat";
 
 const recordStore = useRecordStore();
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
-const { isLoggedIn, accessToken } = storeToRefs(authStore);
+const { accessToken } = storeToRefs(authStore);
 const streamerId = ref("김싸피");
 const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습니다.");
 const tagInput = ref("");
