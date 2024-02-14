@@ -6,12 +6,11 @@ import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
 import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
-import { getChatLog } from "@/api/chat";
 
 const recordStore = useRecordStore();
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
-const { isLoggedIn, accessToken } = storeToRefs(authStore);
+const { accessToken } = storeToRefs(authStore);
 const streamerId = ref("김싸피");
 const initialAlarm = ref(streamerId.value + "님이 생방송을 시작하였습니다.");
 const tagInput = ref("");
@@ -135,7 +134,16 @@ const startStreaming = async () => {
 
 const endStreaming = async () => {
   await doStreamingEnd();
+
   await ovpStore.closeSession();
+};
+
+const endtest = async () => {
+  await doStreamingEnd();
+  await ovpStore.closeSession();
+  await recordStore.stopRecording(recordingId.value);
+  await recordStore.retrieveRecord(recordingId.value);
+  recordUrl();
 };
 
 const recordingId = ref("");
@@ -148,9 +156,17 @@ const startRecording = async () => {
 };
 
 const endRecord = async () => {
-  await recordStore.stopRecording(recordingId.value);
-  await recordStore.retrieveRecord(recordingId.value);
-  await recordUrl();
+  recordStore.stopRecording(recordingId.value)
+  .then(() => {
+    return recordStore.retrieveRecord(recordingId.value)  
+  })
+  .then(() => {
+    recordUrl();
+    onRecord.value = false;
+  })
+  .catch(error => {
+    console.error("녹화 객체 반환 실패",error)
+  })
 };
 
 // 테스트
@@ -240,17 +256,18 @@ addNewsFeedItem("아재개더", "3,000");
             </button>
           </div>
           <div class="streaming-option2">
+            <button class="record-start-btn" @click="endtest()">테스트</button>
             <button
               class="record-start-btn"
               @click="startRecording()"
-              :disabled="!onAir && !onRecord"
+              :disabled="!onAir || onRecord"
             >
               녹화 시작
             </button>
             <button
               class="record-end-btn"
               @click="endRecord()"
-              :disabled="!onAir || onRecord"
+              :disabled="!onAir || !onRecord"
             >
               녹화 종료
             </button>

@@ -3,10 +3,10 @@ import { ref, onMounted } from "vue";
 import { studio } from "@/api/studio";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-
+const router = useRouter();
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
 const prop = defineProps(["studioInfo", "streamer"]);
@@ -136,19 +136,17 @@ onMounted(() => {
           >
         </div>
         <div class="replay-container">
-          <ul>
-            <router-link
-              :to="{ path: `/studio/${route.params.streamerId}/replay/1` }"
-              class="replay-list"
-            >
+          <ul class="replay-list">
+          
               <li
                 v-for="(replay, index) in studioInfo.replayList"
                 :key="index"
                 class="replay"
+                @click="router.push({ path: `/studio/${route.params.streamerId}/replay/${replay.id}` })"
               >
                 <div class="replay-thumbnail-box">
                   <img
-                    :src="getReplayUrl(replay.thumbnail)"
+                    :src="replay.imgUrl"
                     alt=""
                     class="replay-thumbnail"
                   />
@@ -174,7 +172,6 @@ onMounted(() => {
                   <div class="replay-date">{{ replay.date }}</div>
                 </div>
               </li>
-            </router-link>
           </ul>
         </div>
       </div>

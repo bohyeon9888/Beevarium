@@ -66,7 +66,8 @@ export const useOVSStore = defineStore(
         session.on("signal:my-chat", (event) => {
           console.log(event.data);
           console.log(event.name); // Message
-          addMessage(event.data); // The type of message
+          addMessage(event.data);
+          messagee.value = ""; // The type of message
         });
 
         session.on("signal:subtitles", (event) => {

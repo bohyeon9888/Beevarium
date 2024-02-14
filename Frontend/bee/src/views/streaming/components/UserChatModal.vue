@@ -1,16 +1,15 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 
 const props = defineProps({
   chatModalActive: Boolean,
   username: String,
+  chatLog: Array,
 });
 const emit = defineEmits(["closechat"]);
 const close = () => {
   emit("closechat");
 };
-
-const chatHistory = ref([]);
 
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
@@ -81,15 +80,15 @@ const fetchChatHistory = async () => {
         <p class="user-nickname">{{ username }}</p>
         <div class="chat-history">
           <div
-            v-for="message in chatHistory"
-            :key="message.id"
+            v-for="(message, index) in props.chatLog"
+            :key="index"
             class="chat-message"
           >
             <div class="message-timestamp">
-              {{ formatTimestamp(message.timestamp) }}
+              {{ formatTimestamp(message.time) }}
             </div>
             <div class="user-message">
-              {{ message.text }}
+              {{ message.message }}
             </div>
           </div>
         </div>
@@ -181,6 +180,9 @@ const fetchChatHistory = async () => {
 .user-message {
   display: flex;
   width: 159px;
-  margin-left: 32px;
+  margin-left: 15px;
+}
+.message-timestamp {
+  width: 130px;
 }
 </style>

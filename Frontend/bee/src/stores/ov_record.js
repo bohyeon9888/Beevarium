@@ -28,7 +28,7 @@ export const useRecordStore = defineStore(
     const stopRecording = async (recordingId) => {
       console.log("stop recording js 로그", recordingId);
       try {
-        await axios.delete(
+          await axios.delete(
           `${API_SERVER_URL}openvidu/api/recordings/${recordingId}`
         );
         console.log("녹화 중지 성공");
@@ -39,18 +39,27 @@ export const useRecordStore = defineStore(
 
     //녹화 객체 반환
     const retrieveRecord = async (recordingId) => {
-      try {
-        const recordingObj = await axios.get(
-          `${API_SERVER_URL}openvidu/api/recordings/${recordingId}`
-        );
-        console.log(recordingObj);
-        console.log(recordingObj.data);
-        console.log(recordingObj.data.url);
-        recordUrl.value = recordingObj.data.url;
-      } catch (error) {
-        console.error(error, "녹화 객체 반환 실패");
+      const checkStatus = async () => {
+        try {
+          const recordingObj = await axios.get(
+            `${API_SERVER_URL}openvidu/api/recordings/${recordingId}`
+          );
+          console.log(recordingObj.data)
+          if (recordingObj.data.status === "ready") {
+            recordUrl.value = recordingObj.data.url
+          }
+          else {
+            console.log("녹화 파일 준비 중...상태:", recordingObj.data.status)
+            setTimeout(checkStatus, 5000)
+          }
+        }
+        catch (error) {
+          console.error("녹화 객체 반환 실패")
+        }
       }
+      checkStatus()
     };
+
 
     const sendRecord = async (accessToken, url, success, fail) => {
       await axios
