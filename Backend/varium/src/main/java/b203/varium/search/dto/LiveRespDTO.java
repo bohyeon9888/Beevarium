@@ -6,9 +6,12 @@ import java.util.List;
 
 @Data
 public class LiveRespDTO {
+    private String streamerName;
+    private String streamerId;
+    private String profileUrl;
     private String broadcastingTitle;
-    private String broadcastingNo;
+    private int broadcastingNo;
     private String broadcastingImgUrl;
     private int viewers;
-    private List<String> hashtags;
+    private List<String> tags;
 }
