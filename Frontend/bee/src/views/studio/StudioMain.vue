@@ -148,7 +148,7 @@ onMounted(() => {
               >
                 <div class="replay-thumbnail-box">
                   <img
-                    :src="getReplayUrl(replay.thumbnail)"
+                    :src="replay.imgUrl"
                     alt=""
                     class="replay-thumbnail"
                   />
