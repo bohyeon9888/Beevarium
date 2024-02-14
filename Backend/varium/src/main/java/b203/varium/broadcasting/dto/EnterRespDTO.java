@@ -9,6 +9,7 @@ public class EnterRespDTO {
     private String streamerId;
     private String streamerName;
     private String streamerProfile;
+    private String title;
     private int viewers;
     private List<String> tags;
     private String username;

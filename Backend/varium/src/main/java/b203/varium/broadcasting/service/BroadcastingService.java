@@ -201,6 +201,7 @@ public class BroadcastingService {
         respDTO.setStreamerId(streamerId);
         respDTO.setStreamerName(station.getUser().getUsername());
         respDTO.setStreamerProfile(station.getUser().getProfileUrl());
+        respDTO.setTitle(broadcasting.getBroadcastingTitle());
         respDTO.setViewers(broadcasting.getBroadcastingViewers()+1);
         respDTO.setUsername(username);
         respDTO.setTags(getTags(broadcasting.getId()));
