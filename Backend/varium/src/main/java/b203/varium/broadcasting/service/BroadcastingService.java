@@ -7,11 +7,16 @@ import b203.varium.broadcasting.dto.ListRespDTO;
 import b203.varium.broadcasting.dto.StationLiveDTO;
 import b203.varium.broadcasting.entity.Broadcasting;
 import b203.varium.broadcasting.repository.BroadcastingRepository;
+import b203.varium.chatting.dto.ChatDTO;
+import b203.varium.chatting.service.ChatService;
 import b203.varium.follow.dto.FollowRespDTO;
+import b203.varium.follow.respository.FollowRelationRepository;
 import b203.varium.follow.service.FollowRelationService;
 import b203.varium.hashtag.entity.HashTag;
 import b203.varium.hashtag.repository.HashTagRepository;
 import b203.varium.hashtag.service.TagService;
+import b203.varium.user.entity.UserEntity;
+import b203.varium.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +37,9 @@ public class BroadcastingService {
     private final TagService tagService;
     private final HashTagRepository tagRepository;
     private final FollowRelationService followService;
+    private final FollowRelationRepository followRepository;
+    private final UserRepository userRepository;
+    private final ChatService chatService;
 
     @Transactional
     public Map<String, Object> startBroadcasting(String username, String title, List<String> tagList) {
@@ -156,16 +164,14 @@ public class BroadcastingService {
     }
 
     @Transactional
-    public Map<String, String> endBroadcasting(String username) {
-        Map<String, String> resp = new HashMap<>();
+    public Map<String, Object> endBroadcasting(String username, List<ChatDTO> chatting) {
+        UserEntity user = userRepository.findByUsername(username);
 
         int stationId = broadcastStationRepository.findByUser_Username(username).getId();
         Broadcasting live = broadcastingRepository.findByBroadcastStation_Id(stationId);
         broadcastingRepository.delete(live);
 
-        resp.put("status", "success");
-        resp.put("msg", "Success Ending the live");
-        return resp;
+        return chatService.saveChatting(user.getUserId(), chatting);
     }
 
     @Transactional
@@ -175,6 +181,7 @@ public class BroadcastingService {
         BroadcastStation station = broadcastStationRepository.findByUser_UserId(streamerId);
         EnterRespDTO respDTO = new EnterRespDTO();
         Broadcasting broadcasting = broadcastingRepository.findByBroadcastStation_Id(station.getId());
+        UserEntity user = userRepository.findByUsername(username);
 
         if (broadcasting == null) {
             Map<String, Object> msg = new HashMap<>();
@@ -194,9 +201,12 @@ public class BroadcastingService {
         int nowV = broadcasting.getBroadcastingViewers();
         broadcasting.setBroadcastingViewers(nowV + 1);
 
+        respDTO.setFollow(followRepository.existsByBroadcastStationAndFollower(station, user));
+        respDTO.setStationNo(station.getId());
         respDTO.setStreamerId(streamerId);
         respDTO.setStreamerName(station.getUser().getUsername());
         respDTO.setStreamerProfile(station.getUser().getProfileUrl());
+        respDTO.setTitle(broadcasting.getBroadcastingTitle());
         respDTO.setViewers(broadcasting.getBroadcastingViewers()+1);
         respDTO.setUsername(username);
         respDTO.setTags(getTags(broadcasting.getId()));
