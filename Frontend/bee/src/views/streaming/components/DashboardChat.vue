@@ -251,7 +251,6 @@ onMounted(() => {
   /* scrollbar-width: none; */
 }
 .chat-messages::-webkit-scrollbar {
-  width: 16px;
   display: none;
 }
 .chat-messages:hover::-webkit-scrollbar {
@@ -261,10 +260,10 @@ onMounted(() => {
   background-color: #1e1e1e;
 }
 .chat-messages::-webkit-scrollbar-thumb {
-  border: 4px solid #1e1e1e;
+  border: 6px solid #1e1e1e;
 }
 .chat-message {
-  width: 292px;
+  width: 280px;
   display: flex;
   align-items: flex-start;
   margin-bottom: 8px;

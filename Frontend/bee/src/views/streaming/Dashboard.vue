@@ -417,10 +417,11 @@ button:hover {
   border-right: 2px solid #3455;
   color: #ffffff;
 }
-::-webkit-scrollbar {
+.newsfeed-box::-webkit-scrollbar {
+  width: 18px;
   background-color: #1e1e1f;
 }
-::-webkit-scrollbar-thumb {
+.newsfeed-box::-webkit-scrollbar-thumb {
   border: 6px solid #1e1e1f;
 }
 .chat-container {

@@ -241,13 +241,13 @@ export const useOVPStore = defineStore(
 
     // 세션 닫기
     const closeSession = async () => {
+      messagee.value = "";
       try {
         if (session && session.connection) {
           await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`);
           session = null; // 세션 객체 초기화
         }
         console.log("세션 닫힘");
-        messagee.value = "";
 
         //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
