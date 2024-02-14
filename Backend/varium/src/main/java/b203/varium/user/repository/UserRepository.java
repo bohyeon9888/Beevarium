@@ -23,5 +23,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     UserEntity findAllByEmailAndCodeName(String email, String codeName);
 
-    List<UserEntity> findAllByUserIdContaining(String keyword);
+    List<UserEntity> findAllByUsernameContaining(String keyword);
 }

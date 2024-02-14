@@ -26,7 +26,7 @@ public class SearchService {
     private final BroadcastingService broadcastingService;
 
     public Map<String, Object> searchStreamer(String keyword) {
-        List<UserEntity> userList = userRepository.findAllByUserIdContaining(keyword);
+        List<UserEntity> userList = userRepository.findAllByUsernameContaining(keyword);
         List<LiveRespDTO> result = new ArrayList<>();
         Map<String, Object> resp = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
