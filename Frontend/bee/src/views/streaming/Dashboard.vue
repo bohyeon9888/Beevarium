@@ -6,7 +6,9 @@ import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
 import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
+import { useAiStore } from "@/stores/ai";
 
+const aIStore = useAiStore();
 const recordStore = useRecordStore();
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
@@ -156,17 +158,18 @@ const startRecording = async () => {
 };
 
 const endRecord = async () => {
-  recordStore.stopRecording(recordingId.value)
-  .then(() => {
-    return recordStore.retrieveRecord(recordingId.value)  
-  })
-  .then(() => {
-    recordUrl();
-    onRecord.value = false;
-  })
-  .catch(error => {
-    console.error("녹화 객체 반환 실패",error)
-  })
+  recordStore
+    .stopRecording(recordingId.value)
+    .then(() => {
+      return recordStore.retrieveRecord(recordingId.value);
+    })
+    .then(() => {
+      recordUrl();
+      onRecord.value = false;
+    })
+    .catch((error) => {
+      console.error("녹화 객체 반환 실패", error);
+    });
 };
 
 // 테스트
@@ -256,7 +259,9 @@ addNewsFeedItem("아재개더", "3,000");
             </button>
           </div>
           <div class="streaming-option2">
-            <button class="record-start-btn" @click="endtest()">테스트</button>
+            <button class="record-start-btn" @click="aIStore.ai_disconnect()">
+              테스트
+            </button>
             <button
               class="record-start-btn"
               @click="startRecording()"
