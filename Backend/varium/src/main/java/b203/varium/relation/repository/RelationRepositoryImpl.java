@@ -24,4 +24,9 @@ public class RelationRepositoryImpl implements IRelationRepository {
         userEntity.setPoint(userEntity.getPoint() + price);
     }
 
+    @Override
+    public void sendPoint(UserEntity userEntity, Integer price) {
+        userEntity.setPoint(userEntity.getPoint() - price);
+    }
+
 }
