@@ -1,6 +1,7 @@
 package b203.varium.video.repository;
 
 import b203.varium.video.entity.ReplayVideo;
+import b203.varium.video.entity.Video;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,4 +14,6 @@ public interface ReplayVideoRepository extends JpaRepository<ReplayVideo, Intege
 
     @Query("SELECT COALESCE(MAX(rv.replayVideoNo), 0) FROM ReplayVideo rv")
     int findMaxReplayVideoNo();
+
+    ReplayVideo findById(int videoNo);
 }

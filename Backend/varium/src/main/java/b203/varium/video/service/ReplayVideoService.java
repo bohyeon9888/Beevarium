@@ -3,6 +3,7 @@ package b203.varium.video.service;
 import b203.varium.board.entity.BroadcastStationNotice;
 import b203.varium.broadcastStation.entity.BroadcastStation;
 import b203.varium.broadcastStation.repository.BroadcastStationRepository;
+import b203.varium.video.dto.ReplayDetailDTO;
 import b203.varium.video.dto.VideoFileDTO;
 import b203.varium.video.dto.ReplayVideoDTO;
 import b203.varium.video.entity.ReplayVideo;
@@ -77,6 +78,29 @@ public class ReplayVideoService {
         msg.put("msg", "success to save replay");
         resp.put("data", msg);
 
+        return resp;
+    }
+
+    public Map<String, Object> detailVideo(int videoNo) {
+        Map<String, Object> resp = new HashMap<>();
+        Map<String, Object> msg = new HashMap<>();
+
+        ReplayVideo replay = replayVideoRepository.findById(videoNo);
+        if (replay==null) {
+            resp.put("status", "fail");
+            msg.put("msg", "no data");
+        }
+
+        ReplayDetailDTO detail = new ReplayDetailDTO();
+        detail.setReplayVideoUrl(replay.getReplayVideoUrl());
+        detail.setTitle(replay.getVideoTitle());
+        detail.setViewers(replay.getVideoViewers());
+        detail.setCreatedDate(replay.getCreatedDate());
+
+        resp.put("status", "success");
+        msg.put("detail", detail);
+
+        resp.put("data", msg);
         return resp;
     }
 }
