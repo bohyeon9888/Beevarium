@@ -135,7 +135,16 @@ const startStreaming = async () => {
 
 const endStreaming = async () => {
   await doStreamingEnd();
+
   await ovpStore.closeSession();
+};
+
+const endtest = async () => {
+  await doStreamingEnd();
+  await ovpStore.closeSession();
+  await recordStore.stopRecording(recordingId.value);
+  await recordStore.retrieveRecord(recordingId.value);
+  recordUrl();
 };
 
 const recordingId = ref("");
@@ -150,7 +159,8 @@ const startRecording = async () => {
 const endRecord = async () => {
   await recordStore.stopRecording(recordingId.value);
   await recordStore.retrieveRecord(recordingId.value);
-  await recordUrl();
+  recordUrl();
+  onRecord.value = false;
 };
 
 // 테스트
@@ -240,17 +250,18 @@ addNewsFeedItem("아재개더", "3,000");
             </button>
           </div>
           <div class="streaming-option2">
+            <button class="record-start-btn" @click="endtest()">테스트</button>
             <button
               class="record-start-btn"
               @click="startRecording()"
-              :disabled="!onAir && !onRecord"
+              :disabled="!onAir || onRecord"
             >
               녹화 시작
             </button>
             <button
               class="record-end-btn"
               @click="endRecord()"
-              :disabled="!onAir || onRecord"
+              :disabled="!onAir || !onRecord"
             >
               녹화 종료
             </button>

@@ -159,25 +159,7 @@ export const useOVPStore = defineStore(
                               type: "subtitles",
                             });
                             console.log(subtitleBuffer.value.trim());
-                            const response = await axios
-                              .post(
-                                // await 키워드 사용
-                                `https://11ec-14-50-47-163.ngrok-free.app`,
-                                {
-                                  prompt: subtitleBuffer.value.trim(),
-                                },
-                                {
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                }
-                              )
-                              .then(console.log("sent subtitles"));
                             subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
-                            console.log(
-                              "Subtitles signal sent successfully.",
-                              response.data
-                            );
                           } catch (error) {
                             console.error("변환 실패", error);
                           }
@@ -218,6 +200,7 @@ export const useOVPStore = defineStore(
           session = null; // 세션 객체 초기화
         }
         console.log("세션 닫힘");
+        messagee.value = "";
         //클라이언트측 세션 닫기 -> 필요없나?
       } catch (error) {
         console.error("Error", error);

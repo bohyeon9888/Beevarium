@@ -1,14 +1,27 @@
 <script setup>
 import UserChatModal from "./UserChatModal.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps({
   infoModalActive: Boolean,
   username: String,
+  userInfo: Object,
 });
 const emit = defineEmits(["close", "openchat"]);
 const close = () => {
   emit("close");
+};
+
+const chatLog = computed(() => {
+  return props.userInfo.chatting;
+});
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const day = ("0" + date.getDate()).slice(-2);
+  return `${year}.${month}.${day}`;
 };
 
 const username = props.username;
@@ -44,8 +57,11 @@ const toggleChat = () => {
         />
         <div class="user-info-text">
           <p class="user-nickname">{{ props.username }}</p>
-          <p class="user-email">Iamjaenom@gmail.com</p>
-          <p class="user-follow">구독 시작일 : 2024. 01. 10</p>
+          <p class="user-email">{{ props.userInfo.email }}</p>
+          <p class="user-follow">
+            구독 일자:
+            {{ formatDate(props.userInfo.createdDate) }}
+          </p>
         </div>
       </div>
       <div class="user-management"></div>
@@ -58,6 +74,7 @@ const toggleChat = () => {
     :chatModalActive="chatModalActive"
     :username="username"
     @closechat="toggleChat"
+    :chatLog="chatLog"
   />
 </template>
 

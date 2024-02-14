@@ -183,6 +183,7 @@ watchEffect(() => {
 });
 
 onMounted(() => {
+  messages.value = [];
   if (ovpStore.sessionId) {
     ovpStore.closeSession();
   }
