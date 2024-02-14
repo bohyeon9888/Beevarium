@@ -157,10 +157,17 @@ const startRecording = async () => {
 };
 
 const endRecord = async () => {
-  await recordStore.stopRecording(recordingId.value);
-  await recordStore.retrieveRecord(recordingId.value);
-  recordUrl();
-  onRecord.value = false;
+  recordStore.stopRecording(recordingId.value)
+  .then(() => {
+    return recordStore.retrieveRecord(recordingId.value)  
+  })
+  .then(() => {
+    recordUrl();
+    onRecord.value = false;
+  })
+  .catch(error => {
+    console.error("녹화 객체 반환 실패",error)
+  })
 };
 
 // 테스트
