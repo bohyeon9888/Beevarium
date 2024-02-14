@@ -10,6 +10,7 @@ import java.util.List;
 public class UserInfoDTO {
     private String username;
     private String email;
+    private String profile;
     private Timestamp createdDate;
     private List<ChatDTO> chatting;
 }
