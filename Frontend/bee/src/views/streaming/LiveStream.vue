@@ -1,6 +1,7 @@
 <script setup>
 import LiveStreamChat from "./components/LiveStreamChat.vue";
-import { ref, onMounted } from "vue";
+import AIScript from "./components/AIScript.vue";
+import { ref, onMounted, computed } from "vue";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
@@ -52,7 +53,9 @@ const stream = ref({
 });
 
 const streamInfo = ref({});
-
+const isFollow = computed(() => {
+  return streamInfo.value.follow;
+});
 const doStreamingEnter = () => {
   (streamerId.value = route.params.streamerId),
     streamingEnter(
@@ -64,16 +67,12 @@ const doStreamingEnter = () => {
       (error) => {}
     );
 };
-onMounted(() => {
-  doStreamingEnter();
-  ovsStore.subscribeToSession();
-});
-
 const doSubscribe = () => {
   subscribe(
     accessToken.value,
     streamInfo.value.stationNo,
     ({ data }) => {
+      streamInfo.value.follow = true;
       console.log(data.msg);
     },
     (error) => {}
@@ -81,59 +80,37 @@ const doSubscribe = () => {
 };
 
 const doUnSubsribe = () => {
+  console.log(streamInfo.value.stationNo);
   unSubscribe(
     accessToken.value,
     streamInfo.value.stationNo,
     ({ data }) => {
+      streamInfo.value.follow = false;
       console.log(data.msg);
     },
     (error) => {}
   );
 };
+onMounted(() => {
+  doStreamingEnter();
+  ovsStore.subscribeToSession();
+});
 </script>
 
 <template>
-  <div
-    id="livestream-container"
-    class="livestream-container"
-    :class="{ expanded: !isExpanded }"
-  >
-    <div
-      id="stream-container"
-      class="stream-container"
-      :class="{ expanded: !isExpanded }"
-    >
-      <div
-        id="screen-container"
-        class="screen-container"
-        :class="{ expanded: !isExpanded }"
-      >
+  <div id="livestream-container" class="livestream-container">
+    <div id="stream-container" class="stream-container">
+      <div id="screen-container" class="screen-container">
         <div class="screen" id="subscriber-video">
           <div v-if="isSubOn" class="subtitle">{{ subtitle }}</div>
         </div>
       </div>
-      <div
-        id="livestream-info-container"
-        class="livestream-info-container"
-        :class="{ expanded: !isExpanded }"
-      >
-        <div
-          id="livestream-info-box"
-          class="livestream-info-box"
-          :class="{ expanded: !isExpanded }"
-        >
-          <div
-            id="livestream-title"
-            class="livestream-title"
-            :class="{ expanded: !isExpanded }"
-          >
+      <div id="livestream-info-container" class="livestream-info-container">
+        <div id="livestream-info-box" class="livestream-info-box">
+          <div id="livestream-title" class="livestream-title">
             {{ streamInfo.title }}
           </div>
-          <div
-            id="streamer-info-container"
-            class="streamer-info-container"
-            :class="{ expanded: !isExpanded }"
-          >
+          <div id="streamer-info-container" class="streamer-info-container">
             <div class="streamer-logo-container">
               <div class="streamer-logo-box">
                 <img
@@ -143,16 +120,8 @@ const doUnSubsribe = () => {
                 />
               </div>
             </div>
-            <div
-              id="streamer-info-box"
-              class="streamer-info-box"
-              :class="{ expanded: !isExpanded }"
-            >
-              <div
-                id="streamer-name"
-                class="streamer-name"
-                :class="{ expanded: !isExpanded }"
-              >
+            <div id="streamer-info-box" class="streamer-info-box">
+              <div id="streamer-name" class="streamer-name">
                 {{ streamInfo.streamerName }}
               </div>
               <div class="watcher-tag-container">
@@ -223,7 +192,7 @@ const doUnSubsribe = () => {
             </label>
           </div>
           <div class="follow-alarm-container">
-            <div v-if="streamInfo.follow" class="follow-button" @click="doSubscribe">
+            <div v-if="isFollow" class="follow-button" @click="doUnSubsribe">
               <img
                 src="../../assets/img/stream/follow.png"
                 alt=""
@@ -233,7 +202,7 @@ const doUnSubsribe = () => {
                 팔로우
               </div>
             </div>
-            <div v-if="!streamInfo.follow" class="unfollow-button" @click="doUnSubsribe">
+            <div v-if="!isFollow" class="unfollow-button" @click="doSubscribe">
               <img
                 src="../../assets/img/stream/follow.png"
                 alt=""
@@ -252,6 +221,9 @@ const doUnSubsribe = () => {
         </div>
       </div>
     </div>
+    <div class="script-container">
+      <AIScript />
+    </div>
     <div class="chat-container">
       <LiveStreamChat :streamerId="streamerId" />
     </div>
@@ -261,31 +233,25 @@ const doUnSubsribe = () => {
 <style scoped>
 .livestream-container {
   display: flex;
-  width: 1650px;
+  width: 1840px;
   height: 862px;
   overflow-y: hidden;
 }
-#livestream-container.expanded {
-  width: 1840px;
-}
 .stream-container {
-  width: 1280px;
+  width: 1100px;
   height: 862px;
-}
-#stream-container.expanded {
-  width: 1470px;
 }
 .screen-container {
   display: flex;
   justify-content: center;
-  width: 1280px;
-  height: 720px;
+  width: 1100px;
+  height: 619px;
   background-color: black;
 }
 .screen {
   position: relative;
-  width: 1280px;
-  height: 720px;
+  width: 1100px;
+  height: 619px;
   display: flex;
   justify-content: center;
 }
@@ -301,41 +267,26 @@ const doUnSubsribe = () => {
   font-weight: 600;
   background-color: rgba(0, 0, 0, 0.6);
 }
-#screen-container.expanded {
-  width: 1470px;
-}
 .livestream-info-container {
   display: flex;
-  width: 1280px;
+  width: 1100px;
   height: 142px;
-}
-#livestream-info-container.expanded {
-  width: 1470px;
 }
 .livestream-info-box {
-  width: 1000px;
+  width: 820px;
   height: 142px;
 }
-#livestream-info-box.expanded {
-  width: 1190px;
-}
 .livestream-title {
-  width: 1000px;
+  width: 820px;
   height: 48px;
   font-size: 24px;
   font-weight: 600;
   padding: 16px 16px 0;
 }
-#livestream-title.expanded {
-  width: 1190px;
-}
 .streamer-info-container {
   display: flex;
-  width: 1000px;
+  width: 820px;
   height: 86px;
-}
-#streamer-info-container.expanded {
-  width: 1190px;
 }
 .streamer-logo-container {
   display: flex;
@@ -363,18 +314,12 @@ const doUnSubsribe = () => {
   width: 914px;
   height: 86px;
 }
-#streamer-info-box.expanded {
-  width: 1104px;
-}
 .streamer-name {
   width: 914px;
   height: 43px;
   font-size: 20px;
   font-weight: 600;
   padding: 14px 0 0 8px;
-}
-#streamer-name.expanded {
-  width: 1104px;
 }
 .watcher-tag-container {
   display: flex;
@@ -445,6 +390,10 @@ const doUnSubsribe = () => {
   width: 33px;
   height: 33px;
   cursor: pointer;
+}
+.script-container {
+  width: 370px;
+  height: 862px;
 }
 .chat-container {
   width: 370px;

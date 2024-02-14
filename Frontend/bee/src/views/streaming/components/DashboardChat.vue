@@ -26,7 +26,9 @@ const ChatLogGet = () => {
     accessToken.value,
     selectedUsername.value,
     ({ data }) => {
+      console.log("1111111111111ㅅㅂ좀되라");
       console.log(data.status);
+      console.log(data.data.userInfo);
       userInfo.value = data.data.userInfo;
     },
     (error) => {
@@ -40,76 +42,76 @@ const toggleInfo = () => {
 };
 const chatBoxRef = ref(null);
 const messages = ref([
-  {
-    id: 0,
-    name: "MightyEamessage",
-    message: "와, 정말 놀라운 플레이였어요!",
-    type: "normal",
-    time: "2024-01-31 05:50:21",
-  },
-  {
-    id: 1,
-    name: "BlueRabbit",
-    message: "좋아요! 계속 이야기해주세요!",
-    type: "greeting",
-    time: "2024-01-31 05:28:53",
-  },
-  {
-    id: 2,
-    name: "QuietCat",
-    message: "정말 재미있는 방송이네요!",
-    type: "shoutout",
-    time: "2024-01-31 05:04:29",
-  },
-  {
-    id: 3,
-    name: "RedFox",
-    message: "지금 무슨 게임을 하고 계신가요?",
-    type: "greeting",
-    time: "2024-01-31 05:00:29",
-  },
-  {
-    id: 4,
-    name: "RedFox",
-    message: "저는 이 부분에 대해 다른 생각이 있어요.",
-    type: "normal",
-    time: "2024-01-31 05:39:01",
-  },
-  {
-    id: 5,
-    name: "RedFox",
-    message: "여기 누구 있나요?",
-    type: "question",
-    time: "2024-01-31 05:00:09",
-  },
-  {
-    id: 6,
-    name: "CrazyPanda",
-    message: "지금 무슨 게임을 하고 계신가요?",
-    type: "greeting",
-    time: "2024-01-31 05:15:41",
-  },
-  {
-    id: 7,
-    name: "BlueRabbit",
-    message: "오늘 방송 언제 시작해요?",
-    type: "greeting",
-    time: "2024-01-31 05:12:18",
-  },
-  {
-    id: 8,
-    name: "CrazyPanda",
-    message: "좋아요! 계속 이야기해주세요!",
-    type: "question",
-    time: "2024-01-31 04:59:04",
-  },
-  {
-    id: 9,
-    name: "BlueRabbit",
-    message: "좋아요! 계속 이야기해주세요!",
-    type: "greeting",
-    time: "2024-01-31 05:16:52",
-  },
+  // {
+  //   id: 0,
+  //   name: "MightyEamessage",
+  //   message: "와, 정말 놀라운 플레이였어요!",
+  //   type: "normal",
+  //   time: "2024-01-31 05:50:21",
+  // },
+  // {
+  //   id: 1,
+  //   name: "BlueRabbit",
+  //   message: "좋아요! 계속 이야기해주세요!",
+  //   type: "greeting",
+  //   time: "2024-01-31 05:28:53",
+  // },
+  // {
+  //   id: 2,
+  //   name: "QuietCat",
+  //   message: "정말 재미있는 방송이네요!",
+  //   type: "shoutout",
+  //   time: "2024-01-31 05:04:29",
+  // },
+  // {
+  //   id: 3,
+  //   name: "RedFox",
+  //   message: "지금 무슨 게임을 하고 계신가요?",
+  //   type: "greeting",
+  //   time: "2024-01-31 05:00:29",
+  // },
+  // {
+  //   id: 4,
+  //   name: "RedFox",
+  //   message: "저는 이 부분에 대해 다른 생각이 있어요.",
+  //   type: "normal",
+  //   time: "2024-01-31 05:39:01",
+  // },
+  // {
+  //   id: 5,
+  //   name: "RedFox",
+  //   message: "여기 누구 있나요?",
+  //   type: "question",
+  //   time: "2024-01-31 05:00:09",
+  // },
+  // {
+  //   id: 6,
+  //   name: "CrazyPanda",
+  //   message: "지금 무슨 게임을 하고 계신가요?",
+  //   type: "greeting",
+  //   time: "2024-01-31 05:15:41",
+  // },
+  // {
+  //   id: 7,
+  //   name: "BlueRabbit",
+  //   message: "오늘 방송 언제 시작해요?",
+  //   type: "greeting",
+  //   time: "2024-01-31 05:12:18",
+  // },
+  // {
+  //   id: 8,
+  //   name: "CrazyPanda",
+  //   message: "좋아요! 계속 이야기해주세요!",
+  //   type: "question",
+  //   time: "2024-01-31 04:59:04",
+  // },
+  // {
+  //   id: 9,
+  //   name: "BlueRabbit",
+  //   message: "좋아요! 계속 이야기해주세요!",
+  //   type: "greeting",
+  //   time: "2024-01-31 05:16:52",
+  // },
 ]);
 const newMessage = ref("");
 onUpdated(() => {
@@ -137,6 +139,7 @@ const selectUser = async (username) => {
   await ChatLogGet();
   await toggleInfo();
 };
+
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
@@ -230,6 +233,7 @@ onMounted(() => {
       :infoModalActive="infoModalActive"
       :username="selectedUsername"
       @close="toggleInfo"
+      :userInfo="userInfo"
     />
   </div>
 </template>

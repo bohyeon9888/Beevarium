@@ -4,7 +4,7 @@ const local = localAxios();
 
 const subscribe = async (accessToken, stationNo, success, fail) => {
   await local
-    .get(`/subscribe/${stationNo}`, {
+    .get(`follow/subscribe/${stationNo}`, {
       headers: {
         Authorization: accessToken,
       },
@@ -15,7 +15,7 @@ const subscribe = async (accessToken, stationNo, success, fail) => {
 
 const unSubscribe = async (accessToken, stationNo, success, fail) => {
   await local
-    .delete(`/unsubscribe/${stationNo}`, {
+    .delete(`follow/unsubscribe/${stationNo}`, {
       headers: {
         Authorization: accessToken,
       },
