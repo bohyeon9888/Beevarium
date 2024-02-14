@@ -137,6 +137,7 @@ const selectUser = async (username) => {
   await ChatLogGet();
   await toggleInfo();
 };
+
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {

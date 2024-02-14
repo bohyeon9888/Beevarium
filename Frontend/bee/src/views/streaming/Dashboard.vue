@@ -47,6 +47,7 @@ const deleteTag = function (input) {
 
 const newsFeed = ref([]);
 const onAir = ref(false);
+const onRecord = ref(false);
 
 const addNewsFeedItem = (user, action) => {
   const item = {
@@ -112,13 +113,6 @@ onMounted(() => {
   loadAudioInputDevices();
 });
 
-const openSessionWithSelectedMic = async () => {
-  if (selectedMicrophoneId.value) {
-    // connectSession 함수에 선택된 마이크 ID를 전달합니다.
-    await ovpStore.connectSession(selectedMicrophoneId.value);
-  }
-};
-
 const recordUrl = () => {
   console.log(recordStore.recordUrl);
   recordStore.sendRecord(
@@ -140,11 +134,8 @@ const startStreaming = async () => {
 };
 
 const endStreaming = async () => {
-  await doStreamingEnd1();
-  await recordStore.stopRecording(recordingId.value);
+  await doStreamingEnd();
   await ovpStore.closeSession();
-  await recordStore.retrieveRecord(recordingId.value);
-  await recordUrl();
 };
 
 const recordingId = ref("");
@@ -152,7 +143,14 @@ const recordingId = ref("");
 const startRecording = async () => {
   await recordStore.startRecording(sessionId.value);
   recordingId.value = recordStore.recordingId;
+  onRecord.value = true;
   console.log("컴포넌트에서", recordingId);
+};
+
+const endRecord = async () => {
+  await recordStore.stopRecording(recordingId.value);
+  await recordStore.retrieveRecord(recordingId.value);
+  await recordUrl();
 };
 
 // 테스트
@@ -215,35 +213,48 @@ addNewsFeedItem("아재개더", "3,000");
         </div>
 
         <div class="streaming-option">
-          <select class="mic-select" v-model="selectedMicrophoneId">
-            <option
-              v-for="device in audioInputDevices"
-              :key="device.deviceId"
-              :value="device.deviceId"
+          <div class="streaming-option1">
+            <select class="mic-select" v-model="selectedMicrophoneId">
+              <option value="" disabled selected>장치를 선택하세요</option>
+              <option
+                v-for="device in audioInputDevices"
+                :key="device.deviceId"
+                :value="device.deviceId"
+              >
+                {{ device.label }}
+              </option>
+            </select>
+            <button
+              class="streaming-start-btn"
+              @click="startStreaming()"
+              :disabled="onAir"
             >
-              {{ device.label }}
-            </option>
-          </select>
-          <button class="mic-button" @click="openSessionWithSelectedMic">
-            마이크 선택 및 세션 시작
-          </button>
-          <button
-            class="streaming-start-btn"
-            @click="startStreaming()"
-            :disabled="onAir"
-          >
-            {{ streamingButtonText }}
-          </button>
-          <button
-            class="streaming-end-btn"
-            @click="endStreaming()"
-            :disabled="!onAir"
-          >
-            방송 종료
-          </button>
-          <button class="streaming-start-btn" @click="startRecording()">
-            녹화 시작
-          </button>
+              {{ streamingButtonText }}
+            </button>
+            <button
+              class="streaming-end-btn"
+              @click="endStreaming()"
+              :disabled="!onAir || onRecord"
+            >
+              방송 종료
+            </button>
+          </div>
+          <div class="streaming-option2">
+            <button
+              class="record-start-btn"
+              @click="startRecording()"
+              :disabled="!onAir && !onRecord"
+            >
+              녹화 시작
+            </button>
+            <button
+              class="record-end-btn"
+              @click="endRecord()"
+              :disabled="!onAir || onRecord"
+            >
+              녹화 종료
+            </button>
+          </div>
         </div>
         <div class="stream-setting"></div>
       </div>
@@ -474,6 +485,56 @@ button:hover {
   line-height: normal;
   margin-right: 15px;
 }
+.record-start-btn {
+  width: 91px;
+  height: 35px;
+  display: inline-flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: #eb3a3a;
+  border: none;
+  font-size: 15px;
+  line-height: normal;
+  margin-right: 15px;
+}
+.record-end-btn {
+  width: 91px;
+  height: 35px;
+  display: inline-flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: #eb3a3a;
+  border: none;
+  font-size: 15px;
+  line-height: normal;
+  margin-right: 15px;
+}
+.record-start-btn[disabled] {
+  background: #434343;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.record-start-btn[disabled]:hover {
+  background: #434343;
+  color: #777777;
+}
+.record-end-btn[disabled] {
+  background: #434343;
+  color: #777777;
+  cursor: not-allowed;
+}
+
+.record-end-btn[disabled]:hover {
+  background: #434343;
+  color: #777777;
+}
 .streaming-end-btn {
   width: 91px;
   height: 35px;
@@ -500,6 +561,16 @@ button:hover {
   color: #777777;
 }
 .streaming-option {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+.streaming-option1 {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 5px;
+}
+.streaming-option2 {
   display: flex;
   justify-content: end;
 }
