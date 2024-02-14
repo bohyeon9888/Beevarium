@@ -238,45 +238,45 @@ addNewsFeedItem("아재개더", "3,000");
         <div class="stream-screen" id="my-video">
           <!-- <Screen /> -->
         </div>
-
-        <div class="streaming-option">
-          <div class="streaming-option1">
-            <select class="mic-select" v-model="selectedMicrophoneId">
-              <option value="" disabled selected>장치를 선택하세요</option>
-              <option
-                v-for="device in audioInputDevices"
-                :key="device.deviceId"
-                :value="device.deviceId"
+        <div class="stream-setting">
+          <div class="streaming-option">
+            <div class="streaming-option1">
+              <select class="mic-select" v-model="selectedMicrophoneId">
+                <option value="" disabled selected>장치를 선택하세요</option>
+                <option
+                  v-for="device in audioInputDevices"
+                  :key="device.deviceId"
+                  :value="device.deviceId"
+                >
+                  {{ device.label }}
+                </option>
+              </select>
+              <button class="streaming-start-btn" @click="startStreaming()" :disabled="onAir">
+                {{ streamingButtonText }}
+              </button>
+              <button
+                class="streaming-end-btn"
+                @click="endStreaming()"
+                :disabled="!onAir || onRecord"
               >
-                {{ device.label }}
-              </option>
-            </select>
-            <button class="streaming-start-btn" @click="startStreaming()" :disabled="onAir">
-              {{ streamingButtonText }}
-            </button>
-            <button
-              class="streaming-end-btn"
-              @click="endStreaming()"
-              :disabled="!onAir || onRecord"
-            >
-              방송 종료
-            </button>
-          </div>
-          <div class="streaming-option2">
-            <button class="record-start-btn" @click="aIStore.ai_disconnect()">테스트</button>
-            <button
-              class="record-start-btn"
-              @click="startRecording()"
-              :disabled="!onAir || onRecord"
-            >
-              녹화 시작
-            </button>
-            <button class="record-end-btn" @click="endRecord()" :disabled="!onAir || !onRecord">
-              녹화 종료
-            </button>
+                방송 종료
+              </button>
+            </div>
+            <div class="streaming-option2">
+              <button class="record-start-btn" @click="aIStore.ai_disconnect()">테스트</button>
+              <button
+                class="record-start-btn"
+                @click="startRecording()"
+                :disabled="!onAir || onRecord"
+              >
+                녹화 시작
+              </button>
+              <button class="record-end-btn" @click="endRecord()" :disabled="!onAir || !onRecord">
+                녹화 종료
+              </button>
+            </div>
           </div>
         </div>
-        <div class="stream-setting"></div>
       </div>
       <div class="newsfeed-container">
         <div class="dashboard-header">뉴스 피드</div>
@@ -396,7 +396,6 @@ button:hover {
   width: 890px;
   height: 493px;
   background-color: #000000;
-  margin-bottom: 24px;
 }
 #my-video video {
   max-width: 890px !important;
@@ -405,7 +404,6 @@ button:hover {
 }
 .stream-setting {
   width: 100%;
-  height: 30%;
   background-color: #1e1e1f;
   color: #ffffff;
 }
@@ -591,6 +589,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   justify-content: end;
+  margin-top: 24px;
 }
 .streaming-option1 {
   display: flex;
