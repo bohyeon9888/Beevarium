@@ -4,7 +4,7 @@ export const useAiStore = defineStore(
   "aIStore",
   () => {
     let stompClient = null;
-    const ai_subtitle = ref("");
+    const ai_subtitle = ref([]);
 
     function ai_connect() {
       var socket = new SockJS("https://api.beevarium.site/ws");
@@ -15,10 +15,13 @@ export const useAiStore = defineStore(
           "/AzureWave/processedText",
           function (messageOutput) {
             console.log(messageOutput);
-            ai_subtitle.value = JSON.parse(messageOutput.body).text;
+            // JSON 문자열을 객체로 파싱
+            var messageData = JSON.parse(messageOutput.body);
+            console.log(messageData);
+            // requestTime과 answer를 포함하는 출력 포맷 만들기
+            ai_subtitle.value = messageData;
             console.log(ai_subtitle.value);
-          },
-          console.log("test")
+          }
         );
       });
     }
