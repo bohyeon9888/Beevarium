@@ -50,9 +50,9 @@ public class ChatService {
             return resp;
         }
 
-        msg.put("msg", "there is no chatting!");
+        msg.put("msg", "there is no chatting but end the broadcasting");
         resp.put("data", msg);
-        resp.put("status", "fail");
+        resp.put("status", "success");
 
         return resp;
     }
