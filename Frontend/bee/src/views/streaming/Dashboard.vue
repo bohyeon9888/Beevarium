@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
@@ -31,9 +31,7 @@ function handleMessages(newMessages) {
 
 const loadAudioInputDevices = async () => {
   const devices = await navigator.mediaDevices.enumerateDevices();
-  audioInputDevices.value = devices.filter(
-    (device) => device.kind === "audioinput"
-  );
+  audioInputDevices.value = devices.filter((device) => device.kind === "audioinput");
 };
 
 const onTag = function (event, input) {
@@ -60,7 +58,6 @@ const addNewsFeedItem = (user, action) => {
   };
   newsFeed.value.unshift(item);
 };
-
 const streamData = computed(() => ({
   broadcastingTitle: broadcastingTitle.value,
   tagList: Array.from(tagList.value),
@@ -74,19 +71,6 @@ const doStreamingStart = () => {
     streamData.value,
     ({ data }) => {
       console.log(data.status);
-    },
-    (error) => {
-      console.log(error.data.msg);
-    }
-  );
-};
-
-const doStreamingEnd1 = () => {
-  onAir.value = false;
-  streamingEnd1(
-    accessToken.value,
-    async ({ data }) => {
-      console.log(data.msg);
     },
     (error) => {
       console.log(error.data.msg);
@@ -114,6 +98,34 @@ const streamingButtonText = computed(() => {
 onMounted(() => {
   loadAudioInputDevices();
 });
+
+watch(
+  () => ovpStore.donation,
+  (newVal) => {
+    console.log(newVal);
+    let donationData = typeof newVal === "string" ? JSON.parse(newVal) : newVal;
+
+    if (donationData) {
+      // donationData에서 name과 message 값을 추출하여 addNewsFeedItem 함수에 전달
+      addNewsFeedItem(`${donationData.name}`, `${donationData.message}`);
+    }
+  },
+  { immediate: false }
+);
+
+// Follow 변화 감지
+watch(
+  () => ovpStore.follow,
+  (newVal) => {
+    console.log(newVal);
+    let followData = typeof newVal === "string" ? JSON.parse(newVal) : newVal;
+    if (newVal) {
+      addNewsFeedItem(`${followData.name}`, `${followData.message}`);
+      // 팔로우 정보를 초기화하거나 다른 처리를 할 수 있습니다.
+    }
+  },
+  { immediate: false }
+);
 
 const sendRecordUrl = () => {
   console.log(recordUrl.value);
@@ -208,9 +220,7 @@ addNewsFeedItem("아재개더", "3,000");
               @keyup.enter="onTag($event, tagInput)"
               placeholder="방송 태그를 입력해주세요."
             />
-            <button class="tag-button" @click="onTag($event, tagInput)">
-              입력
-            </button>
+            <button class="tag-button" @click="onTag($event, tagInput)">입력</button>
           </div>
           <ul class="tag-list">
             <li class="tag" v-for="(tag, index) in tagList" :key="index">
@@ -241,11 +251,7 @@ addNewsFeedItem("아재개더", "3,000");
                 {{ device.label }}
               </option>
             </select>
-            <button
-              class="streaming-start-btn"
-              @click="startStreaming()"
-              :disabled="onAir"
-            >
+            <button class="streaming-start-btn" @click="startStreaming()" :disabled="onAir">
               {{ streamingButtonText }}
             </button>
             <button
@@ -257,9 +263,7 @@ addNewsFeedItem("아재개더", "3,000");
             </button>
           </div>
           <div class="streaming-option2">
-            <button class="record-start-btn" @click="aIStore.ai_disconnect()">
-              테스트
-            </button>
+            <button class="record-start-btn" @click="aIStore.ai_disconnect()">테스트</button>
             <button
               class="record-start-btn"
               @click="startRecording()"
@@ -267,11 +271,7 @@ addNewsFeedItem("아재개더", "3,000");
             >
               녹화 시작
             </button>
-            <button
-              class="record-end-btn"
-              @click="endRecord()"
-              :disabled="!onAir || !onRecord"
-            >
+            <button class="record-end-btn" @click="endRecord()" :disabled="!onAir || !onRecord">
               녹화 종료
             </button>
           </div>
@@ -416,6 +416,12 @@ button:hover {
   border-left: 2px solid #3455;
   border-right: 2px solid #3455;
   color: #ffffff;
+}
+::-webkit-scrollbar {
+  background-color: #1e1e1f;
+}
+::-webkit-scrollbar-thumb {
+  border: 6px solid #1e1e1f;
 }
 .chat-container {
   width: 19%;
@@ -596,7 +602,7 @@ button:hover {
 }
 .newsfeed-box {
   padding: 16px;
-  height: 300px;
+  height: 796px;
   overflow-y: auto;
 }
 .newsfeed-item {

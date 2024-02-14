@@ -3,6 +3,7 @@ import { ref, watch } from "vue";
 import { donatePoint } from "@/api/point";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/user";
+import { useOVSStore } from "@/stores/ov_subscriber";
 // Props 및 Emits 정의
 const props = defineProps({
   donModActive: Boolean,
@@ -11,6 +12,7 @@ const props = defineProps({
 });
 
 const authStore = useAuthStore();
+const ovsStore = useOVSStore();
 const { accessToken } = storeToRefs(authStore);
 const emit = defineEmits(["close"]);
 const donationAmount = ref(1000);
@@ -21,12 +23,13 @@ const isHoneyLack = ref(false);
 const donateAct = () => {
   donatePoint(
     accessToken.value,
-    { 
+    {
       userId: props.streamerId,
       price: donationAmount.value,
     },
     ({ data }) => {
       console.log(data.status);
+      ovsStore.sendDonate(donationAmount.value);
     },
     (error) => {
       console.log(error.data.msg);

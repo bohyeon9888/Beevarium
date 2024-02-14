@@ -45,13 +45,9 @@ export const useOVSStore = defineStore(
       try {
         // 세션 생성
         session = OV.initSession();
-        messagee.value = "";
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
-          const subscriber = session.subscribe(
-            event.stream,
-            "subscriber-video"
-          );
+          const subscriber = session.subscribe(event.stream, "subscriber-video");
           subscriber.on("videoElementCreated", (event) => {
             // 비디오 엘리먼트에 접근
             var videoElement = event.element;
@@ -67,7 +63,6 @@ export const useOVSStore = defineStore(
           console.log(event.data);
           console.log(event.name); // Message
           addMessage(event.data);
-          messagee.value = ""; // The type of message
         });
 
         session.on("signal:subtitles", (event) => {
@@ -111,10 +106,9 @@ export const useOVSStore = defineStore(
       }
     };
     const closeSession = async () => {
+      messagee.value = "";
       try {
-        await axios.delete(
-          `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
-        );
+        await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId}`);
         console.log("세션 닫힘");
         //클라이언트측 세션 닫기 -> 필요없나??
       } catch (error) {
@@ -143,6 +137,48 @@ export const useOVSStore = defineStore(
       }
     };
 
+    const sendDonate = async (point) => {
+      try {
+        const currentTime = new Date(); // 현재 시간 가져오기
+        const donateData = {
+          message: point,
+          name: user.value.name,
+          time: currentTime.toISOString(), // ISO 형식으로 시간을 문자열로 변환
+        };
+
+        // 메시지 브로드캐스트
+        await session.signal({
+          data: JSON.stringify(donateData),
+          to: [], // 모든 연결에게 브로드캐스트
+          type: "donate",
+        });
+        console.log("donate successfully sent");
+      } catch (error) {
+        console.error("Error sending donate:", error);
+      }
+    };
+
+    const sendfollow = async () => {
+      try {
+        const currentTime = new Date(); // 현재 시간 가져오기
+        const followData = {
+          message: "팔로우",
+          name: user.value.name,
+          time: currentTime.toISOString(), // ISO 형식으로 시간을 문자열로 변환
+        };
+
+        // 메시지 브로드캐스트
+        await session.signal({
+          data: JSON.stringify(followData),
+          to: [], // 모든 연결에게 브로드캐스트
+          type: "follow",
+        });
+        console.log("follow successfully sent");
+      } catch (error) {
+        console.error("Error sending follow:", error);
+      }
+    };
+
     // 채팅 메시지 수신하기
     const receiveMessage = () => {
       console.log("11");
@@ -159,7 +195,9 @@ export const useOVSStore = defineStore(
       sendMessage1,
       receiveMessage,
       closeSession,
+      sendDonate,
       addMessage,
+      sendfollow,
       messagee,
       sessionId,
       connectId,

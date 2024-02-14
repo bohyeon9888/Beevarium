@@ -22,6 +22,19 @@ export const useOVPStore = defineStore(
     const connectId = ref("");
 
     const messagee = ref("");
+    const donation = ref("");
+    const follow = ref("");
+
+    const addDonate = (point) => {
+      donation.value = point;
+      console.log(donation.value);
+    };
+
+    const addFollow = (name) => {
+      follow.value = name;
+      console.log(follow.value);
+    };
+
     // 메시지를 추가하는 함수
     const addMessage = (message) => {
       console.log("몇번 호출?");
@@ -38,26 +51,23 @@ export const useOVPStore = defineStore(
         }
         // 새 세션을 초기화합니다.
         session = OV.initSession();
-        const response = await axios.post(
-          `${API_SERVER_URL}openvidu/api/sessions`,
-          {
-            mediaMode: "ROUTED",
-            recordingMode: "MANUAL",
-            customSessionId: "CUSTOM_SESSION_ID3",
-            forcedVideoCodec: "VP8",
-            allowTranscoding: false,
-            defaultRecordingProperties: {
-              name: "MyRecording",
-              hasAudio: true,
-              hasVideo: true,
-              outputMode: "COMPOSED",
-              recordingLayout: "BEST_FIT",
-              resolution: "1280x720",
-              frameRate: 25,
-              shmSize: 536870912,
-            },
-          }
-        );
+        const response = await axios.post(`${API_SERVER_URL}openvidu/api/sessions`, {
+          mediaMode: "ROUTED",
+          recordingMode: "MANUAL",
+          customSessionId: "CUSTOM_SESSION_ID3",
+          forcedVideoCodec: "VP8",
+          allowTranscoding: false,
+          defaultRecordingProperties: {
+            name: "MyRecording",
+            hasAudio: true,
+            hasVideo: true,
+            outputMode: "COMPOSED",
+            recordingLayout: "BEST_FIT",
+            resolution: "1280x720",
+            frameRate: 25,
+            shmSize: 536870912,
+          },
+        });
         console.log("세션 생성됨", response.data);
         sessionId.value = response.data;
         console.log(sessionId.value);
@@ -102,9 +112,7 @@ export const useOVPStore = defineStore(
             });
             publisher.on("accessAllowed", () => {
               //발행한 스트림에 오디오트랙이 포함되어 있는지 확인
-              const audioTracks = publisher.stream
-                .getMediaStream()
-                .getAudioTracks();
+              const audioTracks = publisher.stream.getMediaStream().getAudioTracks();
               console.log("오디오 트랙 정보", audioTracks);
             });
 
@@ -122,10 +130,7 @@ export const useOVPStore = defineStore(
             session
               .publish(publisher)
               .then(() => {
-                console.log(
-                  "화면 및 카메라 공유 스트림 발생 성공",
-                  sessionId.value
-                );
+                console.log("화면 및 카메라 공유 스트림 발생 성공", sessionId.value);
                 session
                   .subscribeToSpeechToText(publisher.stream, "ko-KR")
                   .then(() => {
@@ -158,10 +163,7 @@ export const useOVPStore = defineStore(
                       subtitleTimeout = setTimeout(async () => {
                         const trimmedText = subtitleBuffer.value.trim();
                         const finalText = trimmedText.replace(/\.\s*$/, "");
-                        if (
-                          finalText.length > 0 &&
-                          lastSentMessage !== finalText
-                        ) {
+                        if (finalText.length > 0 && lastSentMessage !== finalText) {
                           // session 객체가 null이 아닌지 확인
                           if (session && session.connection) {
                             try {
@@ -170,6 +172,7 @@ export const useOVPStore = defineStore(
                                 type: "subtitles",
                               });
                               console.log(finalText);
+                              console.log("send ai_messsage");
                               aIStore.ai_sendMessage(finalText);
                               lastSentMessage = finalText; // 마지막으로 전송된 메시지 업데이트
                               subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
@@ -202,9 +205,7 @@ export const useOVPStore = defineStore(
                       type: "ai_subtitles", // 신호 유형
                     })
                     .then(() => {
-                      console.log(
-                        "자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다."
-                      );
+                      console.log("자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다.");
                     })
                     .catch((error) => {
                       console.error("자막 데이터 공유 중 오류 발생:", error);
@@ -219,6 +220,16 @@ export const useOVPStore = defineStore(
               console.log(event.name); // Message
               addMessage(event.data); // The type of message
             });
+            session.on("signal:donate", (event) => {
+              console.log(event.data);
+              console.log(event.name); // Message
+              addDonate(event.data); // The type of message
+            });
+            session.on("signal:follow", (event) => {
+              console.log(event.data);
+              console.log(event.name); // Message
+              addFollow(event.data); // The type of message
+            });
           })
           .catch((error) => {
             console.error("클라이언트측 세션 연결 실패", error);
@@ -232,9 +243,7 @@ export const useOVPStore = defineStore(
     const closeSession = async () => {
       try {
         if (session && session.connection) {
-          await axios.delete(
-            `${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`
-          );
+          await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`);
           session = null; // 세션 객체 초기화
         }
         console.log("세션 닫힘");
@@ -285,6 +294,10 @@ export const useOVPStore = defineStore(
       sendMessage1,
       receiveMessage,
       addMessage,
+      addDonate,
+      addFollow,
+      donation,
+      follow,
       messagee,
       sessionId,
       connectId,

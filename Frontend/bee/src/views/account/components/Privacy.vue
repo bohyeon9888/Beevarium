@@ -306,7 +306,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 10rem;
-  object-fit: scale-down;
+  object-fit: contain;
   margin-right: 12px;
 }
 .account-info-box {

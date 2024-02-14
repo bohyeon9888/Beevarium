@@ -51,12 +51,6 @@ const closeModal = () => {
 const sendMessage = () => {
   const trimmedMessage = newMessage.value.trim();
   if (trimmedMessage) {
-    const messageObject = {
-      id: Date.now(),
-      username: authStore.user.name,
-      content: trimmedMessage,
-      type: "normal",
-    };
     // messages.value.push(messageObject);
     ovsStore.sendMessage1(newMessage.value);
     newMessage.value = "";
@@ -64,9 +58,6 @@ const sendMessage = () => {
 };
 const usernameColors = reactive({});
 
-onMounted(() => {
-  ovsStore.closeSession();
-});
 
 watchEffect(() => {
   messages.value.forEach((message) => {
@@ -101,14 +92,19 @@ const PointGet = () => {
     (error) => {
       console.log(error);
     }
-  );
+    );
 };
+  
+onMounted(() => {
+  messages.value = [];
+  ovsStore.closeSession();
+});
 </script>
 
 <template>
   <div class="livestream-chat-container">
     <div
-      style="
+    style="
         display: flex;
         justify-content: center;
         align-items: center;
