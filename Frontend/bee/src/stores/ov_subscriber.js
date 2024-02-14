@@ -57,8 +57,8 @@ export const useOVSStore = defineStore(
             var videoElement = event.element;
 
             // 비디오 엘리먼트의 크기를 고정된 값으로 설정
-            videoElement.style.width = "1280px";
-            videoElement.style.height = "720px";
+            videoElement.style.width = "1100px";
+            videoElement.style.height = "619px";
           });
           console.log("새로운 스트림 구독 시작");
         });

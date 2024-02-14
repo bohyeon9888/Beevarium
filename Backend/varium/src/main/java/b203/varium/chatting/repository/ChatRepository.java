@@ -9,5 +9,6 @@ public interface ChatRepository extends MongoRepository<ChatEntity, String> {
 
     List<ChatEntity> findAllByStreamerId(String streamerId);
 
+//    List<ChatEntity> findAllByStreamerIdAndUserNo(String streamerId, int userNo);
     List<ChatEntity> findAllByStreamerIdAndUsername(String streamerId, String username);
 }

@@ -183,6 +183,7 @@ const PointGet = () => {
   position: relative;
   width: 370px;
   height: 862px;
+  border-right: 1px solid #202020;
 }
 .livestream-chat-box {
   overflow-y: auto;

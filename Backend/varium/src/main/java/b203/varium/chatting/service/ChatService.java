@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -50,9 +52,9 @@ public class ChatService {
             return resp;
         }
 
-        msg.put("msg", "there is no chatting!");
+        msg.put("msg", "there is no chatting but end the broadcasting");
         resp.put("data", msg);
-        resp.put("status", "fail");
+        resp.put("status", "success");
 
         return resp;
     }
@@ -108,6 +110,8 @@ public class ChatService {
 
                 result.add(data);
             }
+        } else {
+            log.error("list is empty");
         }
 
         UserInfoDTO userinfo = new UserInfoDTO();
@@ -117,6 +121,7 @@ public class ChatService {
         } else {
             userinfo.setCreatedDate(follow.getCreatedDate());
         }
+        userinfo.setProfile(user.getProfileUrl());
         userinfo.setUsername(username);
         userinfo.setEmail(user.getEmail());
         userinfo.setChatting(result);

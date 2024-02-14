@@ -64,7 +64,7 @@ onMounted(() => {
         </div>
       </div>
       <div class="follower-count">
-        팔로워 {{ prop.studioInfo.followCount }}명
+        팔로워 {{ prop.studioInfo.stationFollower }}명
       </div>
       <div
         v-if="prop.studioInfo.isMine"
