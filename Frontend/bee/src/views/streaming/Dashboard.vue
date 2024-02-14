@@ -98,7 +98,7 @@ const doStreamingEnd = () => {
     accessToken.value,
     { chatting: receivedMessages.value },
     async ({ data }) => {
-      console.log(data.msg);
+      console.log(data.data.msg);
     },
     (error) => {
       console.log(error.data.msg);
