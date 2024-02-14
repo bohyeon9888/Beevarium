@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { search } from "@/api/search";
 
 const router = useRouter();
 
@@ -17,87 +18,6 @@ const loadMoreClips = () => {
   maxClipsToShow.value += 6;
 };
 
-const moveToLiveStream = () => {
-  router.push({ name: "LiveStream" });
-};
-const moveToVOD = () => {
-  router.push({ name: "ReplayDetail" });
-};
-
-const livestreams = [
-  {
-    thumbnail: "search-livestream1",
-    logo: "search-streamer-logo1",
-    name: "스트리머1",
-    watcher: 1579,
-    title: "치지직) 직접 만든 서버에서 플레이",
-    tags: ["마인크래프트", "한국어", "게임", "한국어", "게임", "마인크래프트"],
-  },
-  {
-    thumbnail: "search-livestream2",
-    logo: "search-streamer-logo2",
-    name: "스트리머2",
-    watcher: 1579,
-    title: "15시간 노방종 끝이 보인다...",
-    tags: ["마인크래프트", "한국어", "게임"],
-  },
-  {
-    thumbnail: "search-livestream3",
-    logo: "search-streamer-logo3",
-    name: "스트리머3",
-    watcher: 1579,
-    title: "[치치직 동시 송출] 마크로 내집마련!",
-    tags: ["마인크래프트", "한국어", "게임"],
-  },
-  {
-    thumbnail: "search-livestream1",
-    logo: "search-streamer-logo1",
-    name: "스트리머1",
-    watcher: 1579,
-    title: "치지직) 직접 만든 서버에서 플레이",
-    tags: ["마인크래프트", "한국어", "게임", "한국어", "게임", "마인크래프트"],
-  },
-  {
-    thumbnail: "search-livestream2",
-    logo: "search-streamer-logo2",
-    name: "스트리머2",
-    watcher: 1579,
-    title: "15시간 노방종 끝이 보인다...",
-    tags: ["마인크래프트", "한국어", "게임"],
-  },
-  {
-    thumbnail: "search-livestream3",
-    logo: "search-streamer-logo3",
-    name: "스트리머3",
-    watcher: 1579,
-    title: "[치치직 동시 송출] 마크로 내집마련!",
-    tags: ["마인크래프트", "한국어", "게임"],
-  },
-  {
-    thumbnail: "search-livestream1",
-    logo: "search-streamer-logo1",
-    name: "스트리머1",
-    watcher: 1579,
-    title: "치지직) 직접 만든 서버에서 플레이",
-    tags: ["마인크래프트", "한국어", "게임", "한국어", "게임", "마인크래프트"],
-  },
-  {
-    thumbnail: "search-livestream2",
-    logo: "search-streamer-logo2",
-    name: "스트리머2",
-    watcher: 1579,
-    title: "15시간 노방종 끝이 보인다...",
-    tags: ["마인크래프트", "한국어", "게임"],
-  },
-  {
-    thumbnail: "search-livestream3",
-    logo: "search-streamer-logo3",
-    name: "스트리머3",
-    watcher: 1579,
-    title: "[치치직 동시 송출] 마크로 내집마련!",
-    tags: ["마인크래프트", "한국어", "게임"],
-  },
-];
 const VODs = [
   {
     thumbnail: "search-vod1",
@@ -197,28 +117,44 @@ const VODs = [
   },
 ];
 
+const livestreams = ref([]);
+
+const doSearch = () => {
+  search(
+    route.params.keyword,
+    ({ data }) => {
+      livestreams.value = data.data.result;
+    },
+    (error) => {
+      console.log("검색 api 실패");
+    }
+  );
+};
+
 const getStreamerLogoUrl = (name) => {
   return new URL(`/src/assets/img/search/${name}.png`, import.meta.url).href;
 };
 const getThumbnailUrl = (name) => {
   return new URL(`/src/assets/img/search/${name}.png`, import.meta.url).href;
 };
+
+onMounted(() => {
+  doSearch();
+});
 </script>
 
 <template>
   <div class="search-container">
     <div class="search-keyword-box">
       <div class="search-keyword">{{ keyword }}</div>
-      <div style="font-size: 20px; font-weight: 600">
-        태그가 붙은 생방송 채널
-      </div>
+      <div style="font-size: 20px; font-weight: 600">(으)로 검색한 생방송 채널</div>
     </div>
     <ul class="search-livestream-list">
       <li
         class="search-livestream"
         v-for="(livestream, index) in livestreams.slice(0, maxChannelsToShow)"
         :key="index"
-        @click="moveToLiveStream"
+        @click="router.push({ path: `/streaming/live-stream/${livestream.streamerId}` })"
       >
         <div class="search-livestream-thumbnail-box">
           <div class="live-watcher-box">
@@ -246,36 +182,27 @@ const getThumbnailUrl = (name) => {
                 margin-left: 8px;
               "
             >
-              {{ livestream.watcher }}명 시청
+              {{ livestream.viewers }}명 시청
             </div>
           </div>
-          <img
-            :src="getThumbnailUrl(livestream.thumbnail)"
-            alt=""
-            class="search-livestream-thumbnail"
-          />
+          <img :src="livestream.broadcastingImgUrl" alt="" class="search-livestream-thumbnail" />
         </div>
         <div class="search-livestream-info-container">
           <div class="search-livestream-info-box">
             <div class="search-livestream-streamer-box">
               <div class="streamer-logo-box">
-                <img
-                  :src="getStreamerLogoUrl(livestream.logo)"
-                  alt=""
-                  class="streamer-logo"
-                />
+                <img :src="livestream.profileUrl" alt="" class="streamer-logo" />
               </div>
               <div class="search-livestream-streamer-name">
-                {{ livestream.name }}
+                {{ livestream.streamerName }}
               </div>
             </div>
-            <div class="search-livestream-watcher">
-              시청자 {{ livestream.watcher }}명
-            </div>
-            <div class="search-livestream-title">{{ livestream.title }}</div>
+            <div class="search-livestream-watcher">시청자 {{ livestream.viewers }}명</div>
+            <div class="search-livestream-title">{{ livestream.broadcastingTitle }}</div>
             <ul class="search-livestream-tags">
               <li
                 v-for="(tag, index) in livestream.tags"
+                :key="index"
                 class="search-livestream-tag"
               >
                 {{ tag }}
@@ -286,14 +213,7 @@ const getThumbnailUrl = (name) => {
       </li>
     </ul>
     <div class="more-button-container" v-if="!showAllChannels">
-      <div
-        style="
-          width: 757px;
-          height: 1px;
-          borer-radius: 8px;
-          background-color: #323232;
-        "
-      ></div>
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
       <div class="more-button-box" @click="loadMoreChannels">
         <div
           style="
@@ -309,14 +229,7 @@ const getThumbnailUrl = (name) => {
         </div>
         <img src="../../assets/img/search/more-button.png" alt="" />
       </div>
-      <div
-        style="
-          width: 757px;
-          height: 1px;
-          borer-radius: 8px;
-          background-color: #323232;
-        "
-      ></div>
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
     </div>
     <div class="search-keyword-box">
       <div class="search-keyword">#{{ keyword }}</div>
@@ -330,22 +243,14 @@ const getThumbnailUrl = (name) => {
         @click="moveToVOD"
       >
         <div class="search-vod-thumbnail-box">
-          <img
-            :src="getThumbnailUrl(VOD.thumbnail)"
-            alt=""
-            class="search-vod-thumbnail"
-          />
+          <img :src="getThumbnailUrl(VOD.thumbnail)" alt="" class="search-vod-thumbnail" />
         </div>
         <div class="search-vod-info-container">
           <div class="search-vod-info-box">
             <div class="search-vod-title">{{ VOD.title }}</div>
             <div class="search-vod-streamer-box">
               <div class="streamer-logo-box">
-                <img
-                  :src="getStreamerLogoUrl(VOD.logo)"
-                  alt=""
-                  class="streamer-logo"
-                />
+                <img :src="getStreamerLogoUrl(VOD.logo)" alt="" class="streamer-logo" />
               </div>
               <div class="search-vod-streamer-name">{{ VOD.name }}</div>
             </div>
@@ -354,15 +259,8 @@ const getThumbnailUrl = (name) => {
         </div>
       </li>
     </ul>
-    <div class="more-button-container" v-if="!showAllClips">
-      <div
-        style="
-          width: 757px;
-          height: 1px;
-          borer-radius: 8px;
-          background-color: #323232;
-        "
-      ></div>
+    <div class="more-button-container">
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
       <div class="more-button-box" @click="loadMoreClips">
         <div
           style="
@@ -378,14 +276,7 @@ const getThumbnailUrl = (name) => {
         </div>
         <img src="../../assets/img/search/more-button.png" alt="" />
       </div>
-      <div
-        style="
-          width: 757px;
-          height: 1px;
-          borer-radius: 8px;
-          background-color: #323232;
-        "
-      ></div>
+      <div style="width: 757px; height: 1px; borer-radius: 8px; background-color: #323232"></div>
     </div>
   </div>
 </template>

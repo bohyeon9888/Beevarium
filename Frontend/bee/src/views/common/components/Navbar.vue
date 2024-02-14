@@ -11,12 +11,19 @@ const router = useRouter();
 const searchQuery = ref("");
 const mypageModActive = ref(false);
 
-const onSearch = (event) => {
+const onSearch = async (event) => {
   if (event.key === "Enter") {
-    router.push({ path: `/search/${searchQuery.value}` });
+    await router.push({ path: `/search/${searchQuery.value}` });
+    router.go(0);
     searchQuery.value = "";
   }
 };
+
+const search = async () => {
+  await router.push({ path: `/search/${searchQuery.value}` });
+    router.go(0);
+    searchQuery.value = "";
+}
 
 const logout = () => {
   authStore.logout();
@@ -74,6 +81,7 @@ onBeforeUnmount(() => {
         class="search-button"
         src="../../../assets/img/navbar/search.png"
         alt=""
+        @click="search"
       />
     </div>
     <div class="navbar-menu">
@@ -193,7 +201,7 @@ onBeforeUnmount(() => {
   width: 36px;
   height: 36px;
   border-radius: 10rem;
-  object-fit: cover;
+  object-fit: contain;
 }
 .move-to-login {
   margin: 0 30px 0 24px;
