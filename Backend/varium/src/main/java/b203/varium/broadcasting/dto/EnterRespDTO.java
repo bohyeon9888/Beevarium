@@ -6,6 +6,8 @@ import java.util.List;
 
 @Data
 public class EnterRespDTO {
+    private boolean isFollow;
+    private int stationNo;
     private String streamerId;
     private String streamerName;
     private String streamerProfile;
@@ -13,5 +15,4 @@ public class EnterRespDTO {
     private int viewers;
     private List<String> tags;
     private String username;
-
 }

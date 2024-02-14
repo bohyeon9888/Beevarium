@@ -10,6 +10,7 @@ import b203.varium.broadcasting.repository.BroadcastingRepository;
 import b203.varium.chatting.dto.ChatDTO;
 import b203.varium.chatting.service.ChatService;
 import b203.varium.follow.dto.FollowRespDTO;
+import b203.varium.follow.respository.FollowRelationRepository;
 import b203.varium.follow.service.FollowRelationService;
 import b203.varium.hashtag.entity.HashTag;
 import b203.varium.hashtag.repository.HashTagRepository;
@@ -36,6 +37,7 @@ public class BroadcastingService {
     private final TagService tagService;
     private final HashTagRepository tagRepository;
     private final FollowRelationService followService;
+    private final FollowRelationRepository followRepository;
     private final UserRepository userRepository;
     private final ChatService chatService;
 
@@ -179,6 +181,7 @@ public class BroadcastingService {
         BroadcastStation station = broadcastStationRepository.findByUser_UserId(streamerId);
         EnterRespDTO respDTO = new EnterRespDTO();
         Broadcasting broadcasting = broadcastingRepository.findByBroadcastStation_Id(station.getId());
+        UserEntity user = userRepository.findByUsername(username);
 
         if (broadcasting == null) {
             Map<String, Object> msg = new HashMap<>();
@@ -198,6 +201,8 @@ public class BroadcastingService {
         int nowV = broadcasting.getBroadcastingViewers();
         broadcasting.setBroadcastingViewers(nowV + 1);
 
+        respDTO.setFollow(followRepository.existsByBroadcastStationAndFollower(station, user));
+        respDTO.setStationNo(station.getId());
         respDTO.setStreamerId(streamerId);
         respDTO.setStreamerName(station.getUser().getUsername());
         respDTO.setStreamerProfile(station.getUser().getProfileUrl());
