@@ -2,477 +2,24 @@
 import { ref, computed, onMounted } from "vue";
 // import StudioInfo from "./components/StudioInfo.vue";
 import { replayList } from "@/api/replay";
+import { useRoute, useRouter } from "vue-router";
 
-const prop = defineProps(["studioInfo"]);
+const route = useRoute();
+const router = useRouter();
+
+const Replays = ref([]);
+
 const currentPage = ref(1);
 const ReplaysPerPage = 15;
 
-const Replays = [
-{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },{
-    thumbnail: "replay1",
-    title: "전체보기 / 2024 시즌 오프닝",
-    date: "24.01.09",
-  },
-  {
-    thumbnail: "replay2",
-    title: "2023 LCK AWARDS",
-    date: "23.12.13",
-  },
-  {
-    thumbnail: "replay3",
-    title: "[T1 vs BLG] 2세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay4",
-    title: "[T1 vs BLG] 1세트 / 2023 월드 챔피언십",
-    date: "23.10.28",
-  },
-  {
-    thumbnail: "replay5",
-    title: "[KT vs T1] 1세트 / 2023 LCK Summer",
-    date: "23.08.06",
-  },
-];
-
-const totalPages = computed(() => Math.ceil(Replays.length / ReplaysPerPage));
+const totalPages = computed(() =>
+  Math.ceil(Replays.value.length / ReplaysPerPage)
+);
 
 const paginatedReplays = computed(() => {
   const start = (currentPage.value - 1) * ReplaysPerPage;
   const end = start + ReplaysPerPage;
-  return Replays.slice(start, end);
+  return Replays.value.slice(start, end);
 });
 
 const visiblePages = computed(() => {
@@ -523,69 +70,78 @@ const getReplayUrl = (name) => {
 };
 
 onMounted(() => {
-  replayList(streamerId);
+  replayList(
+    route.params.streamerId,
+    ({ data }) => {
+      Replays.value = data.data.videoList;
+    },
+    (error) => {}
+  );
 });
 </script>
 
 <template>
   <!-- <div class="replay-container"> -->
-    <div class="replay-content-container">
-      <div class="replay-content-box">
-        <div style="height: 36px; font-size: 20px; font-weight: 600">
-          다시보기
-        </div>
-        <div class="replay-content">
-          <ul>
-            <router-link :to="{ name: 'ReplayDetail' }" class="replay-list">
-              <li
-                v-for="(replay, index) in paginatedReplays"
-                :key="index"
-                class="replay"
-              >
-                <div class="replay-thumbnail-box">
-                  <img
-                    :src="getReplayUrl(replay.thumbnail)"
-                    alt=""
-                    class="replay-thumbnail"
-                  />
-                </div>
-                <div class="replay-info-box">
-                  <div class="replay-title">{{ replay.title }}</div>
-                  <div class="replay-date">{{ replay.date }}</div>
-                </div>
-              </li>
-            </router-link>
-          </ul>
-          <div class="pagination-container">
-            <div class="prev-button-box" @click="changePage(currentPage - 1)">
+  <div class="replay-content-container">
+    <div class="replay-content-box">
+      <div style="height: 36px; font-size: 20px; font-weight: 600">
+        다시보기
+      </div>
+      <div class="replay-content">
+        <ul class="replay-list">
+          <li
+            v-for="(replay, index) in paginatedReplays"
+            :key="index"
+            class="replay"
+            @click="
+              router.push({
+                path: `/studio/${route.params.streamerId}/replay/${replay.id}`,
+              })
+            "
+          >
+            <div class="replay-thumbnail-box">
               <img
-                src="../../assets/img/common/prev-button.png"
+                :src="replay.imgUrl"
                 alt=""
-                class="prev-button"
+                class="replay-thumbnail"
               />
             </div>
-            <div class="pagination-button-box">
-              <div
-                v-for="page in visiblePages"
-                :key="page"
-                class="pagination-button"
-                :class="{ active: page === currentPage }"
-                @click="changePage(page)"
-              >
-                {{ page }}
-              </div>
+            <div class="replay-info-box">
+              <div class="replay-title">{{ replay.title }}</div>
+              <div class="replay-date">{{ replay.createdDate }}</div>
             </div>
-            <div class="next-button-box" @click="changePage(currentPage + 1)">
-              <img
-                src="../../assets/img/common/next-button.png"
-                alt=""
-                class="next-button"
-              />
+          </li>
+        </ul>
+        <div class="pagination-container">
+          <div class="prev-button-box" @click="changePage(currentPage - 1)">
+            <img
+              src="../../assets/img/common/prev-button.png"
+              alt=""
+              class="prev-button"
+            />
+          </div>
+          <div class="pagination-button-box">
+            <div
+              v-for="page in visiblePages"
+              :key="page"
+              class="pagination-button"
+              :class="{ active: page === currentPage }"
+              @click="changePage(page)"
+            >
+              {{ page }}
             </div>
+          </div>
+          <div class="next-button-box" @click="changePage(currentPage + 1)">
+            <img
+              src="../../assets/img/common/next-button.png"
+              alt=""
+              class="next-button"
+            />
           </div>
         </div>
       </div>
     </div>
+  </div>
   <!-- </div> -->
 </template>
 
@@ -612,7 +168,7 @@ onMounted(() => {
 }
 .replay-list {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
   width: 1540px;
 }
@@ -620,7 +176,16 @@ onMounted(() => {
   width: 294px;
   height: 218px;
   cursor: pointer;
-  margin-bottom: 32px;
+  margin: 0 8.5px 32px;
+}
+.replay:nth-child(5n + 1) {
+  margin-left: 0;
+}
+.replay:nth-child(5n) {
+  margin-right: 0;
+}
+.replay:nth-last-child(-n + 5) {
+  margin-bottom: 0;
 }
 .replay-thumbnail-box {
   position: relative;

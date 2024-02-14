@@ -137,41 +137,40 @@ onMounted(() => {
         </div>
         <div class="replay-container">
           <ul class="replay-list">
-          
-              <li
-                v-for="(replay, index) in studioInfo.replayList"
-                :key="index"
-                class="replay"
-                @click="router.push({ path: `/studio/${route.params.streamerId}/replay/${replay.id}` })"
-              >
-                <div class="replay-thumbnail-box">
-                  <img
-                    :src="replay.imgUrl"
-                    alt=""
-                    class="replay-thumbnail"
-                  />
-                  <div
-                    style="
-                      position: absolute;
-                      top: 12px;
-                      left: 12px;
-                      width: 69px;
-                      height: 25px;
-                      font-size: 14px;
-                      font-weight: 700;
-                      background-color: #e89900;
-                      border-radius: 8px;
-                      padding: 4px 10px;
-                    "
-                  >
-                    다시보기
-                  </div>
+            <li
+              v-for="(replay, index) in studioInfo.replayList"
+              :key="index"
+              class="replay"
+              @click="
+                router.push({
+                  path: `/studio/${route.params.streamerId}/replay/${replay.id}`,
+                })
+              "
+            >
+              <div class="replay-thumbnail-box">
+                <img :src="replay.imgUrl" alt="" class="replay-thumbnail" />
+                <div
+                  style="
+                    position: absolute;
+                    top: 12px;
+                    left: 12px;
+                    width: 69px;
+                    height: 25px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    background-color: #e89900;
+                    border-radius: 8px;
+                    padding: 4px 10px;
+                  "
+                >
+                  다시보기
                 </div>
-                <div class="replay-info-box">
-                  <div class="replay-title">{{ replay.title }}</div>
-                  <div class="replay-date">{{ replay.date }}</div>
-                </div>
-              </li>
+              </div>
+              <div class="replay-info-box">
+                <div class="replay-title">{{ replay.title }}</div>
+                <div class="replay-date">{{ replay.date }}</div>
+              </div>
+            </li>
           </ul>
         </div>
       </div>
@@ -281,7 +280,7 @@ onMounted(() => {
 }
 .replay-list {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
   width: 1540px;
   height: 218px;
@@ -290,6 +289,16 @@ onMounted(() => {
   width: 294px;
   height: 218px;
   cursor: pointer;
+  margin: 0 8.5px;
+}
+.replay:nth-child(5n + 1) {
+  margin-left: 0;
+}
+.replay:nth-child(5n) {
+  margin-right: 0;
+}
+.replay:nth-last-child(-n + 5) {
+  margin-bottom: 0;
 }
 .replay-thumbnail-box {
   position: relative;
