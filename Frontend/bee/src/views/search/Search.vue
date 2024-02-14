@@ -362,6 +362,7 @@ onMounted(() => {
   width: 24px;
   height: 24px;
   border-radius: 10rem;
+  object-fit: contain;
 }
 .search-livestream-streamer-name {
   width: 212px;
