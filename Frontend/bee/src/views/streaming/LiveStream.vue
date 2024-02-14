@@ -8,6 +8,7 @@ import { useOVSStore } from "@/stores/ov_subscriber";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { streamingEnter } from "@/api/live";
 import { useRoute } from "vue-router";
+import { subscribe, unSubscribe } from "@/api/follow";
 
 const authStore = useAuthStore();
 const sidebarStore = useSidebarStore();
@@ -67,6 +68,28 @@ onMounted(() => {
   doStreamingEnter();
   ovsStore.subscribeToSession();
 });
+
+const doSubscribe = () => {
+  subscribe(
+    accessToken.value,
+    streamInfo.value.stationNo,
+    ({ data }) => {
+      console.log(data.msg);
+    },
+    (error) => {}
+  );
+};
+
+const doUnSubsribe = () => {
+  unSubscribe(
+    accessToken.value,
+    streamInfo.value.stationNo,
+    ({ data }) => {
+      console.log(data.msg);
+    },
+    (error) => {}
+  );
+};
 </script>
 
 <template>
@@ -200,7 +223,17 @@ onMounted(() => {
             </label>
           </div>
           <div class="follow-alarm-container">
-            <div class="follow-button">
+            <div v-if="streamInfo.follow" class="follow-button" @click="doSubscribe">
+              <img
+                src="../../assets/img/stream/follow.png"
+                alt=""
+                class="follow-image"
+              />
+              <div style="font-size: 14px; font-weight: 600; color: #121212">
+                팔로우
+              </div>
+            </div>
+            <div v-if="!streamInfo.follow" class="unfollow-button" @click="doUnSubsribe">
               <img
                 src="../../assets/img/stream/follow.png"
                 alt=""
@@ -388,6 +421,17 @@ onMounted(() => {
   width: 87px;
   height: 33px;
   background-color: #ffec3e;
+  border-radius: 10rem;
+  margin: 0 6px 0 139px;
+  cursor: pointer;
+}
+.unfollow-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 87px;
+  height: 33px;
+  background-color: #e6e5ea;
   border-radius: 10rem;
   margin: 0 6px 0 139px;
   cursor: pointer;
