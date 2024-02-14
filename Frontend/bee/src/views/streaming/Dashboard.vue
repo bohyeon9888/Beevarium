@@ -602,7 +602,7 @@ button:hover {
 }
 .newsfeed-box {
   padding: 16px;
-  height: 300px;
+  height: 796px;
   overflow-y: auto;
 }
 .newsfeed-item {
