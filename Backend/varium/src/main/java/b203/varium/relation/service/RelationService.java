@@ -43,7 +43,7 @@ public class RelationService {
         pointRelationEntity.setCreatedDate(nowT);
         pointRelationEntity.setUpdatedDate(nowT);
         relationRepository.saveRelation(pointRelationEntity);
-
+        relationRepository.sendPoint(userEntity, relationDtoResponse.getPrice());
         relationRepository.savePoint(userRepository.findByUserId(relationDtoResponse.getUserId()), relationDtoResponse.getPrice());
         result.put("status", "success");
         return result;

@@ -1,30 +1,31 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { RouterLink } from "vue-router";
-// import { replayDetail } from "@/api/replay";
+import { RouterLink, useRoute } from "vue-router";
+import { replayDetail } from "@/api/replay";
 
-const prop = defineProps(["studioInfo"]);
-const replay = ref({
-  title: "다시보기 방송 제목입니다.",
-  tags: ["한국어", "게임", "방송"],
-  views: 1353,
-  date: "24.01.09",
-});
-
-// const replay = ref({});
-//
-// onMounted(() => {
-//   replayDetail(
-//     streamerId,
-//     replayNo,
-//     ({ data }) => {
-//       replay.value = data.data;
-//     },
-//     (error) => {
-//       console.log(error.data.msg);
-//     }
-//   );
+// const replay = ref({
+//   title: "다시보기 방송 제목입니다.",
+//   tags: ["한국어", "게임", "방송"],
+//   views: 1353,
+//   date: "24.01.09",
 // });
+
+const replay = ref({});
+
+const route = useRoute();
+
+onMounted(() => {
+  replayDetail(
+    route.params.replayNo,
+    ({ data }) => {
+      console.log(data);
+      replay.value = data.videoList;
+    },
+    (error) => {
+      console.log(error.data.msg);
+    }
+  );
+});
 </script>
 
 <template>
@@ -49,27 +50,15 @@ const replay = ref({
     </div>
     <div class="replay-detail-content-box">
       <div class="replay-screen-box">
-        <img
-          src="../../assets/img/stream/stream-display.png"
-          alt=""
-          class="replay-screen"
-        />
+        <video :src="replay.replayVideoUrl" class="replay-screen"></video>
       </div>
-      <div class="progressbar-container"></div>
       <div class="replay-info-container">
         <div class="replay-info-box">
           <div class="replay-title-box">
             {{ replay.title }}
           </div>
-          <div class="replay-tag-box">
-            <ul class="tag-list">
-              <li v-for="(tag, index) in replay.tags" :key="index" class="tag">
-                {{ tag }}
-              </li>
-            </ul>
-          </div>
           <div class="replay-views-date-box">
-            <div>조회수 {{ replay.views }}회</div>
+            <div>조회수 {{ replay.viewers }}회</div>
             <div
               style="
                 width: 1px;
@@ -78,7 +67,7 @@ const replay = ref({
                 background: #636363;
               "
             ></div>
-            <div>{{ replay.date }}</div>
+            <div>{{ replay.createdDate }}</div>
           </div>
         </div>
         <div class="clip-setting-container">
