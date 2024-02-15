@@ -80,7 +80,7 @@ onMounted(() => {
       >
         방송국 설정
       </div>
-      <div class="stream-live-thumbnail-box">
+      <div v-if="prop.studioInfo.liveInfo.live" class="stream-live-thumbnail-box">
         <router-link :to="{ name: 'LiveStream' }">
           <img
             :src="prop.studioInfo.liveInfo.broadcastingThumbnail"
