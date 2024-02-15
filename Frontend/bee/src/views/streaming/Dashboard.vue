@@ -10,6 +10,7 @@ import { useAiStore } from "@/stores/ai";
 
 const aIStore = useAiStore();
 const recordStore = useRecordStore();
+const { ai_subtitle, session } = storeToRefs(aIStore);
 const { recordUrl, recordingId } = storeToRefs(recordStore);
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
@@ -31,7 +32,9 @@ function handleMessages(newMessages) {
 
 const loadAudioInputDevices = async () => {
   const devices = await navigator.mediaDevices.enumerateDevices();
-  audioInputDevices.value = devices.filter((device) => device.kind === "audioinput");
+  audioInputDevices.value = devices.filter(
+    (device) => device.kind === "audioinput"
+  );
 };
 
 const onTag = function (event, input) {
@@ -98,6 +101,29 @@ const streamingButtonText = computed(() => {
 onMounted(() => {
   loadAudioInputDevices();
 });
+
+watch(
+  () => ai_subtitle.value,
+  (newSubtitle, oldSubtitle) => {
+    console.log("watch 실행");
+    if (session && session.connection) {
+      session
+        .signal({
+          data: JSON.stringify({ text: newSubtitle }), // 변화된 자막 데이터
+          type: "ai_subtitles", // 신호 유형
+        })
+        .then(() => {
+          console.log(
+            "자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다."
+          );
+        })
+        .catch((error) => {
+          console.error("자막 데이터 공유 중 오류 발생:", error);
+        });
+    }
+  },
+  { immediate: true }
+);
 
 watch(
   () => ovpStore.donation,
@@ -220,7 +246,9 @@ addNewsFeedItem("아재개더", "3,000");
               @keyup.enter="onTag($event, tagInput)"
               placeholder="방송 태그를 입력해주세요."
             />
-            <button class="tag-button" @click="onTag($event, tagInput)">입력</button>
+            <button class="tag-button" @click="onTag($event, tagInput)">
+              입력
+            </button>
           </div>
           <ul class="tag-list">
             <li class="tag" v-for="(tag, index) in tagList" :key="index">
@@ -238,45 +266,55 @@ addNewsFeedItem("아재개더", "3,000");
         <div class="stream-screen" id="my-video">
           <!-- <Screen /> -->
         </div>
-
-        <div class="streaming-option">
-          <div class="streaming-option1">
-            <select class="mic-select" v-model="selectedMicrophoneId">
-              <option value="" disabled selected>장치를 선택하세요</option>
-              <option
-                v-for="device in audioInputDevices"
-                :key="device.deviceId"
-                :value="device.deviceId"
+        <div class="stream-setting">
+          <div class="streaming-option">
+            <div class="streaming-option1">
+              <select class="mic-select" v-model="selectedMicrophoneId">
+                <option value="" disabled selected>장치를 선택하세요</option>
+                <option
+                  v-for="device in audioInputDevices"
+                  :key="device.deviceId"
+                  :value="device.deviceId"
+                >
+                  {{ device.label }}
+                </option>
+              </select>
+              <button
+                class="streaming-start-btn"
+                @click="startStreaming()"
+                :disabled="onAir"
               >
-                {{ device.label }}
-              </option>
-            </select>
-            <button class="streaming-start-btn" @click="startStreaming()" :disabled="onAir">
-              {{ streamingButtonText }}
-            </button>
-            <button
-              class="streaming-end-btn"
-              @click="endStreaming()"
-              :disabled="!onAir || onRecord"
-            >
-              방송 종료
-            </button>
-          </div>
-          <div class="streaming-option2">
-            <button class="record-start-btn" @click="aIStore.ai_disconnect()">테스트</button>
-            <button
-              class="record-start-btn"
-              @click="startRecording()"
-              :disabled="!onAir || onRecord"
-            >
-              녹화 시작
-            </button>
-            <button class="record-end-btn" @click="endRecord()" :disabled="!onAir || !onRecord">
-              녹화 종료
-            </button>
+                {{ streamingButtonText }}
+              </button>
+              <button
+                class="streaming-end-btn"
+                @click="endStreaming()"
+                :disabled="!onAir || onRecord"
+              >
+                방송 종료
+              </button>
+            </div>
+            <div class="streaming-option2">
+              <button class="record-start-btn" @click="aIStore.ai_disconnect()">
+                테스트
+              </button>
+              <button
+                class="record-start-btn"
+                @click="startRecording()"
+                :disabled="!onAir || onRecord"
+              >
+                녹화 시작
+              </button>
+              <button
+                class="record-end-btn"
+                @click="endRecord()"
+                :disabled="!onAir || !onRecord"
+              >
+                녹화 종료
+              </button>
+            </div>
           </div>
         </div>
-        <div class="stream-setting"></div>
       </div>
       <div class="newsfeed-container">
         <div class="dashboard-header">뉴스 피드</div>
@@ -396,16 +434,9 @@ button:hover {
   width: 890px;
   height: 493px;
   background-color: #000000;
-  margin-bottom: 24px;
-}
-#my-video video {
-  max-width: 890px !important;
-  max-height: 493px !important;
-  object-fit: contain;
 }
 .stream-setting {
   width: 100%;
-  height: 30%;
   background-color: #1e1e1f;
   color: #ffffff;
 }
@@ -417,10 +448,11 @@ button:hover {
   border-right: 2px solid #3455;
   color: #ffffff;
 }
-::-webkit-scrollbar {
+.newsfeed-box::-webkit-scrollbar {
+  width: 18px;
   background-color: #1e1e1f;
 }
-::-webkit-scrollbar-thumb {
+.newsfeed-box::-webkit-scrollbar-thumb {
   border: 6px solid #1e1e1f;
 }
 .chat-container {
@@ -590,6 +622,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   justify-content: end;
+  margin-top: 24px;
 }
 .streaming-option1 {
   display: flex;

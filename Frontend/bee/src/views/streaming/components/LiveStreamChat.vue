@@ -58,7 +58,6 @@ const sendMessage = () => {
 };
 const usernameColors = reactive({});
 
-
 watchEffect(() => {
   messages.value.forEach((message) => {
     const username = message.name;
@@ -92,9 +91,9 @@ const PointGet = () => {
     (error) => {
       console.log(error);
     }
-    );
+  );
 };
-  
+
 onMounted(() => {
   messages.value = [];
   ovsStore.closeSession();
@@ -104,7 +103,7 @@ onMounted(() => {
 <template>
   <div class="livestream-chat-container">
     <div
-    style="
+      style="
         display: flex;
         justify-content: center;
         align-items: center;
@@ -119,11 +118,7 @@ onMounted(() => {
     </div>
     <div class="livestream-chat-box">
       <div v-for="message in messages" :key="message.id" class="chat-message">
-        <img
-          src="../../../assets/img/stream/fan.png"
-          alt="fan"
-          style="margin-right: 4px"
-        />
+        <img src="../../../assets/img/stream/fan.png" alt="fan" style="margin-right: 4px" />
         <span
           v-if="message.name"
           :style="{ color: usernameColors[message.name] }"
@@ -131,9 +126,7 @@ onMounted(() => {
           @click="selectUser(message.name)"
           >{{ message.name }}</span
         >
-        <span v-if="message.message" class="chat-content">
-          {{ message.message }}</span
-        >
+        <span v-if="message.message" class="chat-content"> {{ message.message }}</span>
       </div>
     </div>
     <div
@@ -160,16 +153,8 @@ onMounted(() => {
         <div class="chat-send" @click="sendMessage()">전송</div>
       </div>
     </div>
-    <div
-      id="donation-modal"
-      class="donation-modal"
-      :class="{ modalOpen: isModalOpened }"
-    >
-      <DonationModal
-        @close="closeModal"
-        :myPoint="myPoint"
-        :streamerId="streamerId"
-      />
+    <div id="donation-modal" class="donation-modal" :class="{ modalOpen: isModalOpened }">
+      <DonationModal @close="closeModal" :myPoint="myPoint" :streamerId="streamerId" />
     </div>
   </div>
 </template>
@@ -185,22 +170,22 @@ onMounted(() => {
   overflow-y: auto;
   padding: 10px;
   flex-grow: 1;
-  width: 370px;
+  width: 338px;
   height: 691px;
+  margin: 0 16px;
   max-height: 691px;
 }
 .livestream-chat-box::-webkit-scrollbar {
-  width: 16px;
   display: none;
 }
 .livestream-chat-box:hover::-webkit-scrollbar {
   display: block;
 }
 .livestream-chat-box::-webkit-scrollbar-track {
-  background-color: #1e1e1e;
+  background-color: #121212;
 }
 .livestream-chat-box::-webkit-scrollbar-thumb {
-  border: 4px solid #1e1e1e;
+  border: 6px solid #121212;
 }
 .chat-message {
   width: 292px;

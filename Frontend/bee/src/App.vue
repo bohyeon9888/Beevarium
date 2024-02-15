@@ -9,18 +9,10 @@ import { storeToRefs } from "pinia";
 const route = useRoute();
 
 // navbar가 안보여야 하는 컴포넌트
-const invisiblePaths_navbar = [
-  "/user",
-  "/admin"
-];
+const invisiblePaths_navbar = ["/user", "/admin"];
 
 // sidebar가 안보여야 하는 컴포넌트
-const invisiblePaths_sidebar = [
-  "/studio",
-  "/user",
-  "/streaming",
-  "/admin"
-];
+const invisiblePaths_sidebar = ["/studio", "/user", "/streaming", "/admin"];
 
 // navbar, sidebar 표시 관련 함수
 const isInvisible_n = computed(() =>
@@ -39,7 +31,9 @@ const { isExpanded } = storeToRefs(sidebarStore);
   <div>
     <Navbar v-if="!isInvisible_n" />
   </div>
-  <SideBar v-if="!isInvisible_s" />
+  <div>
+    <SideBar v-if="!isInvisible_s" />
+  </div>
   <div
     id="router-view"
     :class="{

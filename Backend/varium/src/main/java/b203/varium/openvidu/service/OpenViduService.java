@@ -134,6 +134,73 @@ public class OpenViduService {
         return new ResponseEntity<>(json, HttpStatus.OK);
     }
 
+    //    public ResponseEntity<String> connectionSession(String sessionId, ConnectionPropertiesDto connectionPropertiesDto) throws OpenViduJavaClientException, OpenViduHttpException, MalformedURLException {
+//
+//        Map<String, Object> data = new IdentityHashMap<>();
+//
+//        ConnectionType connectionType = Optional.ofNullable(connectionPropertiesDto.getType())
+//                .filter("WEBRTC"::equals)
+//                .map(type -> ConnectionType.WEBRTC)
+//                .orElse(ConnectionType.IPCAM);
+//
+//        OpenViduRole openViduRole = Optional.ofNullable(connectionPropertiesDto.getRole())
+//                .map(role -> {
+//                    switch (role) {
+//                        case "SUBSCRIBER":
+//                            return OpenViduRole.SUBSCRIBER;
+//                        case "MODERATOR":
+//                            return OpenViduRole.MODERATOR;
+//                        default:
+//                            return OpenViduRole.PUBLISHER;
+//                    }
+//                })
+//                .orElse(OpenViduRole.PUBLISHER);
+//
+//        log.info("connectionType={}", connectionType);
+//        log.info("openViduRole={}", openViduRole);
+//
+//        ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+//                .type(connectionType)
+//                .data(connectionPropertiesDto.getData())
+//                .record(true)
+//                .role(openViduRole)
+//                .adaptativeBitrate(true)
+//                .onlyPlayWithSubscribers(true)
+//                .networkCache(2000)
+//                .build();
+//
+//        Connection connection = openvidu.getActiveSession(sessionId).createConnection(connectionProperties);
+//
+//        ConnectionResponseDto connectionResponseDto = new ConnectionResponseDto(
+//                connection.getConnectionId(),
+//                connection.getToken());
+//        log.info("connectionResponseDto = {}", connectionResponseDto);
+//        data.put("connectionResponseDto", connectionResponseDto);
+//
+//        if (isPublisher(openViduRole)) {
+//            ConnectionProperties connectionPropertiesAudio = new ConnectionProperties.Builder()
+//                    .type(connectionType)
+//                    .data(connectionPropertiesDto.getData())
+//                    .record(true)
+//                    .role(openViduRole)
+//                    .adaptativeBitrate(true)
+//                    .onlyPlayWithSubscribers(true)
+//                    .networkCache(2000)
+//                    .build();
+//
+//            Connection connectionAudio = openvidu.getActiveSession(sessionId).createConnection(connectionPropertiesAudio);
+//            ConnectionResponseDto connectionResponseAudioDto = new ConnectionResponseDto(
+//                    connectionAudio.getConnectionId(),
+//                    connectionAudio.getToken());
+//
+//            log.info("connectionResponseAudioDto = {}", connectionResponseAudioDto);
+//            data.put("connectionResponseAudioDto", connectionResponseAudioDto);
+//        }
+//
+//        Gson gson = new Gson();
+//        String json = gson.toJson(data);
+//        return new ResponseEntity<>(json, HttpStatus.OK);
+//    }
     public ResponseEntity<String> connectionDeleteSession(String sessionId, String connectionId) throws OpenViduJavaClientException, OpenViduHttpException {
         openvidu.getActiveSession(sessionId).forceDisconnect(connectionId);
         return new ResponseEntity<>(connectionId, HttpStatus.OK);
