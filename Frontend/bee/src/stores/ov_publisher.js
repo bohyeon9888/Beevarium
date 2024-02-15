@@ -109,7 +109,7 @@ export const useOVPStore = defineStore(
               videoSource: "screen",
               // videoDimensions: '{"width":890, "height":493}',
               // 카메라와 화면 공유 설정
-              audioSource: selectedMicrophoneId.value,
+              audioSource: true,
               publishAudio: true, // 오디오 발행 활성화
               publishVideo: true, // 비디오 발행 활성화
             });
@@ -311,6 +311,7 @@ export const useOVPStore = defineStore(
       addMessage,
       addDonate,
       addFollow,
+      session,
       donation,
       follow,
       messagee,
