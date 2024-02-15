@@ -1,4 +1,38 @@
-<script setup></script>
+<script setup>
+import { useOVSStore } from "@/stores/ov_subscriber";
+import { ref, onMounted, onUpdated, watchEffect } from "vue";
+import { storeToRefs } from "pinia";
+
+const ovsStore = useOVSStore();
+const chatBoxRef = ref(null);
+const messages = ref([]);
+
+onUpdated(() => {
+  if (chatBoxRef.value) {
+    chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight;
+  }
+});
+
+watchEffect(() => {
+  const newMessages = ovsStore.ai_subtitle; // 이 부분은 ovsStore가 맞는지 확인하세요, 원래는 ovpStore일 수 있습니다.
+  if (typeof newMessages === "string") {
+    console.log("string");
+    try {
+      console.log("1", newMessages);
+      const messageObject = JSON.parse(newMessages); // 여기서 messageObject는 이미 객체입니다.
+      console.log("2", messageObject);
+      messages.value.push(messageObject.text);
+    } catch (error) {
+      console.error("Parsing error:", error);
+    }
+  }
+});
+
+onMounted(() => {
+  messages.value = [];
+  ovsStore.closeSession();
+});
+</script>
 
 <template>
   <div class="ai-script-container">
@@ -16,7 +50,16 @@
     >
       AI 스크립트
     </div>
-    <div class="ai-script-box"></div>
+    <div class="ai-script-box">
+      <div v-for="message in messages" :key="message.id" class="chat-message">
+        <img
+          src="../../../assets/img/stream/fan.png"
+          alt="fan"
+          style="margin-right: 4px"
+        />
+        <span v-if="message.message" class="chat-content"> {{ message }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
