@@ -1,0 +1,5 @@
+# API URL SETTING
+VITE_BEEVARIUM_API_URL=https://api.beevarium.site
+
+# OPENVIDU API URL SETTING
+VITE_OPENVIDU_API_URL=https://api.beevarium.site/
