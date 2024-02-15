@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
 public class StationNoticeDTO {
     private int broadcastStationNoticeNo;

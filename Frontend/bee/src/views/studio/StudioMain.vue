@@ -9,7 +9,6 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 const { accessToken } = storeToRefs(authStore);
-const prop = defineProps(["studioInfo", "streamer"]);
 
 // const replays = ref([
 //   {
@@ -97,7 +96,7 @@ onMounted(() => {
 
 <template>
   <!-- <div class="studiomain-container"> -->
-  <div class="studiomain-content-container">
+  <div class="studiomain-content-container" v-if="studioInfo.firstNotice">
     <div class="studiomain-content-box">
       <div class="studio-banner-container">
         <img
@@ -115,9 +114,28 @@ onMounted(() => {
         </div>
         <div class="notice-container">
           <router-link
-            :to="{ path: `/studio/${route.params.streamerId}/notice/1` }"
+            :to="{ path: `/studio/${route.params.streamerId}/notice/${studioInfo.firstNotice.broadcastStationNoticeNo}` }"
           >
-            <div class="notice-content-box"></div>
+            <div class="notice-content-container">
+              <div class="streamer-box">
+                <div class="streamer-logo-box">
+                  <img :src="studioInfo.stationImg" alt="" class="streamer-logo">
+                </div>
+                <div class="streamer-info-box">
+                  <div class="streamer">
+                    <div class="streamer-name">{{ studioInfo.userName }}</div>
+                    <div class="streamer-id">({{ studioInfo.userId }})</div>
+                  </div>
+                  <div class="notice-date">
+                    {{ studioInfo.firstNotice.createdDate }}
+                  </div>
+                </div>
+              </div>
+              <div class="notice-content-box">
+                <div class="notice-title">{{ studioInfo.firstNotice.broadcastStationNoticeTitle }}</div>
+                <div class="notice-content">{{ studioInfo.firstNotice.broadcastStationNoticeContent }}</div>
+              </div>
+            </div>
           </router-link>
           <div class="notice-banner-box">
             <img
@@ -252,11 +270,70 @@ onMounted(() => {
   width: 1540px;
   height: 180px;
 }
-.notice-content-box {
+.notice-content-container {
+  display: flex;
   width: 916px;
   height: 180px;
   background-color: #1e1e1e;
   border-radius: 16px;
+  padding: 32px;
+}
+.notice-content-box {
+  width: 600px;
+  height: 116px;
+}
+.notice-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+.notice-content {
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 16px;
+}
+.streamer-box {
+  display: flex;
+  width: 290px;
+  height: 44px;
+
+}
+.streamer-logo-box {
+  width: 44px;
+  height: 44px;
+}
+.streamer-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10rem;
+  object-fit: contain;
+}
+.streamer-info-box {
+  width: 290px; 
+  height: 44px;
+  margin-left: 8px;
+}
+.streamer {
+  display: flex;
+  align-items: center;
+  width: 248px;
+  height: 19px;
+}
+.streamer-name {
+  height: 19px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.streamer-id {
+  height: 16px;
+  font-size: 14px;
+  font-weight: 00;
+  color: #a0a0a0;
+}
+.notice-date {
+  height: 17px;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 8px;
 }
 .notice-banner-box {
   width: 607px;
