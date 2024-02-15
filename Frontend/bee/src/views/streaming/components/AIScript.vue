@@ -7,6 +7,18 @@ const ovsStore = useOVSStore();
 const chatBoxRef = ref(null);
 const messages = ref([]);
 
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleString("en-US", {
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+};
+
 onUpdated(() => {
   if (chatBoxRef.value) {
     chatBoxRef.value.scrollTop = chatBoxRef.value.scrollHeight;
@@ -22,6 +34,7 @@ watchEffect(() => {
       const messageObject = JSON.parse(newMessages); // 여기서 messageObject는 이미 객체입니다.
       console.log("2", messageObject);
       messages.value.push(messageObject.text);
+      console.log(messageObject.text);
     } catch (error) {
       console.error("Parsing error:", error);
     }
@@ -51,13 +64,13 @@ onMounted(() => {
       AI 스크립트
     </div>
     <div class="ai-script-box">
-      <div v-for="message in messages" :key="message.id" class="chat-message">
-        <img
-          src="../../../assets/img/stream/fan.png"
-          alt="fan"
-          style="margin-right: 4px"
-        />
-        <span v-if="message.message" class="chat-content"> {{ message }}</span>
+      <div
+        v-for="(message, index) in messages"
+        :key="index"
+        class="chat-message"
+      >
+        <p class="chat-content">{{ formatTimestamp(message.requestTime) }}</p>
+        <p style="margin-top: 2px; font-size: 18px; font-weight: 600;">{{ message.answer }}</p>
       </div>
     </div>
   </div>
@@ -75,8 +88,7 @@ onMounted(() => {
   padding: 10px;
   flex-grow: 1;
   width: 370px;
-  height: 812px;
-  max-height: 812px;
+  height: 796px;
 }
 .ai-script-box::-webkit-scrollbar {
   width: 16px;
@@ -90,5 +102,12 @@ onMounted(() => {
 }
 .ai-script-box::-webkit-scrollbar-thumb {
   border: 4px solid #1e1e1e;
+}
+.chat-message {
+  width: 320px;
+  min-height: 72px;
+  padding: 16px;
+  border-top: 0.5px solid #3455;
+  border-bottom: 0.5px solid #3455;
 }
 </style>

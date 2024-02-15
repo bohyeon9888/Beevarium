@@ -79,7 +79,7 @@ export const useOVPStore = defineStore(
               outputMode: "COMPOSED",
               recordingLayout: "BEST_FIT",
               resolution: "1280x720",
-              frameRate: 25,
+              frameRate: 40,
               shmSize: 536870912,
             },
           }
