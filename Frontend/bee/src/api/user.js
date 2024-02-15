@@ -5,8 +5,8 @@ const local = localAxios();
 
 // 로그인
 const login = async (loginData, success, fail) => {
-  await axios
-    .post(`https://api.beevarium.site/login`, loginData, {
+  await local
+    .post(`/login`, loginData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
