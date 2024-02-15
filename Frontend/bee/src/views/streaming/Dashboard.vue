@@ -111,14 +111,14 @@ watch(
       // donationData에서 name과 message 값을 추출하여 addNewsFeedItem 함수에 전달
       addNewsFeedItem(`${donationData.name}`, `${donationData.message}`);
       axios
-        .post(
-          `https://pv32yc1eu5.execute-api.ap-northeast-2.amazonaws.com/default/textToSpeech`,
-          {
-            // text: `${donationData.name}님이 ${donationData.message}원을 후원하셨습니다.`,
-            text: "12345",
-          }
-        )
+        .post(`https://tts.beevarium.site/synthesize`, {
+          text: `${donationData.name}님이 ${donationData.message}원을 후원하셨습니다.`,
+        })
         .then(({ data }) => {
+          const audio = new Audio(`data:audio/mp3;base64,${data.audioContent}`);
+
+          // 오디오 재생
+          audio.play();
           console.log(data);
         });
     }
