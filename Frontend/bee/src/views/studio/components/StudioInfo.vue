@@ -38,7 +38,7 @@ onMounted(() => {
               class="streamer-logo"
             />
             <div
-              v-if="isLive"
+              v-if="prop.studioInfo.liveInfo.live"
               style="
                 position: absolute;
                 bottom: -10px;
@@ -83,13 +83,13 @@ onMounted(() => {
       <div class="stream-live-thumbnail-box">
         <router-link :to="{ name: 'LiveStream' }">
           <img
-            src="../../../assets/img/studio/stream-live-thumbnail.png"
+            :src="prop.studioInfo.liveInfo.broadcastingThumbnail"
             alt=""
             class="stream-live-thumbnail"
           />
         </router-link>
         <div class="live-watcher-box">
-          <div
+          <div v-if="prop.studioInfo.liveInfo.live"
             style="
               width: 50px;
               height: 26px;
@@ -102,7 +102,7 @@ onMounted(() => {
           >
             LIVE
           </div>
-          <div
+          <div v-if="prop.studioInfo.liveInfo.live"
             style="
               height: 26px;
               padding: 5px 11px;
@@ -113,10 +113,10 @@ onMounted(() => {
               margin-left: 8px;
             "
           >
-            {{ stream.watcher }}명 시청
+            {{ prop.studioInfo.liveInfo.viewers }}명 시청
           </div>
         </div>
-        <div class="stream-title">{{ stream.title }}</div>
+        <div class="stream-title">{{ prop.studioInfo.liveInfo.broadcastingTitle }}</div>
       </div>
       <div class="studio-intro-container">
         <div class="studio-intro">{{ prop.studioInfo.stationTitle }}</div>
