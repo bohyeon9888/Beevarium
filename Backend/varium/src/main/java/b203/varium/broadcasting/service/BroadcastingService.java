@@ -79,23 +79,23 @@ public class BroadcastingService {
         List<ListRespDTO> result = new ArrayList<>();
         List<FollowRespDTO> followList = followService.getFollowList(username);
 
+        Map<String, Object> resp = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+        if (followList.isEmpty()) {
+            data.put("subscribeList", result);
+            resp.put("status", "fail");
+            resp.put("data", data);
+        }
+
         for (FollowRespDTO follow : followList) {
             BroadcastStation station = broadcastStationRepository.findById(follow.getStationNo());
             result.add(setRespDTO(station));
         }
 
-        Map<String, Object> resp = new HashMap<>();
-        Map<String, Object> data = new HashMap<>();
 
-        if (result.size() <= 0) {
-            data.put("msg", "데이터가 없습니다.");
-            resp.put("status", "fail");
-            resp.put("data", data);
-        } else {
-            data.put("subscribeList", result);
-            resp.put("status", "success");
-            resp.put("data", data);
-        }
+        data.put("subscribeList", result);
+        resp.put("status", "success");
+        resp.put("data", data);
 
         return resp;
     }
@@ -113,7 +113,7 @@ public class BroadcastingService {
         Map<String, Object> resp = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         if (result.size() <= 0) {
-            data.put("msg", "데이터가 없습니다.");
+            data.put("topList", result);
             resp.put("status", "fail");
             resp.put("data", data);
         } else {
