@@ -183,7 +183,7 @@ onMounted(() => {
   position: relative;
   width: 393px;
   height: 322px;
-  margin: 0 9px 30px;
+  margin: 0 8px 30px;
 }
 .hotlive:nth-child(4n + 1) {
   margin-left: 0;
@@ -202,6 +202,12 @@ onMounted(() => {
 #hotlive.expanded {
   width: 434px;
   height: 347px;
+}
+#hotlive.expanded:nth-child(4n+1) {
+  margin-left:0;
+}
+#hotlive.expanded:nth-child(4n) {
+  margin-right: 0;
 }
 .livestream-image-box {
   width: 393px;
