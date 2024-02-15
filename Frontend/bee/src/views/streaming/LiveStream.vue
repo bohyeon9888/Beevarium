@@ -7,7 +7,7 @@ import { useAuthStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { useOVSStore } from "@/stores/ov_subscriber";
 import { streamingEnter } from "@/api/live";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { subscribe, unSubscribe } from "@/api/follow";
 
 const authStore = useAuthStore();
@@ -16,6 +16,7 @@ const { accessToken } = storeToRefs(authStore);
 const ovsStore = useOVSStore();
 const { subtitle } = storeToRefs(ovsStore);
 const route = useRoute();
+const router = useRouter();
 const streamerId = ref("");
 
 const isSubOn = ref(false);
@@ -119,7 +120,7 @@ onMounted(() => {
               </div>
             </div>
             <div id="streamer-info-box" class="streamer-info-box">
-              <div id="streamer-name" class="streamer-name">
+              <div id="streamer-name" class="streamer-name" @click="router.push({path: `/studio/${streamInfo.streamerId}/studio-main`})">
                 {{ streamInfo.streamerName }}
               </div>
               <div class="watcher-tag-container">
