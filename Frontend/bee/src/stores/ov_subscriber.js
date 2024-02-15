@@ -22,6 +22,7 @@ export const useOVSStore = defineStore(
 
     const messagee = ref("");
     const subtitle = ref("");
+    const ai_subtitle = ref("");
 
     // 메시지를 추가하는 함수
     const addMessage = (message) => {
@@ -33,6 +34,11 @@ export const useOVSStore = defineStore(
     const addSubtitle = (signal) => {
       subtitle.value = signal;
       console.log(subtitle.value);
+    };
+
+    const addAiSubtitle = (signal) => {
+      ai_subtitle.value = signal;
+      console.log(ai_subtitle.value);
     };
 
     // 세션 연결 - 방송 참여자
@@ -47,7 +53,10 @@ export const useOVSStore = defineStore(
         session = OV.initSession();
         // 세션 이벤트 핸들러 추가
         session.on("streamCreated", (event) => {
-          const subscriber = session.subscribe(event.stream, "subscriber-video");
+          const subscriber = session.subscribe(
+            event.stream,
+            "subscriber-video"
+          );
           subscriber.on("videoElementCreated", (event) => {
             // 비디오 엘리먼트에 접근
             var videoElement = event.element;
@@ -68,6 +77,11 @@ export const useOVSStore = defineStore(
         session.on("signal:subtitles", (event) => {
           console.log("Received subtitle signal:", event.data);
           addSubtitle(event.data);
+        });
+
+        session.on("signal:ai_subtitles", (event) => {
+          console.log("Received ai_subtitle signal:", event.data);
+          addAiSubtitle(event.data);
         });
 
         // 세션에 연결할 토큰 가져오기
@@ -107,8 +121,11 @@ export const useOVSStore = defineStore(
     };
     const closeSession = async () => {
       messagee.value = "";
+      ai_subtitle.value = "";
       try {
-        await axios.delete(`${API_SERVER_URL}openvidu/api/sessions/${sessionId}`);
+        await axios.delete(
+          `${API_SERVER_URL}openvidu/api/sessions/${sessionId}`
+        );
         console.log("세션 닫힘");
         //클라이언트측 세션 닫기 -> 필요없나??
       } catch (error) {
@@ -198,10 +215,12 @@ export const useOVSStore = defineStore(
       sendDonate,
       addMessage,
       sendfollow,
+      addAiSubtitle,
       messagee,
       sessionId,
       connectId,
       subtitle,
+      ai_subtitle,
     };
   },
   {

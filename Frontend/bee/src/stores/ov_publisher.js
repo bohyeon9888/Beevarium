@@ -4,17 +4,16 @@ import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import { useAuthStore } from "./user";
 import { storeToRefs } from "pinia";
-import { useAiStore } from "@/stores/ai";
 
 export const useOVPStore = defineStore(
   "OVPStore",
   () => {
     const authStore = useAuthStore();
-    const aIStore = useAiStore();
     const { user } = storeToRefs(authStore);
     var OV = new OpenVidu();
     var session;
     var mainstreamer;
+    var publisher;
     axios.defaults.headers.post["Content-Type"] = "application/json";
 
     const API_SERVER_URL = import.meta.env.VITE_OPENVIDU_API_URL;
@@ -42,6 +41,20 @@ export const useOVPStore = defineStore(
       console.log(messagee.value);
     };
 
+    const audioEnabled = ref(true);
+
+    // 기존 코드 계속...
+
+    const toggleAudio = () => {
+      if (publisher) {
+        audioEnabled.value = !audioEnabled.value; // 오디오 상태 토글
+        publisher.publishAudio(audioEnabled.value); // 오디오 상태 적용
+        console.log(
+          `Microphone is now ${audioEnabled.value ? "unmuted" : "muted"}.`
+        );
+      }
+    };
+
     const openSession = async () => {
       try {
         // 성공적으로 통신시 클라이언트측 세션 초기화
@@ -66,7 +79,7 @@ export const useOVPStore = defineStore(
               outputMode: "COMPOSED",
               recordingLayout: "BEST_FIT",
               resolution: "1280x720",
-              frameRate: 25,
+              frameRate: 40,
               shmSize: 536870912,
             },
           }
@@ -76,7 +89,7 @@ export const useOVPStore = defineStore(
         console.log(sessionId.value);
         // 세션 열기 성공시, 자동으로 publisher로 연결
         await connectSession("PUBLISHER");
-        await aIStore.ai_connect();
+        await ai_connect();
       } catch (error) {
         console.error("Error!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11", error);
       }
@@ -105,7 +118,7 @@ export const useOVPStore = defineStore(
             console.log("클라이언트측 세션 연결 성공");
 
             // 퍼블리셔의 카메라 및 화면 공유 설정
-            var publisher = OV.initPublisher("my-video", {
+            publisher = OV.initPublisher("my-video", {
               videoSource: "screen",
               // videoDimensions: '{"width":890, "height":493}',
               // 카메라와 화면 공유 설정
@@ -143,25 +156,10 @@ export const useOVPStore = defineStore(
                   .subscribeToSpeechToText(publisher.stream, "ko-KR")
                   .then(() => {
                     console.log("Speech-to-Text 구독 성공");
-                    // STT 구독이 성공적이라면
-                    // session.on("speechToTextMessage", (event) => {
-                    //   console.log("음성 변환 인식됨");
-                    //   console.log(event);
-                    // axios
-                    //   .post(`https://2778-112-166-150-139.ngrok-free.app`, {
-                    //     prompt: event.text,
-                    //   })
-                    //   .then((response) => {
-                    //     console.log(response);
-                    //   })
-                    //   .catch((error) => {
-                    //     console.error("변환 실패", error);
-                    //   });
-                    // });
                     let lastSentMessage = ""; // 마지막으로 전송된 메시지를 저장할 변수
                     const subtitleBuffer = ref("");
                     let subtitleTimeout;
-
+                    console.log("stt-start");
                     session.on("speechToTextMessage", (event) => {
                       console.log(event);
                       subtitleBuffer.value = event.text;
@@ -184,7 +182,7 @@ export const useOVPStore = defineStore(
                               });
                               console.log(finalText);
                               console.log("send ai_messsage");
-                              aIStore.ai_sendMessage(finalText);
+                              ai_sendMessage(finalText);
                               lastSentMessage = finalText; // 마지막으로 전송된 메시지 업데이트
                               subtitleBuffer.value = ""; // 요청 후 subtitleBuffer 초기화
                             } catch (error) {
@@ -196,7 +194,35 @@ export const useOVPStore = defineStore(
                         }
                       }, 1000);
                     });
+                    //-----------------------------------------------------------------//
+                    session.on("exception", async (event) => {
+                      if (event.name === "SPEECH_TO_TEXT_DISCONNECTED") {
+                        console.warn(
+                          "Speech to Text service has disconnected. Retrying the subscription..."
+                        );
+                        var speechToTextReconnected = false;
+
+                        while (!speechToTextReconnected) {
+                          await new Promise((r) => setTimeout(r, 1000)); // Waiting one second
+                          try {
+                            await session.subscribeToSpeechToText(
+                              publisher.stream,
+                              "ko-KR"
+                            );
+                            console.log("Speech to Text service has recovered");
+                            speechToTextReconnected = true;
+                          } catch (error) {
+                            console.warn(
+                              "Speech to Text service still unavailable. Retrying again..."
+                            );
+                          }
+                        }
+                      } else {
+                        // Other types of ExceptionEvents
+                      }
+                    });
                   })
+
                   .catch((error) => {
                     console.error("Speech-to-Text 구독 실패:", error);
                   });
@@ -207,7 +233,7 @@ export const useOVPStore = defineStore(
               });
 
             watch(
-              () => aIStore.ai_subtitle.value,
+              () => ai_subtitle.value,
               (newSubtitle, oldSubtitle) => {
                 if (session && session.connection) {
                   session
@@ -225,6 +251,7 @@ export const useOVPStore = defineStore(
                     });
                 }
               },
+              console.log("watch move"),
               { immediate: true }
             );
 
@@ -256,12 +283,22 @@ export const useOVPStore = defineStore(
     const closeSession = async () => {
       messagee.value = "";
       try {
+        // session
+        //   .unsubscribeFromSpeechToText(publisher.stream)
+        //   .then((data) => {
+        //     console.log("Speech-to-Text 종료", data);
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+
         if (session && session.connection) {
           await axios.delete(
             `${API_SERVER_URL}openvidu/api/sessions/${sessionId.value}`
           );
           session = null; // 세션 객체 초기화
         }
+        ai_disconnect();
         console.log("세션 닫힘");
 
         //클라이언트측 세션 닫기 -> 필요없나?
@@ -302,6 +339,41 @@ export const useOVPStore = defineStore(
       });
     };
 
+    //AI-------------------------------------------------------------------------------------------------------------//
+    let stompClient = null;
+    const ai_subtitle = ref([]);
+
+    function ai_connect() {
+      var socket = new SockJS("https://api.beevarium.site/ws");
+      stompClient = Stomp.over(socket);
+      stompClient.connect({}, function (frame) {
+        console.log("Connected: " + frame);
+        stompClient.subscribe(
+          "/AzureWave/processedText",
+          function (messageOutput) {
+            console.log(messageOutput);
+            // JSON 문자열을 객체로 파싱
+            var messageData = JSON.parse(messageOutput.body);
+            console.log(messageData);
+            // requestTime과 answer를 포함하는 출력 포맷 만들기
+            ai_subtitle.value = messageData;
+            console.log(ai_subtitle.value);
+          }
+        );
+      });
+    }
+
+    function ai_disconnect() {
+      if (stompClient !== null) {
+        stompClient.disconnect();
+      }
+      console.log("Disconnected");
+    }
+
+    function ai_sendMessage(text) {
+      stompClient.send("/AI/change", {}, JSON.stringify({ text }));
+    }
+
     return {
       openSession,
       connectSession,
@@ -311,6 +383,13 @@ export const useOVPStore = defineStore(
       addMessage,
       addDonate,
       addFollow,
+      ai_connect,
+      ai_disconnect,
+      ai_sendMessage,
+      toggleAudio,
+      audioEnabled,
+      stompClient,
+      ai_subtitle,
       session,
       donation,
       follow,

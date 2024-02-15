@@ -1,6 +1,7 @@
 package b203.varium.broadcasting.repository;
 
 import b203.varium.broadcasting.entity.Broadcasting;
+import b203.varium.hashtag.entity.HashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,4 +18,5 @@ public interface BroadcastingRepository extends JpaRepository<Broadcasting, Inte
     Broadcasting findByBroadcastStation_User_Id(int userId);
 
     List<Broadcasting> findTop8ByOrderByBroadcastingViewersDesc();
+
 }

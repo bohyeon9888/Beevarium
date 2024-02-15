@@ -168,15 +168,17 @@ watchEffect(() => {
 });
 watchEffect(() => {
   const newMessages = ovpStore.messagee;
-  if (typeof newMessages === "string") {
+  if (typeof newMessages === "string" && newMessages.trim() !== "") {
     try {
       const messageObject = JSON.parse(newMessages);
       // 메시지 객체가 올바른 속성을 가지고 있는지 확인
-      messages.value.push(messageObject);
+      if (messageObject && typeof messageObject === "object") {
+        messages.value.push(messageObject);
+      }
     } catch (error) {
       console.error("Parsing error:", error);
     }
-  } else {
+  } else if (typeof newMessages === "object" && newMessages !== null) {
     // 객체가 올바른 속성을 가지고 있는지 확인
     messages.value.push(newMessages);
   }

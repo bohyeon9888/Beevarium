@@ -82,8 +82,14 @@ public class BroadcastStationService {
 
             respDTO.setStationImg(streamer.getProfileUrl());
             List<StationNoticeDTO> noticeList = stationNoticeService.findNoticesByStationId(station.getId());
-            if (noticeList.size() <= 0) {
-                respDTO.setFirstNotice(null);
+            if (noticeList.isEmpty()) {
+                StationNoticeDTO newDTO = new StationNoticeDTO();
+                newDTO.setBroadcastStationNoticeTitle("");
+                newDTO.setBroadcastStationNoticeContent("");
+                newDTO.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+                newDTO.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
+
+                respDTO.setFirstNotice(newDTO);
             } else {
                 respDTO.setFirstNotice(noticeList.get(0));
             }

@@ -4,13 +4,12 @@ import { useAuthStore } from "@/stores/user";
 import { useOVPStore } from "@/stores/ov_publisher";
 import { storeToRefs } from "pinia";
 import DashboardChat from "./components/DashboardChat.vue";
-import { streamingStart, streamingEnd, streamingEnd1 } from "@/api/live.js";
+import axios from "axios";
+import { streamingStart, streamingEnd } from "@/api/live.js";
 import { useRecordStore } from "@/stores/ov_record";
 import { useAiStore } from "@/stores/ai";
 
-const aIStore = useAiStore();
 const recordStore = useRecordStore();
-const { ai_subtitle, session } = storeToRefs(aIStore);
 const { recordUrl, recordingId } = storeToRefs(recordStore);
 const ovpStore = useOVPStore();
 const authStore = useAuthStore();
@@ -103,29 +102,6 @@ onMounted(() => {
 });
 
 watch(
-  () => ai_subtitle.value,
-  (newSubtitle, oldSubtitle) => {
-    console.log("watch 실행");
-    if (session && session.connection) {
-      session
-        .signal({
-          data: JSON.stringify({ text: newSubtitle }), // 변화된 자막 데이터
-          type: "ai_subtitles", // 신호 유형
-        })
-        .then(() => {
-          console.log(
-            "자막 데이터가 세션 참가자들과 성공적으로 공유되었습니다."
-          );
-        })
-        .catch((error) => {
-          console.error("자막 데이터 공유 중 오류 발생:", error);
-        });
-    }
-  },
-  { immediate: true }
-);
-
-watch(
   () => ovpStore.donation,
   (newVal) => {
     console.log(newVal);
@@ -134,6 +110,17 @@ watch(
     if (donationData) {
       // donationData에서 name과 message 값을 추출하여 addNewsFeedItem 함수에 전달
       addNewsFeedItem(`${donationData.name}`, `${donationData.message}`);
+      axios
+        .post(
+          `https://pv32yc1eu5.execute-api.ap-northeast-2.amazonaws.com/default/textToSpeech`,
+          {
+            // text: `${donationData.name}님이 ${donationData.message}원을 후원하셨습니다.`,
+            text: "12345",
+          }
+        )
+        .then(({ data }) => {
+          console.log(data);
+        });
     }
   },
   { immediate: false }
@@ -295,9 +282,7 @@ addNewsFeedItem("아재개더", "3,000");
               </button>
             </div>
             <div class="streaming-option2">
-              <button class="record-start-btn" @click="aIStore.ai_disconnect()">
-                테스트
-              </button>
+              <button class="mic-start-btn">마이크</button>
               <button
                 class="record-start-btn"
                 @click="startRecording()"
@@ -529,6 +514,21 @@ button:hover {
   font-weight: 500;
 }
 .streaming-start-btn {
+  width: 91px;
+  height: 35px;
+  display: inline-flex;
+  padding: 8px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  border-radius: 8px;
+  background: #eb3a3a;
+  border: none;
+  font-size: 15px;
+  line-height: normal;
+  margin-right: 15px;
+}
+.mic-start-btn {
   width: 91px;
   height: 35px;
   display: inline-flex;

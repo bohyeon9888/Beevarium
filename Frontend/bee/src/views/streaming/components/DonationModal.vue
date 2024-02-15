@@ -21,6 +21,7 @@ const donationMessage = ref("");
 const isHoneyLack = ref(false);
 
 const donateAct = () => {
+  console.log(donationAmount.value);
   donatePoint(
     accessToken.value,
     {
@@ -30,6 +31,7 @@ const donateAct = () => {
     ({ data }) => {
       console.log(data.status);
       ovsStore.sendDonate(donationAmount.value);
+      close();
     },
     (error) => {
       console.log(error.data.msg);
@@ -38,6 +40,7 @@ const donateAct = () => {
 };
 
 const close = () => {
+  console.log("2");
   donationAmount.value = 0;
   emit("close");
 };
@@ -178,7 +181,7 @@ watch(
       <div
         class="donation-button"
         :disabled="myHoney < donationAmount"
-        @click="[donateAct(), close()]"
+        @click="donateAct()"
         :class="{ 'disabled-button': myHoney < donationAmount }"
       >
         후원하기

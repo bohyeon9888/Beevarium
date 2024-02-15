@@ -48,6 +48,7 @@ public class BroadcastingService {
         Broadcasting data = new Broadcasting();
         Timestamp nowT = new Timestamp(System.currentTimeMillis());
         BroadcastStation station = broadcastStationRepository.findByUser_Username(username);
+        UserEntity user = userRepository.findByUsername(username);
 
         if (broadcastingRepository.existsByBroadcastStation_Id(station.getId())) {
             result.put("msg", "already starting");
@@ -68,7 +69,7 @@ public class BroadcastingService {
         data.setHashTagList(hashTagList);
         broadcastingRepository.save(data);
 
-        result.put("streamerId", username);
+        result.put("streamerId", user.getUserId());
         resp.put("status", "success");
         resp.put("data", result);
         return resp;
@@ -129,6 +130,8 @@ public class BroadcastingService {
 
         if (!broadcastingRepository.existsByBroadcastStation_Id(stationNo)) {
             liveDTO.setLive(false);
+            liveDTO.setBroadcastingThumbnail("none");
+            liveDTO.setBroadcastingTitle("none");
             return liveDTO;
         }
 
