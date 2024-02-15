@@ -100,7 +100,7 @@ onMounted(() => {
     <div class="studiomain-content-box">
       <div class="studio-banner-container">
         <img
-          src="../../assets/img/studio/studio-banner.png"
+          src="../../assets/img/studio/studio-banner-1.png"
           alt=""
           class="studio-banner"
         />
