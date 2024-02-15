@@ -23,7 +23,7 @@ public class SearchController {
     @GetMapping("/{keyword}")
     public ResponseEntity<Map<String, Object>> search(@PathVariable String keyword) {
         log.info(keyword);
-        return ResponseEntity.ok(searchService.searchStreamer(keyword));
+        return ResponseEntity.ok(searchService.searchTag(keyword));
     }
 
 }
