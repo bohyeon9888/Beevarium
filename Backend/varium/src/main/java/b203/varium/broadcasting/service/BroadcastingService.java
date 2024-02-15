@@ -129,6 +129,8 @@ public class BroadcastingService {
 
         if (!broadcastingRepository.existsByBroadcastStation_Id(stationNo)) {
             liveDTO.setLive(false);
+            liveDTO.setBroadcastingThumbnail("none");
+            liveDTO.setBroadcastingTitle("none");
             return liveDTO;
         }
 
