@@ -1,90 +1,27 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useStreamerStore } from "@/stores/streamer";
 import { storeToRefs } from "pinia";
 import CardCarousel from "./CardCarousel.vue";
+import { hotLive } from "@/api/live";
 
 const router = useRouter();
 const sidebarStore = useSidebarStore();
 const streamerStore = useStreamerStore();
 const { isExpanded } = storeToRefs(sidebarStore);
 
-const livestreams = ref([
-  {
-    streamerId: "admin00",
-    thumbnail: "hotlive1",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머1",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer2",
-    thumbnail: "hotlive2",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머2",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer3",
-    thumbnail: "hotlive3",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머3",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer4",
-    thumbnail: "hotlive4",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머4",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer5",
-    thumbnail: "hotlive5",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머5",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer6",
-    thumbnail: "hotlive6",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머6",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer7",
-    thumbnail: "hotlive7",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머7",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-  {
-    streamerId: "streamer8",
-    thumbnail: "hotlive8",
-    title: "방송 제목입니다.",
-    streamerLogo: "streamer_image_1",
-    streamerName: "스트리머8",
-    tags: ["한국어", "게임", "수다"],
-    watcher: "1579",
-  },
-]);
+const livestreams = ref([]);
+
+const getHotLive = () => {
+  hotLive(
+    ({ data }) => {
+      livestreams.value = data.data.topList;
+    },
+    (error) => {}
+  );
+};
 
 const moveToStudio = (streamerId) => {
   router.push({ path: `/studio/studio-main/${streamerId}` });
@@ -94,38 +31,25 @@ const getImageUrl = (name) => {
   return new URL(`/src/assets/img/${name}.png`, import.meta.url).href;
 };
 const getThumbnailUrl = (name) => {
-  return new URL(`/src/assets/img/home/hotlive/${name}.png`, import.meta.url)
-    .href;
+  return new URL(`/src/assets/img/home/hotlive/${name}.png`, import.meta.url).href;
 };
+
+onMounted(() => {
+  getHotLive();
+});
 </script>
 
 <template>
-  <div
-    id="home-container"
-    class="home-container"
-    :class="{ expanded: !isExpanded }"
-  >
+  <div id="home-container" class="home-container" :class="{ expanded: !isExpanded }">
     <div class="carousel-container">
       <CardCarousel />
     </div>
-    <div
-      id="slogan-container"
-      class="slogan-container"
-      :class="{ expanded: !isExpanded }"
-    >
+    <div id="slogan-container" class="slogan-container" :class="{ expanded: !isExpanded }">
       <img class="slogan" src="../../assets/img/slogan.png" alt="" />
     </div>
-    <div
-      id="hotlive-container"
-      class="hotlive-container"
-      :class="{ expanded: !isExpanded }"
-    >
+    <div id="hotlive-container" class="hotlive-container" :class="{ expanded: !isExpanded }">
       <div style="font-size: 20px; font-weight: 600">인기 라이브</div>
-      <ul
-        id="hotlive-list"
-        class="hotlive-list"
-        :class="{ expanded: !isExpanded }"
-      >
+      <ul id="hotlive-list" class="hotlive-list" :class="{ expanded: !isExpanded }">
         <li
           id="hotlive"
           class="hotlive"
@@ -158,7 +82,7 @@ const getThumbnailUrl = (name) => {
                 margin-left: 8px;
               "
             >
-              {{ livestream.watcher }}명 시청
+              {{ livestream.viewer }}명 시청
             </div>
           </div>
           <div
@@ -166,14 +90,12 @@ const getThumbnailUrl = (name) => {
             class="livestream-image-box"
             :class="{ expanded: !isExpanded }"
           >
-            <router-link
-              :to="{ path: `/streaming/live-stream/${livestream.streamerId}` }"
-            >
+            <router-link :to="{ path: `/streaming/live-stream/${livestream.streamerId}` }">
               <img
                 id="livestream-image"
                 class="livestream-image"
                 :class="{ expanded: !isExpanded }"
-                :src="getThumbnailUrl(livestream.thumbnail)"
+                :src="livestream.thumbnailUrl"
                 alt=""
               />
             </router-link>
@@ -184,29 +106,19 @@ const getThumbnailUrl = (name) => {
             :class="{ expanded: !isExpanded }"
           >
             <div class="streamer-logo-box">
-              <img
-                class="streamer-logo-image"
-                :src="getImageUrl(livestream.streamerLogo)"
-                alt=""
-              />
+              <img class="streamer-logo-image" :src="livestream.profileUrl" alt="" />
             </div>
             <div
               id="livestream-info-box"
               class="livestream-info-box"
               :class="{ expanded: !isExpanded }"
             >
-              <div class="livestream-title">{{ livestream.title }}</div>
-              <div
-                class="streamer-name"
-                @click="moveToStudio(livestream.streamerId)"
-              >
+              <div class="livestream-title">{{ livestream.liveTitle }}</div>
+              <div class="streamer-name" @click="moveToStudio(livestream.streamerId)">
                 {{ livestream.streamerName }}
               </div>
               <ul class="livestream-tag-list">
-                <li
-                  class="livestream-tag"
-                  v-for="(tag, index) in livestream.tags"
-                >
+                <li class="livestream-tag" v-for="(tag, index) in livestream.tags">
                   {{ tag }}
                 </li>
               </ul>
@@ -259,7 +171,7 @@ const getThumbnailUrl = (name) => {
 }
 .hotlive-list {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 1620px;
   flex-wrap: wrap;
   margin-top: 12px;
@@ -271,7 +183,13 @@ const getThumbnailUrl = (name) => {
   position: relative;
   width: 393px;
   height: 322px;
-  margin-bottom: 30px;
+  margin: 0 9px 30px;
+}
+.hotlive:nth-child(4n + 1) {
+  margin-left: 0;
+}
+.hotlive:nth-child(4n) {
+  margin-right: 0;
 }
 .live-watcher-box {
   position: absolute;

@@ -40,4 +40,8 @@ const streamingEnter = async (accessToken, streamerId, success, fail) => {
     .catch(fail);
 };
 
-export { streamingStart, streamingEnd, streamingEnter, streamingEnd1 };
+const hotLive = async (success, fail) => {
+  await local.get(`/live/list`).then(success).catch(fail);
+};
+
+export { streamingStart, streamingEnd, streamingEnter, streamingEnd1, hotLive };

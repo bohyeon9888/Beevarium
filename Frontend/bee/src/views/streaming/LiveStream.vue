@@ -319,6 +319,7 @@ onMounted(() => {
   font-size: 20px;
   font-weight: 600;
   padding: 14px 0 0 8px;
+  cursor: pointer;
 }
 .watcher-tag-container {
   display: flex;
