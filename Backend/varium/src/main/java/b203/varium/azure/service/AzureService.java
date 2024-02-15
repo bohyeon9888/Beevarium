@@ -25,30 +25,35 @@ public class AzureService {
 
     private final WebClient webClient;
     private final SimpMessagingTemplate messagingTemplate;
-    private final ExecutorService executorService = Executors.newCachedThreadPool(); // 병렬 처리를 위한 캐시 스레드 풀
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor(); // 직렬 처리를 위한 단일 스레드 풀
     private final ConcurrentLinkedQueue<String> processingQueue = new ConcurrentLinkedQueue<>();
     private final Map<Integer, String> processedResults = new ConcurrentHashMap<>();
     private final AtomicInteger orderCounter = new AtomicInteger(0);
     private final AtomicInteger processedCounter = new AtomicInteger(0);
-    // 요청 ID와 요청 시간을 매핑합니다.
     private final Map<Integer, Instant> requestTimestamps = new ConcurrentHashMap<>();
     @Value("${AI_NGROK_URL}")
     private String AI_NGROK_URL;
 
     public void addTextToProcess(String text) {
-        int order = orderCounter.getAndIncrement(); // 작업에 순서 번호 할당
-        Instant timestamp = Instant.now(); // 현재 시간 저장
-        requestTimestamps.put(order, timestamp); // 요청 시간 저장
-        executorService.submit(() -> processText(text, order));
+        processingQueue.add(text); // 텍스트를 큐에 추가
+        processNextText(); // 다음 텍스트 처리 시작
+    }
+
+    private synchronized void processNextText() {
+        if (!processingQueue.isEmpty() && processedCounter.get() == orderCounter.get()) {
+            String text = processingQueue.poll(); // 큐에서 하나의 텍스트를 꺼냄
+            int order = orderCounter.getAndIncrement(); // 작업에 순서 번호 할당
+            Instant timestamp = Instant.now(); // 현재 시간 저장
+            requestTimestamps.put(order, timestamp); // 요청 시간 저장
+            executorService.submit(() -> processText(text, order));
+        }
     }
 
     private void processText(String text, int order) {
         log.info("Processing text: {}", text);
         callAIAPIToProcessText(text)
                 .doOnNext(processedText -> {
-                    // 순서가 맞을 때까지 결과 저장
                     processedResults.put(order, processedText);
-                    // 다음 순서의 작업 결과가 준비되었는지 확인
                     while (processedResults.containsKey(processedCounter.get())) {
                         int currentOrder = processedCounter.getAndIncrement();
                         String result = processedResults.remove(currentOrder);
@@ -56,8 +61,7 @@ public class AzureService {
                             sendResultToFrontend(result, currentOrder);
                         }
                     }
-
-
+                    processNextText(); // 다음 텍스트 처리
                 })
                 .doOnError(e -> log.error("Error processing text: {}", text, e))
                 .subscribe();
@@ -111,5 +115,4 @@ public class AzureService {
             requestTimestamps.remove(order);
         }
     }
-
 }
