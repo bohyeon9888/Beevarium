@@ -1,6 +1,3 @@
-# 🐝 Beevarium
-
----
 
 # 🐝 Beevarium
 
