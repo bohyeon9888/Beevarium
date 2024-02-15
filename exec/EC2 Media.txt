@@ -1,0 +1,9 @@
+sudo su
+
+cd /opt
+
+curl https://s3-eu-west-1.amazonaws.com/aws.openvidu.io/install_media_node_latest.sh | bash
+
+cd kms
+
+./media_node start

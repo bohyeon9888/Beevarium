@@ -63,12 +63,6 @@ export const useMoveStore = defineStore(
         name: "BanListManagement",
       });
     };
-
-    const goLiveStream = function () {
-      router.push({
-        name: "LiveStream",
-      });
-    };
     return {
       goHome,
       goClip,
@@ -80,7 +74,6 @@ export const useMoveStore = defineStore(
       goDashboard,
       goStudioMain,
       goBanListManagement,
-      goLiveStream,
     };
   },
   { persist: true }

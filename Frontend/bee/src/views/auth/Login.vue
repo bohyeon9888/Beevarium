@@ -1,145 +1,256 @@
 <script setup>
+import { ref } from "vue";
 import { RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/user";
-import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import { login } from "@/api/user";
 
+const router = useRouter();
 const authStore = useAuthStore();
-const { isLoggedIn } = storeToRefs(authStore);
+const username = ref("");
+const password = ref("");
 
-const login = () => {
-  authStore.login();
+const moveToHome = () => {
+  router.push({ name: "Home" });
+};
+
+const doLogin = () => {
+  console.log("username : ", username.value);
+  console.log("password : ", password.value);
+  let loginData = new FormData();
+
+  loginData.append("username", username.value);
+  loginData.append("password", password.value);
+
+  login(
+    loginData,
+    ({ data }) => {
+      if (data.status == "success") {
+        authStore.login(data.data, loginData.get("username"));
+        moveToHome();
+      }
+    },
+    (error) => {}
+  );
+};
+
+const changeCoper = (value) => {
+  authStore.chooseCoperation(value);
+  console.log(value);
 };
 </script>
 
 <template>
-  <div class="login-container">
-    <router-link class="logo-box" :to="{ name: 'Home' }">
-      <img class="login-form-logo" src="../../assets/img/logo.png" />
-    </router-link>
-    <div class="login-box">
-      <input class="id-input" type="text" placeholder="아이디 입력" />
-      <input
-        class="password-input"
-        type="password"
-        placeholder="비밀번호 입력"
-      />
-    </div>
-    <div style="display: flex; justify-content: flex-end; margin: 10px 0 20px; font-size: 17px;">
-      <router-link :to="{ name: 'Signup' }">회원가입</router-link>
-      <div style="margin: 0 10px">|</div>
-      <div>비밀번호 찾기</div>
-    </div>
-    <router-link :to="{ name: 'Home' }" @click="login" >
-      <div class="login-button">로그인</div>
-    </router-link>
-    <div style="display: flex; justify-content: center; margin: 40px 0 0; font-size: 17px;">
-      SNS 계정 간편 로그인
-    </div>
-    <div class="social-login">
-      <a
-        class="move-google-login"
-        @click.prevent="
-          {
-            changeOper('google');
-          }
-        "
-      >
-        <img
-          class="google-login-button"
-          src="../../assets/img/social-login/google.png"
-        />
-      </a>
-      <a
-        class="move-kakao-login"
-        href="http://codakcodak.site:8000/wannago/backapi/oauth/redirect/kakao"
-      >
-        <img
-          class="kakao-login-button"
-          @click="changeOper('kakao')"
-          src="../../assets/img/social-login/kakao.png"
-        />
-      </a>
-      <a
-        class="move-naver-login"
-        href="http://codakcodak.site:8000/wannago/backapi/oauth/redirect/naver"
-      >
-        <img
-          class="naver-login-button"
-          @click="changeOper('naver')"
-          src="../../assets/img/social-login/naver.png"
-        />
-      </a>
+  <div class="container">
+    <div class="login-container">
+      <div class="login-box">
+        <div class="logo-box">
+          <router-link :to="{ name: 'Home' }">
+            <img class="logo-image" src="../../assets/img/logo.png" alt="" />
+          </router-link>
+        </div>
+        <div class="id-input-box">
+          <input
+            class="id-input"
+            type="text"
+            placeholder="아이디"
+            v-model="username"
+          />
+        </div>
+        <div class="password-input-box">
+          <input
+            class="password-input"
+            type="password"
+            placeholder="비밀번호"
+            v-model="password"
+            @keyup.enter="doLogin"
+          />
+        </div>
+        <div class="login-button" @click="[doLogin()]">로그인</div>
+        <div class="user-function-box">
+          <router-link :to="{ name: 'Signup' }">회원가입</router-link>
+          <div
+            style="
+              width: 1px;
+              height: 14px;
+              margin: 0 10px;
+              background: #636363;
+            "
+          ></div>
+          <router-link to="">아이디 찾기</router-link>
+          <div
+            style="
+              width: 1px;
+              height: 14px;
+              margin: 0 10px;
+              background: #636363;
+            "
+          ></div>
+          <router-link to="">비밀번호 찾기</router-link>
+        </div>
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 60px;
+          "
+        >
+          <div style="width: 110px; height: 1px; background: #636363"></div>
+          <div
+            style="
+              text-align: right;
+              color: white;
+              font-size: 16px;
+              line-height: 20px;
+            "
+          >
+            SNS 계정으로 로그인하기
+          </div>
+          <div style="width: 110px; height: 1px; background: #636363"></div>
+        </div>
+        <div class="social-login-box">
+          <a
+            class="social-login-button"
+            href="https://api.beevarium.site/oauth/redirect/google"
+          >
+            <img
+              class="google-login"
+              src="../../assets/img/social-login/google.png"
+              @click="changeCoper('google')"
+            />
+          </a>
+          <a
+            class="social-login-button"
+            href="https://api.beevarium.site/oauth/redirect/naver"
+            style="margin: 0 24px"
+          >
+            <img
+              class="naver-login"
+              src="../../assets/img/social-login/naver.png"
+              @click="changeCoper('naver')"
+            />
+          </a>
+          <a
+            class="social-login-button"
+            href="https://api.beevarium.site/oauth/redirect/kakao"
+          >
+            <img
+              class="kakao-login"
+              src="../../assets/img/social-login/kakao.png"
+              @click="changeCoper('kakao')"
+            />
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+.container {
+  width: 100%;
+  height: 100%;
+}
 .login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
-  top: 50%;
   left: 50%;
-  width: 500px;
-  padding: 40px;
+  top: 50%;
   transform: translate(-50%, -50%);
+  width: 680px;
+  height: 842px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 32px;
+  background-color: #1e1e1e;
+}
+.login-box {
+  width: 400px;
+  height: 590px;
 }
 .logo-box {
   display: flex;
   justify-content: center;
   width: 100%;
+  height: 135px;
 }
-.login-form-logo {
-  width: 40%;
+.id-input-box {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #3a3a3b;
+  margin-top: 48px;
 }
-.login-box {
-  display: flex;
-  flex-direction: column;
-  margin-top: 30px;
+.id-input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
+  padding-left: 20px;
 }
-.id-input,
+.password-input-box {
+  width: 100%;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #3a3a3b;
+  margin-top: 12px;
+}
 .password-input {
   width: 100%;
-  height: 50px;
+  height: 100%;
+  border: 0;
   outline: none;
-  border: 1px solid #3455;
-  padding-left: 15px;
-  margin: 10px 0;
-  font-size: 17px;
-  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+  font-size: 16px;
+  padding-left: 20px;
 }
 .login-button {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 50px;
-  margin: 10px 0;
-  background-color: #ffe3bc;
-  border-radius: 10px;
-  font-size: 18px;
+  height: 56px;
+  background-color: #ffec3e;
+  margin-top: 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  color: black;
 }
-.social-login {
+.user-function-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  /* background-color: yellow; */
   width: 100%;
-  height: 55px;
-  margin-top: 20px;
+  height: 19px;
+  margin-top: 24px;
+  font-size: 16px;
+  color: white;
 }
-
-.google-login-button,
-.kakao-login-button {
-  width: 50px;
-  height: 50px;
+.social-login-box {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
 }
-.naver-login-button {
-  width: 55px;
-  height: 55px;
+.social-login-button {
+  width: 64px;
+  height: 64px;
+  border-radius: 10rem;
+  cursor: pointer;
 }
-.google-login-button,
-.kakao-login-button,
-.naver-login-button {
-  margin: 0 20px;
+.google-login,
+.naver-login,
+.kakao-login {
+  width: 64px;
+  height: 64px;
+  border-radius: 10rem;
   cursor: pointer;
 }
 </style>

@@ -1,0 +1,368 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema b203
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema b203
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `b203` DEFAULT CHARACTER SET utf8 ;
+USE `b203` ;
+
+-- -----------------------------------------------------
+-- Table `b203`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`user` (
+  `user_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` VARCHAR(100) NOT NULL,
+  `user_pw` VARCHAR(1000) NOT NULL,
+  `user_email` VARCHAR(200) NOT NULL,
+  `user_nickname` VARCHAR(100) NOT NULL,
+  `user_profile_url` VARCHAR(1000) NOT NULL,
+  `user_point` INT(11) NOT NULL DEFAULT '500',
+  `user_role` VARCHAR(50) NOT NULL,
+  `code_name` VARCHAR(50) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_no`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`broadcast_station`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`broadcast_station` (
+  `broadcast_station_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_no` INT(11) NOT NULL,
+  `broadcast_station_title` VARCHAR(1000) NOT NULL DEFAULT '안녕하세요',
+  `broadcast_station_follow_num` INT(11) NOT NULL DEFAULT '0',
+  `broadcast_station_noti_mention` VARCHAR(1000) NOT NULL DEFAULT '안녕하세요',
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`broadcast_station_no`),
+  INDEX `user_no_idx` (`user_no` ASC) VISIBLE,
+  CONSTRAINT `broadcast_station_user_no`
+    FOREIGN KEY (`user_no`)
+    REFERENCES `b203`.`user` (`user_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`broadcast_station_admin`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`broadcast_station_admin` (
+  `broadcast_station_admin_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `broadcast_station_admin_state` TINYINT(1) NOT NULL DEFAULT '1',
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`broadcast_station_admin_no`),
+  INDEX `broadcast_station_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  CONSTRAINT `broadcast_station_admin_broadcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`broadcast_station_member_ban`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`broadcast_station_member_ban` (
+  `broadcast_station_member_ban_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `user_no` INT(11) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`broadcast_station_member_ban_no`),
+  INDEX `broadcast_station_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  INDEX `user_no_idx` (`user_no` ASC) VISIBLE,
+  CONSTRAINT `broadcast_station_member_ban_broadcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `broadcast_station_member_ban_user_no`
+    FOREIGN KEY (`user_no`)
+    REFERENCES `b203`.`user` (`user_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`broadcast_station_notice`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`broadcast_station_notice` (
+  `broadcast_station_notice_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `broadcast_station_notice_title` VARCHAR(100) NOT NULL,
+  `broadcast_station_notice_content` VARCHAR(2000) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`broadcast_station_notice_no`),
+  INDEX `broadcast_station_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  CONSTRAINT `broadcast_station_notice_broadcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`broadcasting`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`broadcasting` (
+  `broadcasting_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `broadcasting_title` VARCHAR(100) NOT NULL,
+  `broadcasting_viewers` INT(11) NOT NULL DEFAULT '0',
+  `broadcasting_img_url` VARCHAR(1000) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`broadcasting_no`),
+  INDEX `broadcast_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  CONSTRAINT `broadcasting_broadcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 11
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`video`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`video` (
+  `video_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `video_title` VARCHAR(100) NOT NULL,
+  `video_viewers` INT(11) NOT NULL DEFAULT '0',
+  `video_url` VARCHAR(1000) NOT NULL,
+  `video_img_url` VARCHAR(1000) NOT NULL,
+  `code_no` INT(11) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`video_no`),
+  INDEX `broadcast_station_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  CONSTRAINT `video_broadcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`clip_video`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`clip_video` (
+  `clip_video_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `video_no` INT(11) NOT NULL,
+  `user_no` INT(11) NOT NULL,
+  PRIMARY KEY (`clip_video_no`),
+  INDEX `video_no_idx` (`video_no` ASC) VISIBLE,
+  INDEX `user_no_idx` (`user_no` ASC) VISIBLE,
+  CONSTRAINT `clip_video_user_no`
+    FOREIGN KEY (`user_no`)
+    REFERENCES `b203`.`user` (`user_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `clip_video_video_no`
+    FOREIGN KEY (`video_no`)
+    REFERENCES `b203`.`video` (`video_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`common_table`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`common_table` (
+  `code_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `code_name` VARCHAR(1000) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`code_no`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`entire_notice`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`entire_notice` (
+  `entire_notice_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `entire_notice_title` VARCHAR(100) NOT NULL,
+  `entire_notice_content` VARCHAR(2000) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`entire_notice_no`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`follow_relation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`follow_relation` (
+  `follow_relation_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `user_no` INT(11) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`follow_relation_no`),
+  INDEX `boardcast_station_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  INDEX `user_no_idx` (`user_no` ASC) VISIBLE,
+  CONSTRAINT `follow_relation_boardcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `follow_relation_user_no`
+    FOREIGN KEY (`user_no`)
+    REFERENCES `b203`.`user` (`user_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`tag`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`tag` (
+  `tag_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `tag_text` VARCHAR(100) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`tag_no`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`hashtag`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`hashtag` (
+  `hashtag_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcasting_no` INT(11) NOT NULL,
+  `tag_no` INT(11) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hashtag_no`),
+  INDEX `broadcasting_no_idx` (`broadcasting_no` ASC) VISIBLE,
+  INDEX `tag_no_idx` (`tag_no` ASC) VISIBLE,
+  CONSTRAINT `hashtag_broadcasting_no`
+    FOREIGN KEY (`broadcasting_no`)
+    REFERENCES `b203`.`broadcasting` (`broadcasting_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `hashtag_tag_no`
+    FOREIGN KEY (`tag_no`)
+    REFERENCES `b203`.`tag` (`tag_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`point_relation`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`point_relation` (
+  `point_relation_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `broadcast_station_no` INT(11) NOT NULL,
+  `user_no` INT(11) NOT NULL,
+  `point_relation_point` INT(11) NOT NULL,
+  `created_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`point_relation_no`),
+  INDEX `broadcast_station_no_idx` (`broadcast_station_no` ASC) VISIBLE,
+  INDEX `user_no_idx` (`user_no` ASC) VISIBLE,
+  CONSTRAINT `point_relation_broadcast_station_no`
+    FOREIGN KEY (`broadcast_station_no`)
+    REFERENCES `b203`.`broadcast_station` (`broadcast_station_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `point_relation_user_no`
+    FOREIGN KEY (`user_no`)
+    REFERENCES `b203`.`user` (`user_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`replay_video`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`replay_video` (
+  `replay_video_no` INT(11) NOT NULL AUTO_INCREMENT,
+  `video_no` INT(11) NOT NULL,
+  `replay_video_text_url` VARCHAR(1000) NOT NULL,
+  PRIMARY KEY (`replay_video_no`),
+  INDEX `video_no_idx` (`video_no` ASC) VISIBLE,
+  CONSTRAINT `replay_video_video_no`
+    FOREIGN KEY (`video_no`)
+    REFERENCES `b203`.`video` (`video_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `b203`.`file_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `b203`.`file_info` (
+  `file_no` INT NOT NULL AUTO_INCREMENT,
+  `video_no` INT NOT NULL,
+  `file_path` VARCHAR(100) NOT NULL,
+  `original_name` VARCHAR(500) NOT NULL,
+  `save_name` VARCHAR(1000) NOT NULL,
+  `created_time` DATE NOT NULL,
+  `updated_time` DATE NOT NULL,
+  PRIMARY KEY (`file_no`),
+  INDEX `file_info_video_no_idx` (`video_no` ASC) VISIBLE,
+  CONSTRAINT `file_info_video_no`
+    FOREIGN KEY (`video_no`)
+    REFERENCES `b203`.`video` (`video_no`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

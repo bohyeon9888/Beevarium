@@ -1,0 +1,41 @@
+1. Local WSL
+
+docker build -t mine0702/beevarium-frontend .
+
+docker build -t mine0702/beevarium-backend .
+
+docker build -t mine0702/beevarium-tts .
+
+docker push mine0702/beevarium-frontend
+
+docker push mine0702/beevarium-backend
+
+docker push mine0702/beevarium-tts
+
+2. Ec2
+
+docker pull mine0702/beevarium-frontend
+
+docker pull mine0702/beevarium-backend
+
+docker pull mine0702/beevarium-tts
+
+docker-compose up -t
+
+3. Nginx
+
+Docker Ec2 Nginx Setting docx Nginx setting 참조
+
+4. Openvidu main node
+
+sudo su
+
+cd /opt
+
+cd openvidu
+
+nano .env
+
+.env 키 세팅
+
+./openvidu start

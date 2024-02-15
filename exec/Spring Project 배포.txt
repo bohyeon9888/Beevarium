@@ -1,0 +1,54 @@
+Spring Project 배포
+
+1. 클라우드 인스턴스를 생성 및 key를 이용하여 인스턴스 접속
+
+2. requirements 설치
+
+$ sudo apt update
+$ sudo apt install openjdk-11-jdk
+$ java --version
+$ sudo apt install postgresql postgresql-contrib
+$ psql --version
+
+$ sudo -i -u postgres   #postgres로 유저 전환
+postgres@ubuntu:~$ psql
+
+# psql user, db 생성
+# 생성한 psql 유저로 접속할 땐 psql -U [username] -d [database] -h 127.0.0.1 
+
+3. git clone [repository]
+
+4. 프로젝트 빌드 파일이 있는 위치로 이동
+
+5. 빌드 및 실행
+
+Gradle
+
+$ ./gradlew clean build -x test
+$ cd build/libs/
+$ nohup java -jar [빌드된 jar 파일 이름] &
+
+ps -ef | grep java 
+
+build.sh 생성
+
+#!/bin/bash
+SERVICE_NAME=
+
+echo "kill previous process"
+kill -9 $(jps | grep $SERVICE_NAME | awk '{print $1}')
+
+echo "###### $SERVICE_NAME ######"
+cd $SERVICE_NAME/
+
+echo "remove old jar file"
+rm -rf build/
+
+echo "build new jar file"
+cd ../
+./gradlew clean
+./gradlew $SERVICE_NAME:bootJar
+
+echo "run server"
+cd $SERVICE_NAME/build/libs/
+nohup java -jar $SERVICE_NAME-0.0.1.jar &

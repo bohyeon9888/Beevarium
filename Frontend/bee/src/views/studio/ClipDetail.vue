@@ -1,68 +1,135 @@
 <script setup>
-import StudioInfo from "./components/StudioInfo.vue";
+import { ref } from "vue";
+import { RouterLink } from "vue-router";
+// import StudioInfo from "./components/StudioInfo.vue";
+
+const prop = defineProps(["studioInfo"]);
+const clip = ref({
+  title: "모든 길은 결국 저를 통합니다_페이커 [T1 vs JDG]",
+  thumbnail: "clip-detail1",
+  username: "user1",
+  date: "24.01.09",
+  views: 1353,
+});
 </script>
 
 <template>
-  <div class="container">
-    <div class="container-box">
-      <div class="studio-main">
-        <StudioInfo />
-        <div class="studio-content">
-          <h1>유저 클립</h1>
-          <div class="content-box">
-            <h3>title</h3>
-            <div>
-              <p>작성일시:</p>
-              <p>작성자:</p>
-              <p>조회수:</p>
+  <!-- <div class="clip-detail-container"> -->
+    <div class="clip-detail-content-container">
+      <div class="back-to-clip-button">
+        <router-link
+          :to="{ name: 'Clip' }"
+          style="display: flex; align-items: center; width: 96px; height: 24px;"
+        >
+          <img src="../../assets/img/common/prev-button.png" alt="" class="back-to-clip" />
+          <div style="width: 75px; height: 24px; font-size: 20px; font-weight: 600">유저 클립</div>
+        </router-link>
+      </div>
+      <div class="clip-detail-content-box">
+        <div class="clip-title">{{ clip.title }}</div>
+        <div class="clip-detail-content">
+          <div class="clip-username-date-views-box">
+            <div class="clip-username">
+              <div style="font-size: 16px; font-weight: 400; color: #a0a0a0; margin-right: 4px;">작성자 :</div>
+              {{ clip.username }}
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                width: 180px;
+                height: 19px;
+              "
+            >
+              <div class="clip-date">{{ clip.date }}</div>
+              <div style="width: 1px; height: 14px; background: #636363"></div>
+              <div class="clip-views">
+                <div style="font-size: 16px; font-weight: 400; color: #a0a0a0; margin-right: 4px;">조회수</div>
+                {{ clip.views }}회
+              </div>
             </div>
           </div>
-          <div class="video-screen"></div>
-          <div class="video-editor"></div>
+          <div class="clip-screen">
+            <img src="../../assets/img/studio/clip-detail1.png" alt="" class="clip" />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <style scoped>
-.studio-content {
-  width: 100%;
-  border: 2px solid #000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  overflow: auto;
+/* .clip-detail-container {
+  display: flex;
+  width: 1899px;
+} */
+.clip-detail-content-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1579px;
 }
-.studio-main {
-  display: grid;
-  grid-template-columns: 3fr 7fr;
-  padding: 10px;
-  width: 100%;
-  height: 500px;
-  gap: 20px;
+.back-to-clip-button {
+  width: 1579px;
+  height: 64px;
+  padding: 16px 0 24px 30px;
 }
-
-.content-box {
+.back-to-clip {
+  height: 18px;
+  margin-right: 8px;
+}
+.clip-detail-content-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 1519px;
+  height: 842px;
+  background-color: #1e1e1e;
+  border-radius: 16px;
+}
+.clip-title {
+  width: 1420px;
+  height: 24px;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.clip-detail-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 1420px;
+  height: 693px;
+  border-top: 1px solid #434343;
+}
+.clip-username-date-views-box {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  align-items: center;
+  width: 1420px;
+  height: 19px;
+  margin: 20px 0 50px;
 }
-
-.video-screen {
-  width: 100%;
-  height: 50%;
-  border: 2px solid #000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  overflow: auto;
+.clip-username {
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+}
+.clip-date,
+.clip-views {
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+}
+.clip-screen {
+  width: 1000px;
+  height: 554px;
   margin-bottom: 10px;
 }
-
-.video-editor {
-  width: 100%;
-  border: 2px solid #000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  overflow: auto;
+.clip {
+  width: 1000px;
+  height: 554px;
 }
 </style>
