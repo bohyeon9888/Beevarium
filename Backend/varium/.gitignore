@@ -107,7 +107,7 @@ hs_err_pid*
 replay_pid*
 
 # application.properties
-**/application.properties
+**/src/main/resources/application.properties
 
 ### IntelliJ IDEA ###
 .idea
