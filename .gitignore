@@ -117,8 +117,8 @@ fabric.properties
 hs_err_pid*
 replay_pid*
 
-# 
-**/application.properties
+# application.properties
+Backend/src/**/application.properties
 
 ### VisualStudioCode ###
 .vscode/*
