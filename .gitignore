@@ -1,0 +1,182 @@
+### Frontend ###
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+.DS_Store
+dist
+dist-ssr
+coverage
+*.local
+.env
+
+/cypress/videos/
+/cypress/screenshots/
+
+# Editor directories and files
+Frontend/bee/.vscode/*
+!.vscode/extensions.json
+
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+*.tsbuildinfo
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+### Vuejs ###
+# Recommended template: Node.gitignore
+
+Frontend/bee/node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+### Backend ###
+
+HELP.md
+Backend/varium/.gradle
+Backend/varium/build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### Intellij+all ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff
+Backend/varium/.idea/**/workspace.xml
+Backend/varium/.idea/**/tasks.xml
+Backend/varium/.idea/**/usage.statistics.xml
+Backend/varium/.idea/**/dictionaries
+Backend/varium/.idea/**/shelf
+
+# AWS User-specific
+Backend/varium/.idea/**/aws.xml
+
+# Generated files
+Backend/varium/.idea/**/contentModel.xml
+
+# Sensitive or high-churn files
+Backend/varium/.idea/**/dataSources/
+Backend/varium/.idea/**/dataSources.ids
+Backend/varium/.idea/**/dataSources.local.xml
+Backend/varium/.idea/**/sqlDataSources.xml
+Backend/varium/.idea/**/dynamic.xml
+Backend/varium/.idea/**/uiDesigner.xml
+Backend/varium/.idea/**/dbnavigator.xml
+
+# Gradle
+Backend/varium/.idea/**/gradle.xml
+Backend/varium/.idea/**/libraries
+
+# CMake
+Backend/varium/cmake-build-*/
+
+# Mongo Explorer plugin
+Backend/varium/.idea/**/mongoSettings.xml
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+Backend/varium/.idea/replstate.xml
+
+# SonarLint plugin
+Backend/varium/.idea/sonarlint/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+Backend/varium/com_crashlytics_export_strings.xml
+Backend/varium/crashlytics.properties
+Backend/varium/crashlytics-build.properties
+Backend/varium/fabric.properties
+
+# Editor-based Rest Client
+Backend/varium/.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+Backend/varium/.idea/caches/build_file_checksums.ser
+
+### Intellij+all Patch ###
+# Ignore everything but code style settings and run configurations
+# that are supposed to be shared within teams.
+
+Backend/varium/.idea/*
+
+!Backend/varium/.idea/codeStyles
+!Backend/varium/.idea/runConfigurations
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+replay_pid*
+
+# application.properties
+*.properties
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
