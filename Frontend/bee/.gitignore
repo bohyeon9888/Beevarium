@@ -13,17 +13,14 @@ dist
 dist-ssr
 coverage
 *.local
+.env
 
 /cypress/videos/
 /cypress/screenshots/
 
 # Editor directories and files
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/*.code-snippets
 
 .idea
 *.suo
@@ -52,4 +49,3 @@ node_modules/
 dist/
 npm-debug.log
 yarn-error.log
-.env
